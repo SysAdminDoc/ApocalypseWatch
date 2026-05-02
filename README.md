@@ -1,8 +1,11 @@
 # ApocalypseWatch
 
+[![Live](https://img.shields.io/badge/live-sysadmindoc.github.io%2FApocalypseWatch-f5c2e7?style=flat-square)](https://sysadmindoc.github.io/ApocalypseWatch/)
 [![Version](https://img.shields.io/badge/version-0.1.0-89b4fa?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch)
 [![License](https://img.shields.io/badge/license-MIT-94e2d5?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-web-f9e2af?style=flat-square)](#)
+
+**Live site:** https://sysadmindoc.github.io/ApocalypseWatch/
 
 A premium realtime dashboard for monitoring a curated cohort of business jets against a rolling 24-hour baseline. If a meaningful number of those aircraft suddenly take to the skies, the dial moves toward 5.
 
