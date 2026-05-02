@@ -1,14 +1,16 @@
-import { lazy, Suspense, useEffect, useMemo } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { useDashboard } from './hooks/useDashboard'
 import { Hero } from './components/Hero'
 import { EmergencyGauge } from './components/EmergencyGauge'
 import { AircraftList } from './components/AircraftList'
 import { AboutCard } from './components/AboutCard'
 import { StatusBanner } from './components/StatusBanner'
+import { ThemeControl } from './components/ThemeControl'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 
 const APP_VERSION = '0.1.0'
 const DEFAULT_CADENCE_MINUTES = 30
+const THEME_STORAGE_KEY = 'apocalypsewatch.theme'
 const GlobalMap = lazy(() => import('./components/GlobalMap').then((module) => ({ default: module.GlobalMap })))
 const ArchiveChart = lazy(() => import('./components/ArchiveChart').then((module) => ({ default: module.ArchiveChart })))
 
@@ -68,6 +70,20 @@ function getStaleSample(status) {
   return ageMs > staleAfterMs ? { sampledAt, ageMs, staleAfterMs } : null
 }
 
+function getInitialThemeMode() {
+  try {
+    const saved = window.localStorage.getItem(THEME_STORAGE_KEY)
+    return ['dark', 'light', 'system'].includes(saved) ? saved : 'dark'
+  } catch {
+    return 'dark'
+  }
+}
+
+function resolveTheme(mode) {
+  if (mode !== 'system') return mode
+  return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+}
+
 function PanelFallback({ title, variant }) {
   return (
     <section className={`card panel-fallback panel-fallback--${variant}`} aria-busy="true">
@@ -82,12 +98,33 @@ function PanelFallback({ title, variant }) {
 
 export default function App() {
   const { data, error, lastFetchedAt, retryInMs, isFetching } = useDashboard()
+  const [themeMode, setThemeMode] = useState(getInitialThemeMode)
   const signal = useMemo(() => deriveSignal(data), [data])
   const emergencyLevel = useMemo(() => deriveEmergencyLevel(signal), [signal])
 
   useEffect(() => {
     document.documentElement.dataset.emergency = String(emergencyLevel)
   }, [emergencyLevel])
+
+  useEffect(() => {
+    function applyTheme() {
+      const resolved = resolveTheme(themeMode)
+      document.documentElement.dataset.theme = resolved
+      document.documentElement.style.colorScheme = resolved
+    }
+
+    applyTheme()
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, themeMode)
+    } catch {
+      // Preference persistence is best-effort only.
+    }
+
+    const media = window.matchMedia?.('(prefers-color-scheme: light)')
+    if (themeMode !== 'system' || !media) return undefined
+    media.addEventListener('change', applyTheme)
+    return () => media.removeEventListener('change', applyTheme)
+  }, [themeMode])
 
   if (error && !data) {
     return (
@@ -132,7 +169,19 @@ export default function App() {
   return (
     <>
       <div className="bg-fx" />
-      <main className="shell">
+      <a className="skip-link" href="#dashboard-main">Skip to dashboard</a>
+      <main className="shell" id="dashboard-main">
+        <header className="app-topbar">
+          <div className="brand-lockup" aria-label="ApocalypseWatch">
+            <span className="brand-mark" aria-hidden="true">AW</span>
+            <span>
+              <strong>ApocalypseWatch</strong>
+              <small>Private-jet anomaly monitor</small>
+            </span>
+          </div>
+          <ThemeControl value={themeMode} onChange={setThemeMode} />
+        </header>
+
         {data.warning ? (
           <StatusBanner kind="info" title={data.mode === 'demo' ? 'Demo mode' : 'Configuration required'}>
             {data.warning}
@@ -169,7 +218,13 @@ export default function App() {
           </StatusBanner>
         ) : null}
 
-        <Hero emergencyLevel={emergencyLevel} sourceLabel={sourceLabel} />
+        <Hero
+          emergencyLevel={emergencyLevel}
+          sourceLabel={sourceLabel}
+          signal={signal}
+          cohort={cohort}
+          liveStatus={liveStatus}
+        />
 
         <div className="row row-2-1">
           <EmergencyGauge

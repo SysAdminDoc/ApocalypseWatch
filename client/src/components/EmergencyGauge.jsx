@@ -110,11 +110,9 @@ export function EmergencyGauge({
           {emergencyLevel}
           <small> /5</small>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="gauge-status-block">
           <span className="gauge-status">{cfg.label}</span>
-          <span style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.45 }}>
-            {cfg.tone}
-          </span>
+          <span>{cfg.tone}</span>
         </div>
       </div>
 

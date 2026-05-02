@@ -34,7 +34,10 @@ export function AircraftList({ aircraft = [] }) {
         <div className="card-eyebrow">{Array.isArray(aircraft) ? aircraft.length : 0} airborne</div>
       </div>
       {sorted.length === 0 ? (
-        <div className="aircraft-empty">No aircraft currently airborne.</div>
+        <div className="empty-state aircraft-empty">
+          <strong>No aircraft airborne</strong>
+          <span>The cohort is currently below the live-aircraft threshold.</span>
+        </div>
       ) : (
         <ul className="aircraft-list" role="list">
           {sorted.map((a, idx) => (

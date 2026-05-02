@@ -1,18 +1,19 @@
 export function formatCount(value) {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—'
-  return Math.round(Number(value)).toLocaleString()
+  const n = Number(value)
+  if (value === null || value === undefined || !Number.isFinite(n)) return '—'
+  return Math.round(n).toLocaleString()
 }
 
 export function formatDelta(value) {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—'
   const n = Number(value)
+  if (value === null || value === undefined || !Number.isFinite(n)) return '—'
   const sign = n > 0 ? '+' : n < 0 ? '' : ''
   return `${sign}${Math.round(n).toLocaleString()}`
 }
 
 export function formatSigma(value) {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—'
   const n = Number(value)
+  if (value === null || value === undefined || !Number.isFinite(n)) return '—'
   const sign = n >= 0 ? '+' : ''
   return `${sign}${n.toFixed(1)}σ`
 }
@@ -56,13 +57,15 @@ export function formatDuration(value) {
 }
 
 export function formatAltitude(value) {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—'
-  return `${Math.round(Number(value)).toLocaleString()} ft`
+  const n = Number(value)
+  if (value === null || value === undefined || !Number.isFinite(n)) return '—'
+  return `${Math.round(n).toLocaleString()} ft`
 }
 
 export function formatSpeed(value) {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—'
-  return `${Math.round(Number(value))} kt`
+  const n = Number(value)
+  if (value === null || value === undefined || !Number.isFinite(n)) return '—'
+  return `${Math.round(n)} kt`
 }
 
 export function clamp(value, min, max) {

@@ -74,6 +74,10 @@ export function GlobalMap({ aircraft = [], asOf, onAirborneCount }) {
         </div>
       </div>
       <div className="map-frame">
+        <p className="sr-only">
+          {points.length} aircraft have valid map positions.
+          {droppedCount ? ` ${droppedCount} aircraft are hidden because their coordinates are invalid.` : ''}
+        </p>
         <svg className="map-svg" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Global aircraft positions">
           <defs>
             <radialGradient id="ocean-tint" cx="50%" cy="60%" r="60%">

@@ -1,7 +1,17 @@
 import { EMERGENCY_LEVELS } from '../lib/constants'
+import { formatCount, formatRelative, formatSigma } from '../lib/format'
 
-export function Hero({ emergencyLevel, sourceLabel }) {
+export function Hero({ emergencyLevel, sourceLabel, signal, cohort, liveStatus }) {
   const cfg = EMERGENCY_LEVELS.find((l) => l.level === emergencyLevel) ?? EMERGENCY_LEVELS[0]
+  const sampledAt = liveStatus?.latestSampledAt
+  const trackedCount = Number(cohort?.trackedCount)
+  const trackedDetail = Number.isFinite(trackedCount) && trackedCount > 0 ? `${formatCount(trackedCount)} tracked` : 'demo sample'
+  const metrics = [
+    { label: 'Level', value: `${cfg.level}/5`, detail: cfg.label },
+    { label: 'Airborne', value: formatCount(signal?.actualConcurrentCount), detail: trackedDetail },
+    { label: 'Baseline', value: formatCount(signal?.expectedConcurrentCount), detail: formatSigma(signal?.sigmaShift) },
+    { label: 'Sample', value: sampledAt ? formatRelative(sampledAt) : 'Pending', detail: sourceLabel ?? 'ADS-B Exchange' },
+  ]
 
   return (
     <section className="card hero">
@@ -12,16 +22,23 @@ export function Hero({ emergencyLevel, sourceLabel }) {
         </span>
         <h1 className="hero-title">Apocalypse Watch</h1>
         <p className="hero-caption">
-          A realtime dashboard tracking a curated cohort of business jets. If a meaningful number of those
-          aircraft suddenly take to the skies relative to a rolling 24-hour baseline, this dial moves toward 5.
-          The premise: people with private-jet access tend to leave city centers fast in a crisis.
+          Tracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at
+          once, the signal moves toward level 5.
         </p>
-        <p className="hero-caption" style={{ color: 'var(--text-tertiary)' }}>
-          Current reading: <strong style={{ color: 'var(--accent)' }}>Level {cfg.level} — {cfg.label}</strong>.
-          {' '}{cfg.tone}.
+        <p className="hero-caption hero-caption--muted">
+          Current reading: <strong>Level {cfg.level} — {cfg.label}</strong>. {cfg.tone}.
         </p>
+        <div className="hero-metrics" aria-label="Current signal summary">
+          {metrics.map((metric) => (
+            <div className="hero-metric" key={metric.label}>
+              <span>{metric.label}</span>
+              <strong>{metric.value}</strong>
+              <small>{metric.detail}</small>
+            </div>
+          ))}
+        </div>
         <div className="hero-credits">
-          <span>Redesigned client by SysAdminDoc</span>
+          <span>Client by SysAdminDoc</span>
           <span className="sep">/</span>
           <a href="https://github.com/SysAdminDoc/ApocalypseWatch" target="_blank" rel="noreferrer">GitHub</a>
           <span className="sep">/</span>
@@ -30,13 +47,14 @@ export function Hero({ emergencyLevel, sourceLabel }) {
           <span>data: <a href="https://github.com/kylemcdonald/ews" target="_blank" rel="noreferrer">kylemcdonald/ews</a></span>
         </div>
       </div>
-      <HeroVisual emergencyLevel={emergencyLevel} />
+      <HeroVisual emergencyLevel={emergencyLevel} signal={signal} />
     </section>
   )
 }
 
-function HeroVisual({ emergencyLevel }) {
+function HeroVisual({ emergencyLevel, signal }) {
   const rings = Array.from({ length: 6 }, (_, i) => i)
+  const sigma = formatSigma(signal?.sigmaShift)
   return (
     <div className="hero-visual" aria-hidden="true">
       <svg viewBox="-100 -100 200 200" style={{ width: '100%', height: '100%', display: 'block' }}>
@@ -67,6 +85,11 @@ function HeroVisual({ emergencyLevel }) {
           />
         </g>
       </svg>
+      <div className="hero-visual-readout">
+        <span>Signal</span>
+        <strong>Level {emergencyLevel}</strong>
+        <small>{sigma} from baseline</small>
+      </div>
     </div>
   )
 }

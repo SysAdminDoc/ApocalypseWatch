@@ -93,6 +93,22 @@ export function ArchiveChart({ archive, signal }) {
 
   const expected = signal?.expectedConcurrentCount
   const lastValue = filtered.length ? filtered[filtered.length - 1].count : null
+  const activeIndex = RANGE_OPTIONS.findIndex((opt) => opt.id === rangeId)
+
+  function handleRangeKeyDown(event) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
+    event.preventDefault()
+    const lastIndex = RANGE_OPTIONS.length - 1
+    const nextIndex =
+      event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? lastIndex
+          : event.key === 'ArrowLeft'
+            ? Math.max(0, activeIndex - 1)
+            : Math.min(lastIndex, activeIndex + 1)
+    setRangeId(RANGE_OPTIONS[nextIndex].id)
+  }
 
   return (
     <section className="card chart-card">
@@ -105,8 +121,11 @@ export function ArchiveChart({ archive, signal }) {
               type="button"
               role="tab"
               aria-selected={opt.id === rangeId}
+              aria-controls="archive-chart-panel"
+              id={`archive-range-${opt.id}`}
               className={`range-tab ${opt.id === rangeId ? 'is-active' : ''}`}
               onClick={() => setRangeId(opt.id)}
+              onKeyDown={handleRangeKeyDown}
             >
               {opt.label}
             </button>
@@ -114,7 +133,12 @@ export function ArchiveChart({ archive, signal }) {
         </div>
       </div>
 
-      <div className="chart-frame">
+      <div
+        className="chart-frame"
+        id="archive-chart-panel"
+        role="tabpanel"
+        aria-labelledby={`archive-range-${rangeId}`}
+      >
         {decodedArchive.issue ? (
           <div className="chart-state chart-state--warning">{decodedArchive.issue}</div>
         ) : filtered.length === 0 ? (
@@ -155,14 +179,13 @@ export function ArchiveChart({ archive, signal }) {
               <Tooltip
                 cursor={{ stroke: 'var(--accent)', strokeOpacity: 0.4 }}
                 labelFormatter={(t) => new Date(t).toLocaleString()}
-                formatter={(v) => [`${v} airborne`, '']}
+                formatter={(v) => [Math.round(v), 'Airborne']}
               />
               {Number.isFinite(expected) ? (
                 <ReferenceLine
                   y={expected}
                   stroke="var(--text-tertiary)"
                   strokeDasharray="3 4"
-                  label={{ value: 'baseline', position: 'right', fill: 'var(--text-tertiary)', fontSize: 11 }}
                 />
               ) : null}
               <Area
@@ -181,9 +204,9 @@ export function ArchiveChart({ archive, signal }) {
       </div>
 
       {lastValue !== null && Number.isFinite(expected) ? (
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
-          <span>latest: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(lastValue)}</strong></span>
-          <span>baseline: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(expected)}</strong></span>
+        <div className="chart-summary">
+          <span>Latest <strong>{Math.round(lastValue)}</strong></span>
+          <span>Baseline <strong>{Math.round(expected)}</strong></span>
         </div>
       ) : null}
     </section>

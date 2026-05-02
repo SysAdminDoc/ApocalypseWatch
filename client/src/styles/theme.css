@@ -5,15 +5,16 @@
 
 :root {
   /* Surfaces (Catppuccin Mocha derived, deepened) */
-  --surface-base: #07090f;
-  --surface-1: #0b0d14;
-  --surface-2: #11141d;
-  --surface-3: #181c28;
-  --surface-glass: rgba(20, 24, 36, 0.62);
-  --surface-glass-strong: rgba(28, 33, 49, 0.78);
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-faint: rgba(255, 255, 255, 0.04);
-  --border-strong: rgba(255, 255, 255, 0.12);
+  --surface-base: #06080e;
+  --surface-1: #0c1018;
+  --surface-2: #121722;
+  --surface-3: #1a2130;
+  --surface-glass: rgba(16, 21, 32, 0.78);
+  --surface-glass-strong: rgba(22, 28, 41, 0.9);
+  --surface-inset: rgba(4, 7, 12, 0.38);
+  --border-subtle: rgba(214, 225, 255, 0.08);
+  --border-faint: rgba(214, 225, 255, 0.05);
+  --border-strong: rgba(214, 225, 255, 0.16);
 
   /* Type */
   --text-primary: #e9eaf3;
@@ -38,14 +39,14 @@
 
   /* Sizing */
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
-  --radius-xl: 30px;
-  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 6px 18px rgba(0, 0, 0, 0.35);
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.035) inset, 0 8px 24px rgba(0, 0, 0, 0.24);
   --shadow-glass: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
-                  0 12px 40px rgba(0, 0, 0, 0.55),
-                  0 0 0 1px rgba(255, 255, 255, 0.05);
-  --blur: 18px;
+                  0 18px 52px rgba(0, 0, 0, 0.42),
+                  0 0 0 1px rgba(255, 255, 255, 0.035);
+  --blur: 14px;
 
   /* Type scales */
   --font-sans: 'Inter', 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -54,8 +55,8 @@
 
   /* Layout */
   --shell-max: 1480px;
-  --gap: 18px;
-  --gap-lg: 28px;
+  --gap: 16px;
+  --gap-lg: 24px;
 
   /* Motion */
   --ease-emph: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -86,6 +87,7 @@
   --surface-3: #e6e8f1;
   --surface-glass: rgba(255, 255, 255, 0.66);
   --surface-glass-strong: rgba(255, 255, 255, 0.85);
+  --surface-inset: rgba(10, 18, 30, 0.045);
   --border-subtle: rgba(0, 0, 0, 0.06);
   --border-faint: rgba(0, 0, 0, 0.04);
   --border-strong: rgba(0, 0, 0, 0.12);
@@ -93,4 +95,7 @@
   --text-secondary: #4a4f60;
   --text-tertiary: #6c7185;
   --text-muted: #8d92a4;
+  --shadow-glass: 0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                  0 18px 44px rgba(38, 46, 70, 0.12),
+                  0 0 0 1px rgba(10, 18, 30, 0.04);
 }
