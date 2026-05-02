@@ -2,6 +2,7 @@ import { EMERGENCY_LEVELS } from '../lib/constants'
 import { formatCount, formatDelta, formatSigma, formatTimestamp } from '../lib/format'
 
 const SIZE = 400
+const VIEWBOX_HEIGHT = 360
 const CENTER = SIZE / 2
 const RADIUS = 150
 const STROKE = 22
@@ -47,7 +48,7 @@ export function EmergencyGauge({
       </div>
 
       <div className="gauge-svg-wrap">
-        <svg className="gauge-svg" viewBox={`0 0 ${SIZE} ${SIZE / 1.4}`} role="img"
+        <svg className="gauge-svg" viewBox={`0 0 ${SIZE} ${VIEWBOX_HEIGHT}`} role="img"
              aria-label={`Emergency level ${emergencyLevel} of 5`}>
           <path className="gauge-arc-bg" d={describeArc(START_ANGLE, END_ANGLE)} strokeWidth={STROKE} />
 

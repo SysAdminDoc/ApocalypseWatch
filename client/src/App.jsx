@@ -218,13 +218,9 @@ export default function App() {
           </StatusBanner>
         ) : null}
 
-        <Hero
-          emergencyLevel={emergencyLevel}
-          sourceLabel={sourceLabel}
-          signal={signal}
-          cohort={cohort}
-          liveStatus={liveStatus}
-        />
+        <Suspense fallback={<PanelFallback title="Realtime Tracker" variant="map" />}>
+          <GlobalMap aircraft={liveAircraft} asOf={data.current?.asOf} />
+        </Suspense>
 
         <div className="row row-2-1">
           <EmergencyGauge
@@ -238,9 +234,13 @@ export default function App() {
           <AircraftList aircraft={liveAircraft} />
         </div>
 
-        <Suspense fallback={<PanelFallback title="Realtime Tracker" variant="map" />}>
-          <GlobalMap aircraft={liveAircraft} asOf={data.current?.asOf} />
-        </Suspense>
+        <Hero
+          emergencyLevel={emergencyLevel}
+          sourceLabel={sourceLabel}
+          signal={signal}
+          cohort={cohort}
+          liveStatus={liveStatus}
+        />
 
         <div className="row row-1-1">
           <Suspense fallback={<PanelFallback title="Concurrent Tracked Jets" variant="chart" />}>

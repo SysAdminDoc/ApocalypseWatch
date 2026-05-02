@@ -191,7 +191,7 @@
   place-items: center;
   margin-top: 10px;
 }
-.gauge-svg { width: 100%; max-width: 360px; height: auto; display: block; }
+.gauge-svg { width: 100%; max-width: 360px; height: auto; display: block; overflow: visible; }
 .gauge-arc-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-linecap: round; }
 .gauge-arc-segment { fill: none; stroke-linecap: butt; transition: opacity var(--dur-mid) var(--ease-emph); }
 .gauge-arc-segment--1 { stroke: var(--level-1); }
@@ -307,7 +307,7 @@
 .map-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: clamp(340px, 42vw, 620px);
   border-radius: var(--radius-md);
   overflow: hidden;
   background:
@@ -321,6 +321,12 @@
     linear-gradient(180deg, #172033 0%, #070b13 100%);
 }
 .map-svg { width: 100%; height: 100%; display: block; }
+
+@media (max-width: 640px) {
+  .map-frame {
+    height: clamp(250px, 78vw, 360px);
+  }
+}
 
 .map-graticule { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 0.5; }
 .map-sphere { fill: rgba(110, 150, 240, 0.05); stroke: rgba(120,160,240,0.15); stroke-width: 0.5; }
