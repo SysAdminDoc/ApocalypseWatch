@@ -4,6 +4,12 @@ All notable changes to ApocalypseWatch will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to semantic versioning.
 
+## Unreleased
+
+### Added
+- GitHub Pages deployment workflow (`.github/workflows/deploy-github-pages.yml`) publishing the static client to `https://sysadmindoc.github.io/ApocalypseWatch/`. The deployed client points `VITE_DASHBOARD_URL` at the upstream public R2 snapshot (`pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json`) and renders live cohort data refreshed by the upstream pipeline.
+- `base` config in `client/vite.config.js` driven by `VITE_BASE_PATH` so the same client builds for both root-served and project-page deployments.
+
 ## v0.1.0 — 2026-05-02
 
 Initial public release. Independent ground-up frontend redesign of [kylemcdonald/ews](https://github.com/kylemcdonald/ews). Backend, ADS-B Exchange ingestion pipeline, FAA cohort importer, snapshot/RSS exporters, and GitHub Actions workflows are reused unchanged.

@@ -37,24 +37,13 @@ jobs:
           node-version: "22"
           cache: npm
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
       - name: Install dependencies
         run: npm ci
-
-      - name: Seed demo SQLite database
-        run: python3 scripts/seed_demo_data.py
-
-      - name: Export static dashboard snapshot
-        run: npm run export:snapshot -- --output client/public/dashboard.json
 
       - name: Build client
         env:
           VITE_BASE_PATH: /ApocalypseWatch/
-          VITE_DASHBOARD_URL: dashboard.json
+          VITE_DASHBOARD_URL: https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json
         run: npm run build
 
       - name: Configure Pages

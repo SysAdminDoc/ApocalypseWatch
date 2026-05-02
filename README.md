@@ -111,7 +111,10 @@ document.documentElement.dataset.emergency = '5'
 
 ## Public deployment
 
-Same model as the original: Cloudflare Pages (static client) + R2 (`dashboard.json` snapshot + `data/ews.sqlite`) + GitHub Actions for scheduled refresh. See `.github/workflows/` and the original ews README's "Public deployment" section for credentials and secrets.
+Two paths are wired up:
+
+- **GitHub Pages mirror** — Live at https://sysadmindoc.github.io/ApocalypseWatch/. The static client is published by `.github/workflows/deploy-github-pages.yml` and reads the upstream public R2 snapshot directly, so it tracks the same live cohort and refresh cadence as the upstream site without running a parallel pipeline.
+- **Self-hosted (Cloudflare model)** — Same as the original: Cloudflare Pages (static client) + R2 (`dashboard.json` snapshot + `data/ews.sqlite`) + GitHub Actions for scheduled refresh. See `.github/workflows/refresh-live-data.yml`, `refresh-daily-history.yml`, `deploy-pages.yml` and the original ews README's "Public deployment" section for credentials and secrets.
 
 ## Credits
 
