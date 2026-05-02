@@ -1,0 +1,96 @@
+/*
+ * ApocalypseWatch design tokens.
+ * Dark by default. Emergency level (1-5) modulates accent color.
+ */
+
+:root {
+  /* Surfaces (Catppuccin Mocha derived, deepened) */
+  --surface-base: #07090f;
+  --surface-1: #0b0d14;
+  --surface-2: #11141d;
+  --surface-3: #181c28;
+  --surface-glass: rgba(20, 24, 36, 0.62);
+  --surface-glass-strong: rgba(28, 33, 49, 0.78);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-faint: rgba(255, 255, 255, 0.04);
+  --border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Type */
+  --text-primary: #e9eaf3;
+  --text-secondary: #b4b8c8;
+  --text-tertiary: #8c93aa;
+  --text-muted: #70778c;
+  --link: #89b4fa;
+  --link-hover: #b4d0ff;
+
+  /* Brand + emergency ramp (level 1 -> 5) */
+  --brand: #89b4fa;            /* calm cyan-blue */
+  --level-1: #74c7ec;          /* cyan */
+  --level-2: #94e2d5;          /* teal */
+  --level-3: #f9e2af;          /* amber */
+  --level-4: #fab387;          /* orange */
+  --level-5: #f38ba8;          /* crimson */
+
+  /* Accent: starts as level-1, JS overrides on each update */
+  --accent: var(--level-1);
+  --accent-soft: color-mix(in srgb, var(--accent) 22%, transparent);
+  --accent-glow: color-mix(in srgb, var(--accent) 50%, transparent);
+
+  /* Sizing */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 30px;
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 6px 18px rgba(0, 0, 0, 0.35);
+  --shadow-glass: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+                  0 12px 40px rgba(0, 0, 0, 0.55),
+                  0 0 0 1px rgba(255, 255, 255, 0.05);
+  --blur: 18px;
+
+  /* Type scales */
+  --font-sans: 'Inter', 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --font-display: 'Inter', system-ui, sans-serif;
+
+  /* Layout */
+  --shell-max: 1480px;
+  --gap: 18px;
+  --gap-lg: 28px;
+
+  /* Motion */
+  --ease-emph: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-quick: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-mid: 280ms;
+  --dur-slow: 520ms;
+}
+
+/* Per-level body class overrides accent */
+[data-emergency='1'] { --accent: var(--level-1); }
+[data-emergency='2'] { --accent: var(--level-2); }
+[data-emergency='3'] { --accent: var(--level-3); }
+[data-emergency='4'] { --accent: var(--level-4); }
+[data-emergency='5'] { --accent: var(--level-5); }
+
+[data-emergency='4'],
+[data-emergency='5'] {
+  --surface-glass: rgba(38, 22, 28, 0.65);
+  --surface-glass-strong: rgba(54, 28, 36, 0.82);
+}
+
+/* Light theme (opt-in via [data-theme='light']) */
+[data-theme='light'] {
+  --surface-base: #f4f5fa;
+  --surface-1: #ffffff;
+  --surface-2: #f0f1f7;
+  --surface-3: #e6e8f1;
+  --surface-glass: rgba(255, 255, 255, 0.66);
+  --surface-glass-strong: rgba(255, 255, 255, 0.85);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-faint: rgba(0, 0, 0, 0.04);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --text-primary: #14161e;
+  --text-secondary: #4a4f60;
+  --text-tertiary: #6c7185;
+  --text-muted: #8d92a4;
+}
