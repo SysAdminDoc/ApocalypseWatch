@@ -36,3 +36,7 @@ REVIEW.md
 REVIEW_BRIEF.md
 .claude/
 *.bak
+
+# Markdown files local-only (except README)
+*.md
+!README.md
