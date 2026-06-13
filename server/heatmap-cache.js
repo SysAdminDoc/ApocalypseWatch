@@ -151,6 +151,7 @@ function createHeatmapCacheRefresher({ onRefreshComplete = null } = {}) {
         const { stdout } = await execFileAsync("python3", args, {
           cwd: ROOT_DIR,
           maxBuffer: 1024 * 1024,
+          timeout: 120_000,
         });
         const payload = JSON.parse(String(stdout || "{}").trim() || "{}");
 
