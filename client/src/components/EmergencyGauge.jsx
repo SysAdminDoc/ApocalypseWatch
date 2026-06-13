@@ -48,8 +48,12 @@ export function EmergencyGauge({
       </div>
 
       <div className="gauge-svg-wrap">
-        <svg className="gauge-svg" viewBox={`0 0 ${SIZE} ${VIEWBOX_HEIGHT}`} role="img"
-             aria-label={`Emergency level ${emergencyLevel} of 5`}>
+        <svg className="gauge-svg" viewBox={`0 0 ${SIZE} ${VIEWBOX_HEIGHT}`} role="meter"
+             aria-label={`Emergency level ${emergencyLevel}: ${cfg.label}`}
+             aria-valuenow={emergencyLevel}
+             aria-valuemin={1}
+             aria-valuemax={5}
+             aria-valuetext={`Emergency level ${emergencyLevel} of 5: ${cfg.label}`}>
           <path className="gauge-arc-bg" d={describeArc(START_ANGLE, END_ANGLE)} strokeWidth={STROKE} />
 
           {EMERGENCY_LEVELS.map((_, i) => {
