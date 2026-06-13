@@ -4,6 +4,8 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const pinoHttp = require("pino-http");
+const logger = require("./logger");
 const { loadEnvFile } = require("./env");
 const { CLIENT_DIST_DIR, readWatchlist } = require("./config");
 const {
@@ -43,6 +45,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(pinoHttp({ logger, autoLogging: { ignore: (req) => req.url === "/api/health" } }));
 
 function loadPersistedDashboardSnapshot() {
   const savedValue = getMetaValue(DASHBOARD_SNAPSHOT_META_KEY);
@@ -84,7 +87,7 @@ function createDashboardSnapshotManager() {
         return nextSnapshot;
       })
       .catch((error) => {
-        console.error(`Dashboard snapshot refresh failed (${reason}):`, error);
+        logger.error(`Dashboard snapshot refresh failed (${reason}):`, error);
         if (snapshot) {
           return snapshot;
         }
@@ -123,10 +126,10 @@ const heatmapRefresher = createHeatmapCacheRefresher({
     try {
       const pruned = pruneOldObservations(90);
       if (pruned > 0) {
-        console.log(`Pruned ${pruned} observations older than 90 days.`);
+        logger.info(`Pruned ${pruned} observations older than 90 days.`);
       }
     } catch (error) {
-      console.error("Observation pruning failed:", error);
+      logger.error("Observation pruning failed:", error);
     }
 
     void dashboardSnapshotManager
@@ -148,23 +151,23 @@ const heatmapRefresher = createHeatmapCacheRefresher({
       })
       .then(({ rssResult, telegramResult, discordResult, ntfyResult }) => {
         if (rssResult?.updated) {
-          console.log(`RSS emergency alert recorded for ${rssResult.latestSlotKey || "latest heatmap"}.`);
+          logger.info(`RSS emergency alert recorded for ${rssResult.latestSlotKey || "latest heatmap"}.`);
         }
 
         if (telegramResult?.sent) {
-          console.log(`Telegram emergency alert sent for ${telegramResult.latestSlotKey || "latest heatmap"}.`);
+          logger.info(`Telegram emergency alert sent for ${telegramResult.latestSlotKey || "latest heatmap"}.`);
         }
 
         if (discordResult?.sent) {
-          console.log(`Discord emergency alert sent for ${discordResult.latestSlotKey || "latest heatmap"}.`);
+          logger.info(`Discord emergency alert sent for ${discordResult.latestSlotKey || "latest heatmap"}.`);
         }
 
         if (ntfyResult?.sent) {
-          console.log(`ntfy emergency alert sent for ${ntfyResult.latestSlotKey || "latest heatmap"}.`);
+          logger.info(`ntfy emergency alert sent for ${ntfyResult.latestSlotKey || "latest heatmap"}.`);
         }
       })
       .catch((error) => {
-        console.error("Emergency alert handling failed:", error);
+        logger.error("Emergency alert handling failed:", error);
       });
   },
 });
@@ -256,7 +259,7 @@ async function start() {
   await dashboardSnapshotManager.ensureReady();
 
   app.listen(PORT, () => {
-    console.log(`EWS server listening on http://localhost:${PORT}`);
+    logger.info(`EWS server listening on http://localhost:${PORT}`);
   });
 
   heatmapRefresher.start();
@@ -266,6 +269,6 @@ async function start() {
 }
 
 start().catch((error) => {
-  console.error(error);
+  logger.error(error);
   process.exitCode = 1;
 });

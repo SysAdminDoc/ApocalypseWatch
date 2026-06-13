@@ -3,6 +3,7 @@ const { execFile } = require("node:child_process");
 const { promisify } = require("node:util");
 const { ROOT_DIR, DB_PATH } = require("./config");
 const { getMetaValue, setMetaValue } = require("./db");
+const logger = require("./logger");
 
 const execFileAsync = promisify(execFile);
 
@@ -111,7 +112,7 @@ function createHeatmapCacheRefresher({ onRefreshComplete = null } = {}) {
           status: getStatus(),
         });
       } catch (error) {
-        console.error("Heatmap refresh callback failed:", error);
+        logger.error("Heatmap refresh callback failed:", error);
       }
     }, 0);
   }
@@ -184,7 +185,7 @@ function createHeatmapCacheRefresher({ onRefreshComplete = null } = {}) {
         if (retryCount < RETRY_DELAYS_MS.length) {
           const delayMs = RETRY_DELAYS_MS[retryCount];
           retryCount += 1;
-          console.error(`Heatmap refresh failed (retry ${retryCount}/${RETRY_DELAYS_MS.length} in ${delayMs / 1000}s): ${errorMsg}`);
+          logger.error(`Heatmap refresh failed (retry ${retryCount}/${RETRY_DELAYS_MS.length} in ${delayMs / 1000}s): ${errorMsg}`);
           inFlight = null;
           if (timer) clearTimeout(timer);
           updateStatus({ nextRefreshAt: new Date(Date.now() + delayMs).toISOString() });
@@ -193,7 +194,7 @@ function createHeatmapCacheRefresher({ onRefreshComplete = null } = {}) {
         }
 
         retryCount = 0;
-        console.error(`Heatmap refresh failed after ${RETRY_DELAYS_MS.length} retries, waiting for next boundary: ${errorMsg}`);
+        logger.error(`Heatmap refresh failed after ${RETRY_DELAYS_MS.length} retries, waiting for next boundary: ${errorMsg}`);
       }
 
       inFlight = null;
