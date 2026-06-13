@@ -99,3 +99,14 @@
                   0 18px 44px rgba(38, 46, 70, 0.12),
                   0 0 0 1px rgba(10, 18, 30, 0.04);
 }
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --surface-glass: #101520;
+    --surface-glass-strong: #161c29;
+  }
+  [data-theme='light'] {
+    --surface-glass: #ffffff;
+    --surface-glass-strong: #ffffff;
+  }
+}
