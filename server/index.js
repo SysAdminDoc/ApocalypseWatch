@@ -3,6 +3,7 @@ const path = require("node:path");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const { loadEnvFile } = require("./env");
 const { CLIENT_DIST_DIR, readWatchlist } = require("./config");
 const {
@@ -24,7 +25,20 @@ const PORT = Number(process.env.PORT || 3030);
 const DASHBOARD_SNAPSHOT_META_KEY = "dashboard_snapshot_v1";
 
 app.use(helmet());
-app.use(cors());
+
+const CORS_ORIGINS = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map((s) => s.trim())
+  : undefined;
+app.use(cors(CORS_ORIGINS ? { origin: CORS_ORIGINS } : undefined));
+
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+  })
+);
 app.use(express.json());
 
 function loadPersistedDashboardSnapshot() {
