@@ -15,6 +15,7 @@ const {
   upsertTrackedAircraft,
   getTrackingSummary,
   pruneOldObservations,
+  detectRollingMetricGaps,
 } = require("./db");
 const { createHeatmapCacheRefresher } = require("./heatmap-cache");
 const { buildDashboardSnapshot } = require("./dashboard");
@@ -174,12 +175,14 @@ const heatmapRefresher = createHeatmapCacheRefresher({
 
 app.get("/api/health", (_request, response) => {
   const refreshStatus = heatmapRefresher.getStatus();
+  const gaps = detectRollingMetricGaps(7);
   response.json({
     ok: true,
     now: new Date().toISOString(),
     lastRefreshAt: refreshStatus.lastSuccessAt ?? null,
     lastError: refreshStatus.lastError ?? null,
     dbConnected: dashboardSnapshotManager.hasSnapshot(),
+    gaps: { count: gaps.length, items: gaps },
   });
 });
 
