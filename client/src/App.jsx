@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useDashboard } from './hooks/useDashboard'
 import { Hero } from './components/Hero'
 import { EmergencyGauge } from './components/EmergencyGauge'
@@ -6,6 +6,7 @@ import { AircraftList } from './components/AircraftList'
 import { AboutCard } from './components/AboutCard'
 import { StatusBanner } from './components/StatusBanner'
 import { ThemeControl } from './components/ThemeControl'
+import { EMERGENCY_LEVELS } from './lib/constants'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 
 const APP_VERSION = '0.1.0'
@@ -101,9 +102,16 @@ export default function App() {
   const [themeMode, setThemeMode] = useState(getInitialThemeMode)
   const signal = useMemo(() => deriveSignal(data), [data])
   const emergencyLevel = useMemo(() => deriveEmergencyLevel(signal), [signal])
+  const [levelAnnouncement, setLevelAnnouncement] = useState('')
+  const prevLevelRef = useRef(emergencyLevel)
 
   useEffect(() => {
     document.documentElement.dataset.emergency = String(emergencyLevel)
+    if (prevLevelRef.current !== emergencyLevel) {
+      const cfg = EMERGENCY_LEVELS.find((l) => l.level === emergencyLevel)
+      setLevelAnnouncement(`Emergency level ${emergencyLevel}: ${cfg?.label ?? 'Unknown'}`)
+      prevLevelRef.current = emergencyLevel
+    }
   }, [emergencyLevel])
 
   useEffect(() => {
@@ -170,6 +178,9 @@ export default function App() {
     <>
       <div className="bg-fx" />
       <a className="skip-link" href="#dashboard-main">Skip to dashboard</a>
+      <div className="sr-only" aria-live={emergencyLevel >= 3 ? 'assertive' : 'polite'} aria-atomic="true">
+        {levelAnnouncement}
+      </div>
       <main className="shell" id="dashboard-main">
         <header className="app-topbar">
           <div className="brand-lockup" aria-label="ApocalypseWatch">
