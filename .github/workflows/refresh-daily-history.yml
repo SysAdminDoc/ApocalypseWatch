@@ -10,11 +10,6 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-  TELEGRAM_BOT_USERNAME: ${{ secrets.TELEGRAM_BOT_USERNAME }}
-  TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
   PUBLIC_BUCKET: ews-public
   STATE_BUCKET: ews-state
   EWS_PUBLIC_URL: https://ews.kylemcdonald.net/
@@ -27,19 +22,20 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
           cache: npm
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
           cache: pip
@@ -50,6 +46,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Restore deployment state
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           mkdir -p data
           for attempt in 1 2 3 4 5; do
@@ -73,6 +72,10 @@ jobs:
         run: node scripts/export_dashboard_snapshot.js --output tmp/dashboard.json
 
       - name: Send Telegram emergency alert
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_BOT_USERNAME: ${{ secrets.TELEGRAM_BOT_USERNAME }}
+          TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
         run: node scripts/send_telegram_alert.js
 
       - name: Update RSS feed
@@ -84,6 +87,9 @@ jobs:
           echo "updated=${RSS_UPDATED}" >> "$GITHUB_OUTPUT"
 
       - name: Upload deployment state
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           for attempt in 1 2 3 4 5; do
             if npx wrangler r2 object put "${STATE_BUCKET}/ews.sqlite" --file data/ews.sqlite --remote; then
@@ -98,6 +104,9 @@ jobs:
 
       - name: Publish RSS feed
         if: steps.rss.outputs.updated == 'true'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           for attempt in 1 2 3 4 5; do
             if npx wrangler r2 object put "${PUBLIC_BUCKET}/rss.xml" \
@@ -116,12 +125,18 @@ jobs:
 
       - name: Deploy updated RSS endpoint
         if: steps.rss.outputs.updated == 'true'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           npm run build
           cp tmp/rss.xml client/dist/rss.xml
           npx wrangler pages deploy client/dist --project-name apocalypse-ews --branch main --commit-hash "$GITHUB_SHA"
 
       - name: Publish live snapshot
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           for attempt in 1 2 3 4 5; do
             if npx wrangler r2 object put "${PUBLIC_BUCKET}/dashboard.json" \
