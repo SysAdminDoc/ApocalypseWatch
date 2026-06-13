@@ -2,6 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const { loadEnvFile } = require("./env");
 const { CLIENT_DIST_DIR, readWatchlist } = require("./config");
 const {
@@ -22,6 +23,7 @@ const app = express();
 const PORT = Number(process.env.PORT || 3030);
 const DASHBOARD_SNAPSHOT_META_KEY = "dashboard_snapshot_v1";
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
