@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ReferenceLine,
 } from 'recharts'
 import { RANGE_OPTIONS } from '../lib/constants'
 
@@ -179,15 +178,21 @@ export function ArchiveChart({ archive, signal }) {
               <Tooltip
                 cursor={{ stroke: 'var(--accent)', strokeOpacity: 0.4 }}
                 labelFormatter={(t) => new Date(t).toLocaleString()}
-                formatter={(v) => [Math.round(v), 'Airborne']}
+                formatter={(v, name) => [Math.round(v), name === 'expected' ? 'Expected' : 'Airborne']}
               />
-              {Number.isFinite(expected) ? (
-                <ReferenceLine
-                  y={expected}
-                  stroke="var(--text-tertiary)"
-                  strokeDasharray="3 4"
-                />
-              ) : null}
+              <Area
+                type="monotone"
+                dataKey="expected"
+                stroke="var(--text-tertiary)"
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+                fill="none"
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
+                connectNulls
+                name="Expected"
+              />
               <Area
                 type="monotone"
                 dataKey="count"
