@@ -10,6 +10,7 @@ const HEATMAP_SOURCE = "adsbx_heatmap";
 const HEATMAP_STATUS_META_KEY = "adsbx_heatmap_status";
 const HEATMAP_REFRESH_MS = 30 * 60 * 1000;
 const HEATMAP_RELEASE_LAG_MS = 2 * 60 * 1000;
+const RETRY_DELAYS_MS = [2 * 60 * 1000, 6 * 60 * 1000];
 const HEATMAP_SCRIPT_PATH = path.join(ROOT_DIR, "scripts", "update_latest_heatmap.py");
 
 function createDefaultStatus() {
@@ -81,6 +82,7 @@ function createHeatmapCacheRefresher({ onRefreshComplete = null } = {}) {
   let status = loadSavedStatus();
   let timer = null;
   let inFlight = null;
+  let retryCount = 0;
 
   persistStatus(status);
 
@@ -169,17 +171,33 @@ function createHeatmapCacheRefresher({ onRefreshComplete = null } = {}) {
           rolling24hCount: payload.rolling24hCount ?? status.rolling24hCount,
           concurrentCount: payload.concurrentCount ?? status.concurrentCount,
         });
+        retryCount = 0;
         notifyRefreshComplete(true);
       } catch (error) {
+        const errorMsg = extractErrorMessage(error);
         updateStatus({
           refreshing: false,
-          lastError: extractErrorMessage(error),
+          lastError: errorMsg,
         });
         notifyRefreshComplete(false);
-      } finally {
-        inFlight = null;
-        scheduleNextRefresh();
+
+        if (retryCount < RETRY_DELAYS_MS.length) {
+          const delayMs = RETRY_DELAYS_MS[retryCount];
+          retryCount += 1;
+          console.error(`Heatmap refresh failed (retry ${retryCount}/${RETRY_DELAYS_MS.length} in ${delayMs / 1000}s): ${errorMsg}`);
+          inFlight = null;
+          if (timer) clearTimeout(timer);
+          updateStatus({ nextRefreshAt: new Date(Date.now() + delayMs).toISOString() });
+          timer = setTimeout(() => { void refreshNow(); }, delayMs);
+          return getStatus();
+        }
+
+        retryCount = 0;
+        console.error(`Heatmap refresh failed after ${RETRY_DELAYS_MS.length} retries, waiting for next boundary: ${errorMsg}`);
       }
+
+      inFlight = null;
+      scheduleNextRefresh();
 
       return getStatus();
     })();
