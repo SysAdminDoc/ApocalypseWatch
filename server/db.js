@@ -16,6 +16,7 @@ function initDb() {
   database.pragma("journal_mode = WAL");
   database.pragma("synchronous = NORMAL");
   database.pragma("foreign_keys = ON");
+  database.pragma("auto_vacuum = INCREMENTAL");
   database.exec(fs.readFileSync(SCHEMA_PATH, "utf8"));
 
   return database;
@@ -516,6 +517,15 @@ function getTrackingSummary() {
   };
 }
 
+function pruneOldObservations(retentionDays = 90) {
+  const db = getDb();
+  const cutoff = new Date(Date.now() - retentionDays * DAY_MS).toISOString();
+  const result = db
+    .prepare("DELETE FROM observations WHERE observed_at < ?")
+    .run(cutoff);
+  return result.changes;
+}
+
 function areAllTrackedAircraftDemo() {
   const db = getDb();
   const row = db
@@ -554,4 +564,5 @@ module.exports = {
   getTrackedAircraftCount,
   getTrackingSummary,
   areAllTrackedAircraftDemo,
+  pruneOldObservations,
 };
