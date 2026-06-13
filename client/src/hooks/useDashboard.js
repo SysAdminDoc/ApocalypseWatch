@@ -15,6 +15,11 @@ function getRetryDelayMs(failureCount) {
   return Math.min(BASE_RETRY_DELAY_MS * 2 ** exponent, MAX_RETRY_DELAY_MS)
 }
 
+function getStreamUrl() {
+  if (DASHBOARD_URL === '/api/dashboard') return '/api/stream'
+  return null
+}
+
 export function useDashboard() {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
@@ -23,6 +28,7 @@ export function useDashboard() {
   const [isFetching, setIsFetching] = useState(false)
   const abortRef = useRef(null)
   const timerRef = useRef(null)
+  const sseRef = useRef(null)
 
   useEffect(() => {
     let active = true
@@ -53,7 +59,7 @@ export function useDashboard() {
         setError(null)
         setRetryInMs(null)
         setLastFetchedAt(new Date())
-        schedule(DASHBOARD_POLL_INTERVAL_MS)
+        if (!sseRef.current) schedule(DASHBOARD_POLL_INTERVAL_MS)
       } catch (err) {
         if (!active) return
         failureCount += 1
@@ -68,11 +74,45 @@ export function useDashboard() {
       }
     }
 
-    load()
+    function trySSE() {
+      const streamUrl = getStreamUrl()
+      if (!streamUrl) {
+        load()
+        return
+      }
+
+      const es = new EventSource(streamUrl)
+      sseRef.current = es
+
+      es.onmessage = (event) => {
+        if (!active) return
+        try {
+          const json = JSON.parse(event.data)
+          failureCount = 0
+          setData(json)
+          setError(null)
+          setRetryInMs(null)
+          setLastFetchedAt(new Date())
+        } catch {
+          // Ignore malformed messages
+        }
+      }
+
+      es.onerror = () => {
+        if (!active) return
+        es.close()
+        sseRef.current = null
+        load()
+      }
+    }
+
+    trySSE()
+
     return () => {
       active = false
       window.clearTimeout(timerRef.current)
       abortRef.current?.abort()
+      sseRef.current?.close()
     }
   }, [])
 
