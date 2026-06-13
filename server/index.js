@@ -12,10 +12,13 @@ const {
   setMetaValue,
   upsertTrackedAircraft,
   getTrackingSummary,
+  pruneOldObservations,
 } = require("./db");
 const { createHeatmapCacheRefresher } = require("./heatmap-cache");
 const { buildDashboardSnapshot } = require("./dashboard");
 const { maybeSendEmergencyLevelTelegramAlert } = require("./telegram-alert");
+const { maybeSendEmergencyLevelDiscordAlert } = require("./discord-alert");
+const { maybeSendEmergencyLevelNtfyAlert } = require("./ntfy-alert");
 const { buildEmergencyRssFeedXml, maybeRecordEmergencyLevelRssItem } = require("./rss-feed");
 
 loadEnvFile();
@@ -117,6 +120,15 @@ const heatmapRefresher = createHeatmapCacheRefresher({
       return;
     }
 
+    try {
+      const pruned = pruneOldObservations(90);
+      if (pruned > 0) {
+        console.log(`Pruned ${pruned} observations older than 90 days.`);
+      }
+    } catch (error) {
+      console.error("Observation pruning failed:", error);
+    }
+
     void dashboardSnapshotManager
       .refresh({ reason: "heatmap_refresh" })
       .then(async (snapshot) => {
@@ -125,20 +137,29 @@ const heatmapRefresher = createHeatmapCacheRefresher({
           snapshot,
           status,
         });
-        const telegramResult = await maybeSendEmergencyLevelTelegramAlert({
-          snapshot,
-          status,
-        });
+        const [telegramResult, discordResult, ntfyResult] = await Promise.all([
+          maybeSendEmergencyLevelTelegramAlert({ snapshot, status }),
+          maybeSendEmergencyLevelDiscordAlert({ snapshot, status }),
+          maybeSendEmergencyLevelNtfyAlert({ snapshot, status }),
+        ]);
 
-        return { rssResult, telegramResult };
+        return { rssResult, telegramResult, discordResult, ntfyResult };
       })
-      .then(({ rssResult, telegramResult }) => {
+      .then(({ rssResult, telegramResult, discordResult, ntfyResult }) => {
         if (rssResult?.updated) {
           console.log(`RSS emergency alert recorded for ${rssResult.latestSlotKey || "latest heatmap"}.`);
         }
 
         if (telegramResult?.sent) {
           console.log(`Telegram emergency alert sent for ${telegramResult.latestSlotKey || "latest heatmap"}.`);
+        }
+
+        if (discordResult?.sent) {
+          console.log(`Discord emergency alert sent for ${discordResult.latestSlotKey || "latest heatmap"}.`);
+        }
+
+        if (ntfyResult?.sent) {
+          console.log(`ntfy emergency alert sent for ${ntfyResult.latestSlotKey || "latest heatmap"}.`);
         }
       })
       .catch((error) => {
