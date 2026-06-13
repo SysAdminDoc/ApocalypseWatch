@@ -148,9 +148,13 @@ const heatmapRefresher = createHeatmapCacheRefresher({
 });
 
 app.get("/api/health", (_request, response) => {
+  const refreshStatus = heatmapRefresher.getStatus();
   response.json({
     ok: true,
     now: new Date().toISOString(),
+    lastRefreshAt: refreshStatus.lastSuccessAt ?? null,
+    lastError: refreshStatus.lastError ?? null,
+    dbConnected: dashboardSnapshotManager.hasSnapshot(),
   });
 });
 

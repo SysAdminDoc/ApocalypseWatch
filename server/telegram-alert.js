@@ -88,25 +88,33 @@ function formatEmergencyLevelAlert(snapshot, { alertUrl = DEFAULT_ALERT_URL } = 
   ].join("\n");
 }
 
-async function sendTelegramMessage({ token, channel }, text) {
-  const response = await fetch(`${TELEGRAM_API_BASE_URL}/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      chat_id: channel,
-      text,
-      disable_web_page_preview: true,
-    }),
-  });
-  const payload = await response.json().catch(() => ({}));
+async function sendTelegramMessage({ token, channel }, text, { maxRetries = 3 } = {}) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const response = await fetch(`${TELEGRAM_API_BASE_URL}/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: channel,
+        text,
+        disable_web_page_preview: true,
+      }),
+    });
+    const payload = await response.json().catch(() => ({}));
 
-  if (!response.ok || !payload.ok) {
-    throw new Error(payload.description || `Telegram request failed with ${response.status}`);
+    if (response.status === 429 && attempt < maxRetries) {
+      const retryAfter = Number(payload?.parameters?.retry_after ?? 5);
+      await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+      continue;
+    }
+
+    if (!response.ok || !payload.ok) {
+      throw new Error(payload.description || `Telegram request failed with ${response.status}`);
+    }
+
+    return payload.result;
   }
-
-  return payload.result;
 }
 
 async function maybeSendEmergencyLevelTelegramAlert({
