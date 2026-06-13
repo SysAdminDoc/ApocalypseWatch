@@ -132,6 +132,7 @@ const heatmapRefresher = createHeatmapCacheRefresher({
     void dashboardSnapshotManager
       .refresh({ reason: "heatmap_refresh" })
       .then(async (snapshot) => {
+        broadcastSSE(snapshot);
         const status = heatmapRefresher.getStatus();
         const rssResult = maybeRecordEmergencyLevelRssItem({
           snapshot,
@@ -190,6 +191,32 @@ app.get("/api/watchlist", (_request, response) => {
 
 app.get("/api/cohort", (_request, response) => {
   response.json(getTrackingSummary());
+});
+
+const sseClients = new Set();
+
+function broadcastSSE(snapshot) {
+  const data = JSON.stringify(snapshot);
+  for (const client of sseClients) {
+    client.write(`data: ${data}\n\n`);
+  }
+}
+
+app.get("/api/stream", (request, response) => {
+  response.set({
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+  });
+  response.flushHeaders();
+
+  const snapshot = dashboardSnapshotManager.getSnapshot();
+  if (snapshot) {
+    response.write(`data: ${JSON.stringify(snapshot)}\n\n`);
+  }
+
+  sseClients.add(response);
+  request.on("close", () => sseClients.delete(response));
 });
 
 app.get("/api/dashboard", (_request, response) => {
