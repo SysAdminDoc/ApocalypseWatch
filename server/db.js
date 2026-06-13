@@ -517,6 +517,35 @@ function getTrackingSummary() {
   };
 }
 
+function detectRollingMetricGaps(days = 7, gapThresholdMinutes = 45) {
+  const db = getDb();
+  const cutoff = new Date(Date.now() - days * DAY_MS).toISOString();
+  const rows = db
+    .prepare(`
+      SELECT sampled_at AS sampledAt
+      FROM rolling_metrics
+      WHERE sampled_at >= ?
+      ORDER BY sampled_at ASC
+    `)
+    .all(cutoff);
+
+  const gaps = [];
+  for (let i = 1; i < rows.length; i++) {
+    const prev = Date.parse(rows[i - 1].sampledAt);
+    const curr = Date.parse(rows[i].sampledAt);
+    const diffMinutes = (curr - prev) / 60_000;
+    if (diffMinutes > gapThresholdMinutes) {
+      gaps.push({
+        from: rows[i - 1].sampledAt,
+        to: rows[i].sampledAt,
+        gapMinutes: Math.round(diffMinutes),
+      });
+    }
+  }
+
+  return gaps;
+}
+
 function pruneOldObservations(retentionDays = 90) {
   const db = getDb();
   const cutoff = new Date(Date.now() - retentionDays * DAY_MS).toISOString();
@@ -565,4 +594,5 @@ module.exports = {
   getTrackingSummary,
   areAllTrackedAircraftDemo,
   pruneOldObservations,
+  detectRollingMetricGaps,
 };
