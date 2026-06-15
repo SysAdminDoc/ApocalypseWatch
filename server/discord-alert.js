@@ -16,10 +16,17 @@ const LEVEL_COLORS = {
   5: 0xf38ba8,
 };
 
+const DISCORD_WEBHOOK_PATTERN = /^https:\/\/discord\.com\/api\/webhooks\/\d+\/.+$/;
+
 function getDiscordAlertConfig(env = process.env) {
   const webhookUrl = String(env.DISCORD_WEBHOOK_URL || "").trim();
+  const valid = DISCORD_WEBHOOK_PATTERN.test(webhookUrl);
+  if (webhookUrl && !valid) {
+    const logger = require("./logger");
+    logger.warn(`DISCORD_WEBHOOK_URL is set but does not match expected pattern (https://discord.com/api/webhooks/{id}/{token}). Discord alerts disabled.`);
+  }
   return {
-    enabled: Boolean(webhookUrl),
+    enabled: Boolean(webhookUrl) && valid,
     webhookUrl,
     alertUrl: String(env.EWS_PUBLIC_URL || DEFAULT_ALERT_URL).trim() || DEFAULT_ALERT_URL,
   };
