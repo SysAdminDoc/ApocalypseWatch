@@ -749,4 +749,11 @@ module.exports = {
   buildConcurrentPredictionContext,
   computeConcurrentPredictionModel,
   HEATMAP_SOURCE,
+  // Exported for unit testing:
+  computeAlertLevel,
+  computeEmergencyLevel,
+  computeGaugeValue,
+  computeBaselineSignal,
+  compactArchiveSeries,
+  encodeRuns,
 };
