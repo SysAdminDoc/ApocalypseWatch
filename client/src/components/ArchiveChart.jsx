@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ResponsiveContainer,
   AreaChart,
@@ -7,8 +7,9 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  ReferenceLine,
 } from 'recharts'
-import { RANGE_OPTIONS } from '../lib/constants'
+import { DASHBOARD_URL, RANGE_OPTIONS } from '../lib/constants'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -102,10 +103,23 @@ function syncRangeToUrl(id) {
   } catch { /* history API unavailable */ }
 }
 
+const LEVEL_COLORS = { 1: 'var(--level-1)', 2: 'var(--level-2)', 3: 'var(--level-3)', 4: 'var(--level-4)', 5: 'var(--level-5)' }
+
 export function ArchiveChart({ archive, signal }) {
   const [rangeId, setRangeId] = useState(getInitialRange)
   const [showTable, setShowTable] = useState(false)
+  const [transitions, setTransitions] = useState([])
   const range = RANGE_OPTIONS.find((r) => r.id === rangeId) ?? RANGE_OPTIONS[0]
+
+  useEffect(() => {
+    if (DASHBOARD_URL) return
+    const controller = new AbortController()
+    fetch('/api/events?limit=200', { signal: controller.signal })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.transitions) setTransitions(data.transitions) })
+      .catch(() => {})
+    return () => controller.abort()
+  }, [])
 
   const decodedArchive = useMemo(() => decodeArchive(archive), [archive])
   const series = decodedArchive.samples
@@ -116,6 +130,15 @@ export function ArchiveChart({ archive, signal }) {
     const cutoff = lastT - range.days * DAY_MS
     return series.filter((s) => s.t >= cutoff)
   }, [series, range.days])
+
+  const visibleTransitions = useMemo(() => {
+    if (!filtered.length || !transitions.length) return []
+    const minT = filtered[0].t
+    const maxT = filtered[filtered.length - 1].t
+    return transitions
+      .map((t) => ({ ...t, t: Date.parse(t.transitioned_at) }))
+      .filter((t) => Number.isFinite(t.t) && t.t >= minT && t.t <= maxT)
+  }, [filtered, transitions])
 
   const expected = signal?.expectedConcurrentCount
   const lastValue = filtered.length ? filtered[filtered.length - 1].count : null
@@ -291,6 +314,16 @@ export function ArchiveChart({ archive, signal }) {
                 dot={false}
                 activeDot={{ r: 4, stroke: 'var(--accent)', strokeWidth: 2, fill: 'var(--surface-1)' }}
               />
+              {visibleTransitions.map((tr) => (
+                <ReferenceLine
+                  key={tr.id}
+                  x={tr.t}
+                  stroke={LEVEL_COLORS[tr.to_level] ?? 'var(--text-muted)'}
+                  strokeDasharray="3 3"
+                  strokeOpacity={0.6}
+                  label={{ value: `L${tr.to_level}`, position: 'top', fill: LEVEL_COLORS[tr.to_level] ?? 'var(--text-muted)', fontSize: 10 }}
+                />
+              ))}
             </AreaChart>
           </ResponsiveContainer>
         )}
