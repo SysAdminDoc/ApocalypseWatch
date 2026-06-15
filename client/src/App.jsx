@@ -171,6 +171,16 @@ export default function App() {
       <>
         <div className="bg-fx" />
         <main className="shell">
+          <header className="app-topbar">
+            <div className="brand-lockup" aria-label="ApocalypseWatch">
+              <span className="brand-mark" aria-hidden="true">AW</span>
+              <span>
+                <strong>ApocalypseWatch</strong>
+                <small>Private-jet anomaly monitor</small>
+              </span>
+            </div>
+            <ThemeControl value={themeMode} onChange={setThemeMode} />
+          </header>
           <section className="card error-card">
             <h2>Unable to reach dashboard</h2>
             <p className="error-detail">{error}</p>
@@ -223,17 +233,15 @@ export default function App() {
             </span>
           </div>
           <div className="topbar-actions">
-            {data ? (
-              <button
-                type="button"
-                className="export-btn"
-                onClick={() => exportDashboardState(data, signal, emergencyLevel)}
-                title="Export dashboard state as JSON"
-                aria-label="Export dashboard state"
-              >
-                Export
-              </button>
-            ) : null}
+            <button
+              type="button"
+              className="export-btn"
+              onClick={() => exportDashboardState(data, signal, emergencyLevel)}
+              title="Export dashboard state as JSON"
+              aria-label="Export dashboard state"
+            >
+              Export
+            </button>
             <ThemeControl value={themeMode} onChange={setThemeMode} />
           </div>
         </header>
