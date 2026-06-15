@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { EMERGENCY_LEVELS } from '../lib/constants'
 import { formatCount, formatDelta, formatSigma, formatTimestamp } from '../lib/format'
 
@@ -20,6 +21,39 @@ function describeArc(startAngle, endAngle, r = RADIUS) {
   const end = polarToCartesian(startAngle, r)
   const largeArc = endAngle - startAngle <= 180 ? 0 : 1
   return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y}`
+}
+
+function SignalProvenance({ signal, asOf, emergencyLevel }) {
+  const [open, setOpen] = useState(false)
+  if (!signal) return null
+
+  const actual = signal.actualConcurrentCount ?? signal.concurrentCount
+  const expected = signal.expectedConcurrentCount
+  const stddev = signal.expectedConcurrentStdDev
+  const sigma = signal.sigmaShift
+  const threshold = signal.alarmSigmaThreshold
+
+  return (
+    <details className="provenance" open={open} onToggle={(e) => setOpen(e.target.open)}>
+      <summary className="provenance-toggle">Signal calculation</summary>
+      <div className="provenance-body">
+        <table className="provenance-table">
+          <tbody>
+            <tr><td>Timestamp</td><td>{asOf ? formatTimestamp(asOf) : '—'}</td></tr>
+            <tr><td>Concurrent count</td><td>{actual != null ? Math.round(actual) : '—'}</td></tr>
+            <tr><td>Expected count</td><td>{expected != null ? Number(expected).toFixed(1) : '—'}</td></tr>
+            <tr><td>Std deviation</td><td>{stddev != null ? Number(stddev).toFixed(1) : '—'}</td></tr>
+            <tr><td>Sigma shift</td><td>{sigma != null ? Number(sigma).toFixed(2) : '—'}</td></tr>
+            <tr><td>Alarm threshold</td><td>{threshold != null ? Number(threshold).toFixed(1) + 'σ' : '—'}</td></tr>
+            <tr><td>Emergency level</td><td>{emergencyLevel}/5</td></tr>
+          </tbody>
+        </table>
+        <p className="provenance-note">
+          Level = f(σ): 1 &lt; 1.5σ, 2 &lt; 3.5σ, 3 &lt; 5σ, 4 &lt; threshold, 5 ≥ threshold
+        </p>
+      </div>
+    </details>
+  )
 }
 
 export function EmergencyGauge({
@@ -120,6 +154,8 @@ export function EmergencyGauge({
           <span>{cfg.tone}</span>
         </div>
       </div>
+
+      <SignalProvenance signal={signal} asOf={asOf} emergencyLevel={emergencyLevel} />
 
       <div className="gauge-stats">
         <div className="stat">
