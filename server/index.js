@@ -254,13 +254,23 @@ function broadcastSSE(snapshot) {
   }
 }
 
+const MAX_SSE_CLIENTS = Number(process.env.MAX_SSE_CLIENTS) || 200;
+
 app.get("/api/stream", (request, response) => {
+  if (sseClients.size >= MAX_SSE_CLIENTS) {
+    response.set("Retry-After", "30");
+    response.status(503).json({ error: "Too many SSE connections. Try again later." });
+    return;
+  }
+
   response.set({
     "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
+    "Cache-Control": "no-cache, no-transform",
     Connection: "keep-alive",
+    "X-Accel-Buffering": "no",
   });
   response.flushHeaders();
+  response.write(`retry: 5000\n\n`);
 
   const snapshot = dashboardSnapshotManager.getSnapshot();
   if (snapshot) {

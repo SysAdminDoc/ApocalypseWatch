@@ -2,9 +2,22 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const basePath = process.env.VITE_BASE_PATH ?? '/'
+
+function ogBasePlugin() {
+  const siteUrl = process.env.VITE_SITE_URL ?? ''
+  return {
+    name: 'og-base-url',
+    transformIndexHtml(html) {
+      return html.replaceAll('__OG_URL__', siteUrl || basePath)
+    },
+  }
+}
+
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH ?? '/',
+  base: basePath,
   plugins: [
+    ogBasePlugin(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
