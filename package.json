@@ -21,6 +21,7 @@
     "export:snapshot": "node scripts/export_dashboard_snapshot.js",
     "rss:update": "node scripts/update_rss_feed.js",
     "telegram:alert": "node scripts/send_telegram_alert.js",
+    "update:api": "python3 scripts/update_latest_from_api.py",
     "lint": "npm run lint --workspace client"
   },
   "dependencies": {
