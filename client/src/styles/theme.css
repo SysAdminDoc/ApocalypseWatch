@@ -110,3 +110,49 @@
     --surface-glass-strong: #ffffff;
   }
 }
+
+@media (prefers-contrast: more) {
+  :root {
+    --surface-glass: #080b12;
+    --surface-glass-strong: #0c1018;
+    --border-subtle: rgba(214, 225, 255, 0.22);
+    --border-faint: rgba(214, 225, 255, 0.14);
+    --border-strong: rgba(214, 225, 255, 0.36);
+    --text-primary: #ffffff;
+    --text-secondary: #d4d8e8;
+    --text-tertiary: #b0b6cc;
+    --text-muted: #9aa0b8;
+    --shadow-glass: 0 0 0 1px rgba(214, 225, 255, 0.2);
+  }
+  [data-theme='light'] {
+    --surface-glass: #ffffff;
+    --surface-glass-strong: #ffffff;
+    --border-subtle: rgba(0, 0, 0, 0.18);
+    --border-faint: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.30);
+    --text-primary: #000000;
+    --text-secondary: #1a1e2a;
+    --text-tertiary: #3a3f50;
+    --text-muted: #555a6c;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --surface-glass: Canvas;
+    --surface-glass-strong: Canvas;
+    --surface-base: Canvas;
+    --surface-1: Canvas;
+    --surface-2: Canvas;
+    --text-primary: CanvasText;
+    --text-secondary: CanvasText;
+    --text-tertiary: CanvasText;
+    --text-muted: GrayText;
+    --accent: LinkText;
+    --accent-soft: LinkText;
+    --accent-glow: Highlight;
+    --border-subtle: CanvasText;
+    --border-strong: CanvasText;
+    --link: LinkText;
+  }
+}

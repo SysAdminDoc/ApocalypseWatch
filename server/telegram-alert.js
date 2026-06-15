@@ -1,8 +1,15 @@
 const { getMetaValue, setMetaValue } = require("./db");
+const {
+  DEFAULT_ALERT_URL,
+  getEmergencySnapshotSignal,
+  getLatestSlotKey,
+  getAlertMinLevel,
+  formatCount,
+  formatSignedCount,
+} = require("./alert-helpers");
 
 const TELEGRAM_ALERT_LAST_SLOT_META_KEY = "telegram_level5_alert_last_slot_key";
 const TELEGRAM_API_BASE_URL = "https://api.telegram.org";
-const DEFAULT_ALERT_URL = "https://ews.kylemcdonald.net/";
 
 function normalizeTelegramChannel(value) {
   const trimmed = String(value || "").trim();
@@ -35,54 +42,14 @@ function getTelegramAlertConfig(env = process.env) {
   };
 }
 
-function getEmergencySnapshotSignal(snapshot) {
-  return snapshot?.signals?.composite || {
-    emergencyLevel: snapshot?.current?.emergencyLevel,
-    actualConcurrentCount: snapshot?.current?.concurrentCount,
-    expectedConcurrentCount: snapshot?.current?.baselineMean,
-    asOf: snapshot?.current?.asOf,
-  };
-}
-
-function getLatestSlotKey(snapshot, status) {
-  return (
-    status?.latestSlotKey ||
-    snapshot?.liveStatus?.latestSlotKey ||
-    snapshot?.current?.asOf ||
-    getEmergencySnapshotSignal(snapshot)?.asOf ||
-    null
-  );
-}
-
-function formatCount(value) {
-  const numericValue = Number(value || 0);
-  if (!Number.isFinite(numericValue)) {
-    return "0";
-  }
-
-  return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 0,
-  }).format(Math.round(numericValue));
-}
-
-function formatSignedCount(value) {
-  const numericValue = Number(value || 0);
-  if (!Number.isFinite(numericValue)) {
-    return "+0";
-  }
-
-  const roundedValue = Math.round(numericValue);
-  return `${roundedValue >= 0 ? "+" : ""}${formatCount(roundedValue)}`;
-}
-
-function formatEmergencyLevelAlert(snapshot, { alertUrl = DEFAULT_ALERT_URL } = {}) {
+function formatEmergencyLevelAlert(snapshot, { alertUrl = DEFAULT_ALERT_URL, emergencyLevel = 5 } = {}) {
   const signal = getEmergencySnapshotSignal(snapshot);
   const actualCount = Number(signal?.actualConcurrentCount ?? snapshot?.current?.concurrentCount ?? 0);
   const expectedCount = Number(signal?.expectedConcurrentCount ?? snapshot?.current?.baselineMean ?? 0);
   const aboveExpectedCount = actualCount - expectedCount;
 
   return [
-    "emergency level 5!",
+    `emergency level ${emergencyLevel}!`,
     `${formatCount(actualCount)} airborne (${formatSignedCount(aboveExpectedCount)} above expected)`,
     alertUrl,
   ].join("\n");
@@ -135,12 +102,14 @@ async function maybeSendEmergencyLevelTelegramAlert({
 
   const signal = getEmergencySnapshotSignal(snapshot);
   const emergencyLevel = Math.round(Number(signal?.emergencyLevel || 1));
-  if (emergencyLevel !== 5) {
+  const minLevel = getAlertMinLevel(env);
+  if (emergencyLevel < minLevel) {
     return {
       ok: true,
       sent: false,
-      reason: "emergency_level_not_5",
+      reason: "emergency_level_below_threshold",
       emergencyLevel,
+      threshold: minLevel,
     };
   }
 
@@ -157,6 +126,7 @@ async function maybeSendEmergencyLevelTelegramAlert({
 
   const text = formatEmergencyLevelAlert(snapshot, {
     alertUrl: config.alertUrl,
+    emergencyLevel,
   });
 
   if (dryRun) {
