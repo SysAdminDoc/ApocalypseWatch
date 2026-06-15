@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  ResponsiveContainer,
   AreaChart,
   Area,
   XAxis,
@@ -144,6 +143,15 @@ export function ArchiveChart({ archive, signal }) {
   const lastValue = filtered.length ? filtered[filtered.length - 1].count : null
   const activeIndex = RANGE_OPTIONS.findIndex((opt) => opt.id === rangeId)
 
+  const chartAriaLabel = useMemo(() => {
+    if (!filtered.length) return 'Concurrent tracked jets chart. No data available.'
+    const counts = filtered.map((s) => s.count).filter(Number.isFinite)
+    const min = Math.min(...counts)
+    const max = Math.max(...counts)
+    const latest = counts[counts.length - 1]
+    return `Area chart showing concurrent tracked jets over ${range.label}. Range: ${min} to ${max}. Latest: ${latest}.`
+  }, [filtered, range.label])
+
   function handleRangeKeyDown(event) {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
     event.preventDefault()
@@ -196,6 +204,7 @@ export function ArchiveChart({ archive, signal }) {
       <div
         className="chart-frame"
         id="archive-chart-panel"
+        aria-label={chartAriaLabel}
         role="tabpanel"
         aria-labelledby={`archive-range-${rangeId}`}
       >
@@ -227,8 +236,7 @@ export function ArchiveChart({ archive, signal }) {
         ) : filtered.length === 0 ? (
           <div className="chart-state">No samples in range yet.</div>
         ) : (
-          <ResponsiveContainer initialDimension={{ width: 640, height: 280 }}>
-            <AreaChart data={filtered} margin={{ top: 10, right: 16, left: 0, bottom: 6 }}>
+            <AreaChart data={filtered} responsive margin={{ top: 10, right: 16, left: 0, bottom: 6 }}>
               <defs>
                 <linearGradient id="ac-area" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.55} />
@@ -325,7 +333,6 @@ export function ArchiveChart({ archive, signal }) {
                 />
               ))}
             </AreaChart>
-          </ResponsiveContainer>
         )}
       </div>
 
