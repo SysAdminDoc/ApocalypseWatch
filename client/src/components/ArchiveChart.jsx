@@ -104,6 +104,7 @@ function syncRangeToUrl(id) {
 
 export function ArchiveChart({ archive, signal }) {
   const [rangeId, setRangeId] = useState(getInitialRange)
+  const [showTable, setShowTable] = useState(false)
   const range = RANGE_OPTIONS.find((r) => r.id === rangeId) ?? RANGE_OPTIONS[0]
 
   const decodedArchive = useMemo(() => decodeArchive(archive), [archive])
@@ -157,6 +158,15 @@ export function ArchiveChart({ archive, signal }) {
               {opt.label}
             </button>
           ))}
+          <button
+            type="button"
+            className={`range-tab ${showTable ? 'is-active' : ''}`}
+            onClick={() => setShowTable((v) => !v)}
+            aria-pressed={showTable}
+            title="View data as table"
+          >
+            {showTable ? '📊 Chart' : '📋 Table'}
+          </button>
         </div>
       </div>
 
@@ -166,7 +176,30 @@ export function ArchiveChart({ archive, signal }) {
         role="tabpanel"
         aria-labelledby={`archive-range-${rangeId}`}
       >
-        {decodedArchive.issue ? (
+        {showTable ? (
+          <div className="chart-data-table-wrap">
+            <table className="chart-data-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Airborne</th>
+                  <th>Expected</th>
+                  <th>Deviation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.slice(-48).map((s) => (
+                  <tr key={s.t}>
+                    <td>{new Date(s.t).toLocaleString()}</td>
+                    <td>{s.count != null ? Math.round(s.count) : '—'}</td>
+                    <td>{s.expected != null ? Math.round(s.expected) : '—'}</td>
+                    <td>{s.count != null && s.expected != null ? (s.count - s.expected > 0 ? '+' : '') + Math.round(s.count - s.expected) : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : decodedArchive.issue ? (
           <div className="chart-state chart-state--warning">{decodedArchive.issue}</div>
         ) : filtered.length === 0 ? (
           <div className="chart-state">No samples in range yet.</div>

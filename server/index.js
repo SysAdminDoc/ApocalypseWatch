@@ -279,12 +279,79 @@ app.get("/api/stream", (request, response) => {
   });
 });
 
-app.get("/api/dashboard", (_request, response) => {
+const RANGE_DAYS = { "24h": 1, "7d": 7, "30d": 30, "1y": 365 };
+
+function filterArchiveByDays(archive, days) {
+  if (!archive || archive.v !== 1 || !archive.c || !archive.c.length) return archive;
+  const startMs = Date.parse(archive.t0);
+  if (!Number.isFinite(startMs)) return archive;
+
+  const timestamps = [startMs];
+  const tr = archive.tr;
+  for (let i = 0; i < tr.length; i++) {
+    const run = tr[i];
+    if (Array.isArray(run)) {
+      const [delta, count] = run;
+      for (let j = 0; j < count; j++) timestamps.push(timestamps[timestamps.length - 1] + delta);
+    } else {
+      timestamps.push(timestamps[timestamps.length - 1] + run);
+    }
+  }
+
+  const cutoff = timestamps[timestamps.length - 1] - days * 86_400_000;
+  let startIdx = 0;
+  for (let i = 0; i < timestamps.length; i++) {
+    if (timestamps[i] >= cutoff) { startIdx = i; break; }
+  }
+  if (startIdx === 0) return archive;
+
+  const slicedRecords = [];
+  for (let i = startIdx; i < timestamps.length && i < archive.c.length; i++) {
+    slicedRecords.push({
+      sampledAt: new Date(timestamps[i]).toISOString(),
+      concurrentCount: archive.c[i],
+      expectedConcurrentCount: archive.p?.[i],
+      expectedConcurrentStdDev: archive.s?.[i],
+    });
+  }
+  if (!slicedRecords.length) return archive;
+
+  const deltas = [];
+  for (let i = 1; i < slicedRecords.length; i++) {
+    deltas.push(Date.parse(slicedRecords[i].sampledAt) - Date.parse(slicedRecords[i - 1].sampledAt));
+  }
+  const tr2 = [];
+  let i = 0;
+  while (i < deltas.length) {
+    let count = 1;
+    while (i + count < deltas.length && deltas[i + count] === deltas[i]) count++;
+    tr2.push(count > 1 ? [deltas[i], count] : deltas[i]);
+    i += count;
+  }
+
+  return {
+    v: 1,
+    t0: slicedRecords[0].sampledAt,
+    tr: tr2,
+    c: slicedRecords.map((r) => r.concurrentCount),
+    p: slicedRecords.map((r) => r.expectedConcurrentCount),
+    s: slicedRecords.map((r) => r.expectedConcurrentStdDev),
+  };
+}
+
+app.get("/api/dashboard", (request, response) => {
   const snapshot = dashboardSnapshotManager.getSnapshot();
   if (!snapshot) {
     response.status(503).json({
       error: "Dashboard snapshot is not ready yet.",
     });
+    return;
+  }
+
+  const rangeDays = RANGE_DAYS[request.query.range];
+  if (rangeDays && snapshot.trends?.archive) {
+    const filtered = { ...snapshot, trends: { ...snapshot.trends, archive: filterArchiveByDays(snapshot.trends.archive, rangeDays) } };
+    response.json(filtered);
     return;
   }
 
