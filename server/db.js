@@ -1,6 +1,7 @@
 const fs = require("node:fs");
 const Database = require("better-sqlite3");
 const { DB_PATH, SCHEMA_PATH, ensureDirectories } = require("./config");
+const { runMigrations } = require("./migrate");
 
 let database;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -18,6 +19,7 @@ function initDb() {
   database.pragma("foreign_keys = ON");
   database.pragma("auto_vacuum = INCREMENTAL");
   database.exec(fs.readFileSync(SCHEMA_PATH, "utf8"));
+  runMigrations(database);
 
   return database;
 }
