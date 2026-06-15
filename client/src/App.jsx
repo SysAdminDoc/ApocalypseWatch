@@ -172,9 +172,9 @@ export default function App() {
         <div className="bg-fx" />
         <main className="shell">
           <section className="card error-card">
-            <h2>Data unavailable</h2>
-            <p style={{ color: 'var(--text-secondary)' }}>{error}</p>
-            <p style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', marginTop: 12 }}>
+            <h2>Unable to reach dashboard</h2>
+            <p className="error-detail">{error}</p>
+            <p className="error-hint">
               Make sure the API server is running on port 3030.
             </p>
           </section>
@@ -231,7 +231,7 @@ export default function App() {
                 title="Export dashboard state as JSON"
                 aria-label="Export dashboard state"
               >
-                ↓ Export
+                Export
               </button>
             ) : null}
             <ThemeControl value={themeMode} onChange={setThemeMode} />

@@ -278,8 +278,21 @@
 }
 .provenance-toggle::marker,
 .provenance-toggle::-webkit-details-marker { display: none; }
-.provenance-toggle::before { content: '▸ '; }
-.provenance[open] .provenance-toggle::before { content: '▾ '; }
+.provenance-toggle::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid currentColor;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  margin-right: 6px;
+  transition: transform var(--dur-fast) var(--ease-quick);
+  vertical-align: middle;
+}
+.provenance[open] .provenance-toggle::before {
+  transform: rotate(90deg);
+}
 .provenance-body {
   padding: 6px 10px 10px;
   border-top: 1px solid var(--border-faint);
@@ -334,7 +347,7 @@
 }
 .stat-value {
   font-variant-numeric: tabular-nums;
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.01em;
@@ -418,7 +431,7 @@
   color: var(--text-secondary);
   transition: background var(--dur-fast), color var(--dur-fast);
 }
-.range-tab:hover { color: var(--text-primary); }
+.range-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
 .range-tab:focus-visible { background: rgba(255,255,255,0.08); }
 .range-tab.is-active { background: var(--accent-soft); color: var(--text-primary); }
 
@@ -484,7 +497,7 @@
     linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 9%, transparent), transparent),
     rgba(255,255,255,0.025);
   background-size: 220% 100%, auto;
-  animation: panel-sheen 1.8s var(--ease-emph) infinite;
+  animation: panel-sheen 2.2s var(--ease-emph) infinite;
 }
 .panel-fallback--map .panel-skeleton {
   min-height: clamp(220px, 42vw, 480px);
@@ -509,13 +522,11 @@
   border: 1px solid var(--border-faint);
   transition:
     background var(--dur-fast),
-    border-color var(--dur-fast),
-    transform var(--dur-fast) var(--ease-quick);
+    border-color var(--dur-fast);
 }
 .aircraft-row:hover {
   background: color-mix(in srgb, var(--accent) 5%, var(--surface-inset));
   border-color: var(--border-subtle);
-  transform: translateY(-1px);
 }
 .aircraft-icon { color: var(--accent); }
 .aircraft-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -530,7 +541,7 @@
   min-height: 132px;
   padding: 18px;
   border-radius: var(--radius-md);
-  border: 1px dashed var(--border-strong);
+  border: 1px solid var(--border-subtle);
   background: var(--surface-inset);
   color: var(--text-tertiary);
   text-align: center;
@@ -578,19 +589,23 @@
   animation: spin 1s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loader-label { margin-top: 16px; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-tertiary); }
+.loader-label { margin-top: 16px; font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-tertiary); }
 
 /* ============================================================
  * Error
  * ============================================================ */
-.error-card { text-align: center; }
-.error-card h2 { font-size: 1.4rem; color: var(--level-5); margin-bottom: 8px; }
+.error-card { text-align: center; padding: clamp(32px, 5vw, 56px) clamp(18px, 3vw, 36px); }
+.error-card h2 { font-size: 1.4rem; color: var(--level-5); margin-bottom: 12px; }
+.error-detail { color: var(--text-secondary); margin-bottom: 8px; }
+.error-hint { color: var(--text-muted); font-size: 0.85rem; }
 
 /* ============================================================
  * Footer
  * ============================================================ */
 .foot {
   margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-faint);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
@@ -629,6 +644,7 @@
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   background: var(--surface-inset);
+  border: 1px solid var(--border-faint);
   font-size: 0.82rem;
 }
 .level-history-time {
@@ -663,6 +679,8 @@
 .chart-data-table-wrap {
   max-height: 280px;
   overflow-y: auto;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
   font-size: 0.82rem;
 }
 .chart-data-table {
@@ -692,3 +710,36 @@
 .chart-data-table tr:hover td {
   background: var(--surface-inset);
 }
+
+/* ============================================================
+ * Embed Widget
+ * ============================================================ */
+.embed-widget {
+  font-family: var(--font-sans);
+  background: var(--surface-base);
+  color: var(--text-primary);
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 360px;
+  min-height: 72px;
+}
+.embed-level {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-glass));
+  border: 2px solid var(--accent);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.embed-body { flex: 1; min-width: 0; }
+.embed-title { font-weight: 600; font-size: 0.88rem; }
+.embed-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
