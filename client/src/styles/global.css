@@ -243,8 +243,8 @@ p { margin: 0; }
 }
 
 .theme-option {
-  min-height: 30px;
-  padding: 0 10px;
+  min-height: 32px;
+  padding: 0 12px;
   border-radius: 7px;
   color: var(--text-tertiary);
   font-family: var(--font-mono);
@@ -256,7 +256,7 @@ p { margin: 0; }
     box-shadow var(--dur-fast) var(--ease-quick);
 }
 
-.theme-option:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.theme-option:hover { color: var(--text-primary); background: color-mix(in srgb, var(--accent) 8%, transparent); }
 .theme-option.is-active {
   background: color-mix(in srgb, var(--accent) 18%, var(--surface-glass-strong));
   color: var(--text-primary);
@@ -408,6 +408,16 @@ p { margin: 0; }
     align-items: flex-start;
     flex-wrap: wrap;
   }
+}
+
+/* Touch targets: ensure 44px minimum on coarse-pointer devices */
+@media (pointer: coarse) {
+  .theme-option { min-height: 44px; padding: 0 14px; }
+  .export-btn { min-height: 44px; padding: 10px 16px; }
+  .range-tab { min-height: 44px; padding: 10px 16px; }
+  .provenance-toggle { min-height: 44px; display: flex; align-items: center; }
+  .about-card details summary { min-height: 44px; display: flex; align-items: center; }
+  .aircraft-row { min-height: 48px; }
 }
 
 /* Reduced motion */

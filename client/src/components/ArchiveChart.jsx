@@ -235,7 +235,7 @@ export function ArchiveChart({ archive, signal }) {
                   <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <CartesianGrid stroke="var(--border-faint)" vertical={false} />
               <XAxis
                 dataKey="t"
                 type="number"
@@ -248,7 +248,7 @@ export function ArchiveChart({ archive, signal }) {
                       : { month: 'short', year: '2-digit' })
                 }
                 tick={{ fontSize: 11 }}
-                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                axisLine={{ stroke: 'var(--border-subtle)' }}
                 tickLine={false}
                 minTickGap={40}
               />

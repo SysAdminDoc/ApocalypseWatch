@@ -193,6 +193,7 @@
 }
 .gauge-svg { width: 100%; max-width: 360px; height: auto; display: block; overflow: visible; }
 .gauge-arc-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-linecap: round; }
+[data-theme='light'] .gauge-arc-bg { stroke: rgba(0,0,0,0.06); }
 .gauge-arc-segment { fill: none; stroke-linecap: butt; transition: opacity var(--dur-mid) var(--ease-emph); }
 .gauge-arc-segment--1 { stroke: var(--level-1); }
 .gauge-arc-segment--2 { stroke: var(--level-2); }
@@ -201,6 +202,7 @@
 .gauge-arc-segment--5 { stroke: var(--level-5); }
 .gauge-arc-segment.is-dim { opacity: 0.18; }
 .gauge-tick { stroke: rgba(255,255,255,0.18); stroke-width: 1.2; }
+[data-theme='light'] .gauge-tick { stroke: rgba(0,0,0,0.12); }
 .gauge-tick-label { fill: var(--text-muted); }
 .gauge-tick-label.is-active { fill: var(--accent); }
 .gauge-needle {
@@ -391,6 +393,7 @@
 }
 
 .map-graticule { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 0.5; }
+[data-theme='light'] .map-graticule { stroke: rgba(255,255,255,0.06); }
 .map-sphere { fill: rgba(110, 150, 240, 0.05); stroke: rgba(120,160,240,0.15); stroke-width: 0.5; }
 .map-land { fill: rgba(180, 200, 240, 0.08); stroke: rgba(180,200,240,0.18); stroke-width: 0.5; }
 .map-aircraft { fill: var(--accent); filter: drop-shadow(0 0 6px var(--accent-glow)); transition: transform var(--dur-mid) var(--ease-emph); }
@@ -421,9 +424,9 @@
  * ============================================================ */
 .chart-card { display: flex; flex-direction: column; gap: 14px; }
 .chart-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
-.range-tabs { display: inline-flex; gap: 4px; padding: 4px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 999px; }
+.range-tabs { display: inline-flex; gap: 4px; padding: 4px; background: var(--surface-inset); border: 1px solid var(--border-subtle); border-radius: 999px; }
 .range-tab {
-  padding: 6px 14px;
+  padding: 7px 14px;
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: 0.74rem;
@@ -431,8 +434,8 @@
   color: var(--text-secondary);
   transition: background var(--dur-fast), color var(--dur-fast);
 }
-.range-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
-.range-tab:focus-visible { background: rgba(255,255,255,0.08); }
+.range-tab:hover { color: var(--text-primary); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.range-tab:focus-visible { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .range-tab.is-active { background: var(--accent-soft); color: var(--text-primary); }
 
 .chart-frame {
@@ -530,7 +533,7 @@
 }
 .aircraft-icon { color: var(--accent); }
 .aircraft-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.aircraft-callsign { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary); }
+.aircraft-callsign { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .aircraft-model { font-size: 0.78rem; color: var(--text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .aircraft-stats { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 2px; text-align: right; }
 
@@ -581,12 +584,19 @@
   background: radial-gradient(800px 600px at 50% 50%, rgba(20,24,36,0.85), rgba(0,0,0,0.95));
   backdrop-filter: blur(8px);
 }
+[data-theme='light'] .loader {
+  background: radial-gradient(800px 600px at 50% 50%, rgba(240,242,248,0.92), rgba(244,245,250,0.98));
+}
 .loader-ring {
   width: 64px; height: 64px;
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.08);
   border-top-color: var(--accent);
   animation: spin 1s linear infinite;
+}
+[data-theme='light'] .loader-ring {
+  border-color: rgba(0,0,0,0.06);
+  border-top-color: var(--accent);
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loader-label { margin-top: 16px; font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-tertiary); }
@@ -678,8 +688,8 @@
  * ============================================================ */
 .chart-data-table-wrap {
   max-height: 280px;
+  overflow-x: hidden;
   overflow-y: auto;
-  overflow: hidden;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
 }

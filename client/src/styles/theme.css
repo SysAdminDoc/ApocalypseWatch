@@ -81,6 +81,7 @@
 
 /* Light theme (opt-in via [data-theme='light']) */
 [data-theme='light'] {
+  color-scheme: light;
   --surface-base: #f4f5fa;
   --surface-1: #ffffff;
   --surface-2: #f0f1f7;
@@ -98,6 +99,12 @@
   --shadow-glass: 0 1px 0 rgba(255, 255, 255, 0.8) inset,
                   0 18px 44px rgba(38, 46, 70, 0.12),
                   0 0 0 1px rgba(10, 18, 30, 0.04);
+}
+
+[data-theme='light'][data-emergency='4'],
+[data-theme='light'][data-emergency='5'] {
+  --surface-glass: rgba(255, 245, 240, 0.72);
+  --surface-glass-strong: rgba(255, 240, 235, 0.88);
 }
 
 @media (prefers-reduced-transparency: reduce) {

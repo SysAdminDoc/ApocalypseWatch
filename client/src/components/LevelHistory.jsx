@@ -27,7 +27,7 @@ export function LevelHistory() {
     <section className="card level-history-card">
       <div className="card-header">
         <div className="card-title">Level Transitions</div>
-        <div className="level-history-meta">{transitions.length} recorded</div>
+        <div className="level-history-meta">Recent {transitions.length}</div>
       </div>
       <div className="level-history-list" role="log" aria-label="Emergency level transitions">
         {transitions.map((t) => {
