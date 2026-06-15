@@ -551,3 +551,59 @@
   justify-content: space-between;
   gap: 8px;
 }
+
+/* ============================================================
+ * Level History
+ * ============================================================ */
+.level-history-card { grid-column: 1 / -1; }
+.level-history-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.level-history-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.level-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.level-history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  font-size: 0.82rem;
+}
+.level-history-time {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  white-space: nowrap;
+  min-width: 150px;
+}
+.level-history-badge {
+  font-weight: 600;
+  color: var(--badge-color, var(--text-primary));
+  white-space: nowrap;
+}
+.level-history-label {
+  color: var(--text-secondary);
+  flex: 1;
+}
+.level-history-sigma {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+@media (max-width: 640px) {
+  .level-history-item { flex-wrap: wrap; }
+  .level-history-time { min-width: auto; }
+}

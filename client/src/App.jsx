@@ -6,6 +6,7 @@ import { AircraftList } from './components/AircraftList'
 import { AboutCard } from './components/AboutCard'
 import { StatusBanner } from './components/StatusBanner'
 import { ThemeControl } from './components/ThemeControl'
+import { LevelHistory } from './components/LevelHistory'
 import { EMERGENCY_LEVELS } from './lib/constants'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 
@@ -259,6 +260,8 @@ export default function App() {
           </Suspense>
           <AboutCard cohort={cohort} signal={signal} />
         </div>
+
+        <LevelHistory />
 
         <footer className="foot">
           <span>ApocalypseWatch v{APP_VERSION}</span>
