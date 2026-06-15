@@ -571,6 +571,26 @@ function areAllTrackedAircraftDemo() {
   return trackedCount > 0 && trackedCount === demoCount;
 }
 
+function recordLevelTransition({ transitionedAt, fromLevel, toLevel, sigmaShift, concurrentCount, expectedCount }) {
+  const db = getDb();
+  db.prepare(`
+    INSERT INTO level_transitions (transitioned_at, from_level, to_level, sigma_shift, concurrent_count, expected_count)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(transitionedAt, fromLevel, toLevel, sigmaShift ?? null, concurrentCount ?? null, expectedCount ?? null);
+}
+
+function getLevelTransitions(limit = 100) {
+  const db = getDb();
+  return db
+    .prepare(`
+      SELECT id, transitioned_at, from_level, to_level, sigma_shift, concurrent_count, expected_count
+      FROM level_transitions
+      ORDER BY transitioned_at DESC
+      LIMIT ?
+    `)
+    .all(limit);
+}
+
 module.exports = {
   getDb,
   initDb,
@@ -595,4 +615,6 @@ module.exports = {
   areAllTrackedAircraftDemo,
   pruneOldObservations,
   detectRollingMetricGaps,
+  recordLevelTransition,
+  getLevelTransitions,
 };

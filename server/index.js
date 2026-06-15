@@ -16,6 +16,8 @@ const {
   getTrackingSummary,
   pruneOldObservations,
   detectRollingMetricGaps,
+  recordLevelTransition,
+  getLevelTransitions,
 } = require("./db");
 const { createHeatmapCacheRefresher } = require("./heatmap-cache");
 const { buildDashboardSnapshot } = require("./dashboard");
@@ -97,9 +99,28 @@ function createDashboardSnapshotManager() {
 
     refreshPromise = Promise.resolve()
       .then(() => {
+        const prevLevel = snapshot?.current?.emergencyLevel ?? null;
         const nextSnapshot = buildDashboardSnapshot({
           liveStatus: heatmapRefresher.getStatus(),
         });
+        const nextLevel = nextSnapshot?.current?.emergencyLevel ?? 1;
+
+        if (prevLevel !== null && nextLevel !== prevLevel) {
+          try {
+            recordLevelTransition({
+              transitionedAt: nextSnapshot?.current?.asOf || new Date().toISOString(),
+              fromLevel: prevLevel,
+              toLevel: nextLevel,
+              sigmaShift: nextSnapshot?.current?.zScore,
+              concurrentCount: nextSnapshot?.current?.concurrentCount,
+              expectedCount: nextSnapshot?.current?.baselineMean,
+            });
+            logger.info(`Level transition: ${prevLevel} → ${nextLevel}`);
+          } catch (err) {
+            logger.error("Failed to record level transition:", err);
+          }
+        }
+
         snapshot = nextSnapshot;
         setMetaValue(DASHBOARD_SNAPSHOT_META_KEY, JSON.stringify(nextSnapshot));
         return nextSnapshot;
@@ -214,6 +235,12 @@ app.get("/api/watchlist", (_request, response) => {
 
 app.get("/api/cohort", (_request, response) => {
   response.json(getTrackingSummary());
+});
+
+app.get("/api/events", (request, response) => {
+  const limit = Math.min(500, Math.max(1, Number(request.query.limit) || 100));
+  const transitions = getLevelTransitions(limit);
+  response.json({ transitions });
 });
 
 const sseClients = new Set();
