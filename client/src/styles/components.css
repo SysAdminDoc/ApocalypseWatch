@@ -607,3 +607,39 @@
   .level-history-item { flex-wrap: wrap; }
   .level-history-time { min-width: auto; }
 }
+
+/* ============================================================
+ * Chart Data Table (accessibility toggle)
+ * ============================================================ */
+.chart-data-table-wrap {
+  max-height: 280px;
+  overflow-y: auto;
+  font-size: 0.82rem;
+}
+.chart-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.chart-data-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface-glass-strong);
+  text-align: left;
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.chart-data-table td {
+  padding: 4px 10px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  border-bottom: 1px solid var(--border-faint);
+}
+.chart-data-table tr:hover td {
+  background: var(--surface-inset);
+}
