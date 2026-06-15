@@ -165,6 +165,29 @@ p { margin: 0; }
   min-height: 44px;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-quick), color var(--dur-fast);
+}
+.export-btn:hover {
+  background: var(--surface-glass-strong);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border-subtle));
+}
+
 .brand-lockup {
   display: inline-flex;
   align-items: center;
