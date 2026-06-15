@@ -1,8 +1,13 @@
 const { getMetaValue, setMetaValue } = require("./db");
+const {
+  DEFAULT_ALERT_URL,
+  getEmergencySnapshotSignal,
+  getLatestSlotKey,
+  getAlertMinLevel,
+} = require("./alert-helpers");
 
 const NTFY_ALERT_LAST_SLOT_META_KEY = "ntfy_level5_alert_last_slot_key";
 const DEFAULT_NTFY_SERVER = "https://ntfy.sh";
-const DEFAULT_ALERT_URL = "https://ews.kylemcdonald.net/";
 
 function getNtfyAlertConfig(env = process.env) {
   const topic = String(env.NTFY_TOPIC || "").trim();
@@ -13,25 +18,6 @@ function getNtfyAlertConfig(env = process.env) {
     topic,
     alertUrl: String(env.EWS_PUBLIC_URL || DEFAULT_ALERT_URL).trim() || DEFAULT_ALERT_URL,
   };
-}
-
-function getEmergencySnapshotSignal(snapshot) {
-  return snapshot?.signals?.composite || {
-    emergencyLevel: snapshot?.current?.emergencyLevel,
-    actualConcurrentCount: snapshot?.current?.concurrentCount,
-    expectedConcurrentCount: snapshot?.current?.baselineMean,
-    asOf: snapshot?.current?.asOf,
-  };
-}
-
-function getLatestSlotKey(snapshot, status) {
-  return (
-    status?.latestSlotKey ||
-    snapshot?.liveStatus?.latestSlotKey ||
-    snapshot?.current?.asOf ||
-    getEmergencySnapshotSignal(snapshot)?.asOf ||
-    null
-  );
 }
 
 async function sendNtfyNotification({ server, topic }, { title, message, priority, clickUrl }) {
@@ -65,8 +51,9 @@ async function maybeSendEmergencyLevelNtfyAlert({
 
   const signal = getEmergencySnapshotSignal(snapshot);
   const emergencyLevel = Math.round(Number(signal?.emergencyLevel || 1));
-  if (emergencyLevel !== 5) {
-    return { ok: true, sent: false, reason: "emergency_level_not_5", emergencyLevel };
+  const minLevel = getAlertMinLevel(env);
+  if (emergencyLevel < minLevel) {
+    return { ok: true, sent: false, reason: "emergency_level_below_threshold", emergencyLevel, threshold: minLevel };
   }
 
   const latestSlotKey = getLatestSlotKey(snapshot, status);
@@ -82,9 +69,9 @@ async function maybeSendEmergencyLevelNtfyAlert({
 
   try {
     await sendNtfyNotification(config, {
-      title: "Emergency Level 5!",
+      title: `Emergency Level ${emergencyLevel}!`,
       message: `${actualCount} airborne (${sign}${aboveExpected} above expected)`,
-      priority: 5,
+      priority: emergencyLevel >= 5 ? 5 : 4,
       clickUrl: config.alertUrl,
     });
   } catch (error) {

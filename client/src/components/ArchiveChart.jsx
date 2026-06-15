@@ -24,7 +24,10 @@ function decodeArchive(archive) {
         const t = Date.parse(s?.sampledAt ?? s?.timestamp ?? '')
         const count = toFinite(s?.concurrentCount ?? s?.count)
         const expected = toFinite(s?.predictedConcurrentCount ?? s?.expectedCount)
-        return Number.isFinite(t) && count !== null ? { t, count, expected } : null
+        const sd = toFinite(s?.stdDev ?? s?.standardDeviation)
+        const lower = expected !== null && sd !== null ? Math.max(0, expected - sd) : null
+        const bandWidth = expected !== null && sd !== null ? expected + sd - Math.max(0, expected - sd) : null
+        return Number.isFinite(t) && count !== null ? { t, count, expected, lower, bandWidth } : null
       })
       .filter(Boolean)
       .sort((a, b) => a.t - b.t)
@@ -67,17 +70,40 @@ function decodeArchive(archive) {
   const out = []
   const counts = archive.c
   const preds = archive.p || []
+  const stdevs = archive.s || []
   const len = Math.min(timestamps.length, counts.length)
   for (let i = 0; i < len; i++) {
     const c = toFinite(counts[i])
     if (c === null) continue
-    out.push({ t: timestamps[i], count: c, expected: toFinite(preds[i]) })
+    const exp = toFinite(preds[i])
+    const sd = toFinite(stdevs[i])
+    const lower = exp !== null && sd !== null ? Math.max(0, exp - sd) : null
+    const bandWidth = exp !== null && sd !== null ? exp + sd - Math.max(0, exp - sd) : null
+    out.push({ t: timestamps[i], count: c, expected: exp, lower, bandWidth })
   }
   return { samples: out, issue: out.length ? null : 'Archive contains no valid samples.' }
 }
 
+function getInitialRange() {
+  try {
+    const params = new URLSearchParams(window.location.search)
+    const r = params.get('range')
+    if (r && RANGE_OPTIONS.some((opt) => opt.id === r)) return r
+  } catch { /* SSR / non-browser fallback */ }
+  return '24h'
+}
+
+function syncRangeToUrl(id) {
+  try {
+    const url = new URL(window.location.href)
+    if (id === '24h') url.searchParams.delete('range')
+    else url.searchParams.set('range', id)
+    window.history.replaceState(null, '', url)
+  } catch { /* history API unavailable */ }
+}
+
 export function ArchiveChart({ archive, signal }) {
-  const [rangeId, setRangeId] = useState('24h')
+  const [rangeId, setRangeId] = useState(getInitialRange)
   const range = RANGE_OPTIONS.find((r) => r.id === rangeId) ?? RANGE_OPTIONS[0]
 
   const decodedArchive = useMemo(() => decodeArchive(archive), [archive])
@@ -106,7 +132,9 @@ export function ArchiveChart({ archive, signal }) {
           : event.key === 'ArrowLeft'
             ? Math.max(0, activeIndex - 1)
             : Math.min(lastIndex, activeIndex + 1)
-    setRangeId(RANGE_OPTIONS[nextIndex].id)
+    const nextId = RANGE_OPTIONS[nextIndex].id
+    setRangeId(nextId)
+    syncRangeToUrl(nextId)
   }
 
   return (
@@ -123,7 +151,7 @@ export function ArchiveChart({ archive, signal }) {
               aria-controls="archive-chart-panel"
               id={`archive-range-${opt.id}`}
               className={`range-tab ${opt.id === rangeId ? 'is-active' : ''}`}
-              onClick={() => setRangeId(opt.id)}
+              onClick={() => { setRangeId(opt.id); syncRangeToUrl(opt.id) }}
               onKeyDown={handleRangeKeyDown}
             >
               {opt.label}
@@ -178,7 +206,34 @@ export function ArchiveChart({ archive, signal }) {
               <Tooltip
                 cursor={{ stroke: 'var(--accent)', strokeOpacity: 0.4 }}
                 labelFormatter={(t) => new Date(t).toLocaleString()}
-                formatter={(v, name) => [Math.round(v), name === 'expected' ? 'Expected' : 'Airborne']}
+                formatter={(v, name) => {
+                  if (name === 'lower' || name === 'Expected +/- 1 sigma') return null
+                  return [Math.round(v), name === 'expected' ? 'Expected' : 'Airborne']
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="lower"
+                stackId="band"
+                stroke="none"
+                fill="none"
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
+                connectNulls
+              />
+              <Area
+                type="monotone"
+                dataKey="bandWidth"
+                stackId="band"
+                stroke="none"
+                fill="var(--text-tertiary)"
+                fillOpacity={0.08}
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
+                connectNulls
+                name="Expected +/- 1 sigma"
               />
               <Area
                 type="monotone"

@@ -1,7 +1,12 @@
 const { getMetaValue, setMetaValue } = require("./db");
+const {
+  DEFAULT_ALERT_URL,
+  getEmergencySnapshotSignal,
+  getLatestSlotKey,
+  getAlertMinLevel,
+} = require("./alert-helpers");
 
 const DISCORD_ALERT_LAST_SLOT_META_KEY = "discord_level5_alert_last_slot_key";
-const DEFAULT_ALERT_URL = "https://ews.kylemcdonald.net/";
 
 const LEVEL_COLORS = {
   1: 0x74c7ec,
@@ -18,25 +23,6 @@ function getDiscordAlertConfig(env = process.env) {
     webhookUrl,
     alertUrl: String(env.EWS_PUBLIC_URL || DEFAULT_ALERT_URL).trim() || DEFAULT_ALERT_URL,
   };
-}
-
-function getEmergencySnapshotSignal(snapshot) {
-  return snapshot?.signals?.composite || {
-    emergencyLevel: snapshot?.current?.emergencyLevel,
-    actualConcurrentCount: snapshot?.current?.concurrentCount,
-    expectedConcurrentCount: snapshot?.current?.baselineMean,
-    asOf: snapshot?.current?.asOf,
-  };
-}
-
-function getLatestSlotKey(snapshot, status) {
-  return (
-    status?.latestSlotKey ||
-    snapshot?.liveStatus?.latestSlotKey ||
-    snapshot?.current?.asOf ||
-    getEmergencySnapshotSignal(snapshot)?.asOf ||
-    null
-  );
 }
 
 async function sendDiscordWebhook(webhookUrl, embed) {
@@ -65,8 +51,9 @@ async function maybeSendEmergencyLevelDiscordAlert({
 
   const signal = getEmergencySnapshotSignal(snapshot);
   const emergencyLevel = Math.round(Number(signal?.emergencyLevel || 1));
-  if (emergencyLevel !== 5) {
-    return { ok: true, sent: false, reason: "emergency_level_not_5", emergencyLevel };
+  const minLevel = getAlertMinLevel(env);
+  if (emergencyLevel < minLevel) {
+    return { ok: true, sent: false, reason: "emergency_level_below_threshold", emergencyLevel, threshold: minLevel };
   }
 
   const latestSlotKey = getLatestSlotKey(snapshot, status);
@@ -81,10 +68,10 @@ async function maybeSendEmergencyLevelDiscordAlert({
   const sign = aboveExpected >= 0 ? "+" : "";
 
   const embed = {
-    title: "Emergency Level 5!",
+    title: `Emergency Level ${emergencyLevel}!`,
     description: `**${actualCount}** airborne (${sign}${aboveExpected} above expected)`,
     url: config.alertUrl,
-    color: LEVEL_COLORS[5],
+    color: LEVEL_COLORS[emergencyLevel] ?? LEVEL_COLORS[5],
     timestamp: new Date().toISOString(),
     footer: { text: "ApocalypseWatch" },
   };

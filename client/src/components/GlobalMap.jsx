@@ -26,6 +26,19 @@ function projectAircraftPoint(aircraft, projection) {
   const xy = projection([lon, lat])
   if (!xy || !Number.isFinite(xy[0]) || !Number.isFinite(xy[1])) return null
 
+  const trail = []
+  if (Array.isArray(aircraft.path)) {
+    for (const pt of aircraft.path) {
+      const pLat = toFiniteNumber(pt?.lat)
+      const pLon = toFiniteNumber(pt?.lon)
+      if (pLat === null || pLon === null) continue
+      const pxy = projection([pLon, pLat])
+      if (pxy && Number.isFinite(pxy[0]) && Number.isFinite(pxy[1])) {
+        trail.push(pxy)
+      }
+    }
+  }
+
   return {
     id: aircraft.hex ?? aircraft.registration ?? aircraft.callsign ?? `${lat},${lon}`,
     x: xy[0],
@@ -34,6 +47,7 @@ function projectAircraftPoint(aircraft, projection) {
     callsign: aircraft.callsign ?? aircraft.registration ?? aircraft.hex ?? '—',
     model: aircraft.label ?? aircraft.modelLabel ?? aircraft.model ?? '',
     altitude: toFiniteNumber(aircraft.altitudeFt ?? aircraft.altitude),
+    trail,
   }
 }
 
@@ -98,6 +112,20 @@ export function GlobalMap({ aircraft = [], asOf, onAirborneCount }) {
           <path d={path(graticule)} className="map-graticule" />
           <path d={path(land)} className="map-land" />
 
+          {points.map((p) =>
+            p.trail.length >= 2 ? (
+              <polyline
+                key={`trail-${p.id}`}
+                points={p.trail.map((pt) => `${pt[0]},${pt[1]}`).join(' ')}
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth={1.5}
+                strokeOpacity={0.3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            ) : null,
+          )}
           <g filter="url(#aircraft-glow)">
             {points.map((p) => (
               <g key={p.id} transform={`translate(${p.x} ${p.y})`}>

@@ -1,0 +1,107 @@
+#!/usr/bin/env node
+
+const fs = require("node:fs");
+const path = require("node:path");
+
+const WIDTH = 1200;
+const HEIGHT = 630;
+
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#121722"/>
+      <stop offset="100%" stop-color="#06080e"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="55%" r="35%">
+      <stop offset="0%" stop-color="rgba(116,199,236,0.12)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+    <radialGradient id="icon-g" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ff5b6e"/>
+      <stop offset="55%" stop-color="#ff8a3d"/>
+      <stop offset="100%" stop-color="#0b0d14"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
+  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#glow)"/>
+
+  <!-- Border -->
+  <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${HEIGHT - 1}" rx="0" fill="none"
+        stroke="rgba(214,225,255,0.08)" stroke-width="1"/>
+
+  <!-- Gauge arc (decorative) -->
+  <g transform="translate(600, 260)">
+    <path d="M -140 0 A 140 140 0 0 1 140 0" fill="none" stroke="rgba(116,199,236,0.15)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M -130 0 A 130 130 0 0 1 -65 -112.6" fill="none" stroke="#74c7ec" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+    <path d="M -60 -109.5 A 130 130 0 0 1 0 -130" fill="none" stroke="#94e2d5" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+    <path d="M 5 -129.9 A 130 130 0 0 1 65 -112.6" fill="none" stroke="#f9e2af" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
+    <path d="M 70 -109.5 A 130 130 0 0 1 112.6 -65" fill="none" stroke="#fab387" stroke-width="6" stroke-linecap="round" opacity="0.35"/>
+    <path d="M 115 -60 A 130 130 0 0 1 130 0" fill="none" stroke="#f38ba8" stroke-width="6" stroke-linecap="round" opacity="0.3"/>
+  </g>
+
+  <!-- Icon -->
+  <g transform="translate(600, 230) scale(1.8)">
+    <circle cx="0" cy="0" r="30" fill="url(#icon-g)"/>
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#ffd479" stroke-width="1.5"/>
+    <path d="M0 -18 L2.4 -5 L14 -2 L14 1 L2 -1 L2 9 L6.5 12 L6.5 14 L0 12 L-6.5 14 L-6.5 12 L-2 9 L-2 -1 L-14 1 L-14 -2 L-2.4 -5 Z" fill="#fff" opacity="0.9"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="370" text-anchor="middle"
+        font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif"
+        font-size="52" font-weight="700" fill="#e9eaf3"
+        letter-spacing="-1">Apocalypse Watch</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="415" text-anchor="middle"
+        font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif"
+        font-size="22" fill="#8c93aa"
+        letter-spacing="0.5">Private-jet anomaly monitor</text>
+
+  <!-- Level indicators -->
+  <g transform="translate(420, 460)">
+    <rect x="0" y="0" width="36" height="8" rx="4" fill="#74c7ec" opacity="0.8"/>
+    <rect x="48" y="0" width="36" height="8" rx="4" fill="#94e2d5" opacity="0.7"/>
+    <rect x="96" y="0" width="36" height="8" rx="4" fill="#f9e2af" opacity="0.6"/>
+    <rect x="144" y="0" width="36" height="8" rx="4" fill="#fab387" opacity="0.5"/>
+    <rect x="192" y="0" width="36" height="8" rx="4" fill="#f38ba8" opacity="0.4"/>
+    <text x="240" y="8" font-family="Inter, Segoe UI, system-ui, sans-serif" font-size="12" fill="#70778c">Calm → Critical</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="560" text-anchor="middle"
+        font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif"
+        font-size="16" fill="#70778c">Tracking curated business-jet cohort against rolling 24-hour baseline</text>
+
+  <!-- URL -->
+  <text x="600" y="590" text-anchor="middle"
+        font-family="JetBrains Mono, Consolas, monospace"
+        font-size="14" fill="#74c7ec" opacity="0.6">sysadmindoc.github.io/ApocalypseWatch</text>
+</svg>`;
+
+async function main() {
+  const outDir = path.join(__dirname, "..", "client", "public");
+  const svgPath = path.join(outDir, "og-image.svg");
+  const pngPath = path.join(outDir, "og-image.png");
+
+  fs.writeFileSync(svgPath, svg);
+  console.log(`wrote ${svgPath}`);
+
+  try {
+    const { Resvg } = require("@resvg/resvg-js");
+    const resvg = new Resvg(svg, {
+      fitTo: { mode: "width", value: WIDTH },
+    });
+    const pngData = resvg.render();
+    const pngBuffer = pngData.asPng();
+    fs.writeFileSync(pngPath, pngBuffer);
+    console.log(`wrote ${pngPath} (${pngBuffer.length} bytes)`);
+  } catch (err) {
+    console.error("PNG generation failed (install @resvg/resvg-js):", err.message);
+    console.log("SVG written; convert manually: npx @resvg/resvg-js og-image.svg og-image.png");
+  }
+}
+
+main();

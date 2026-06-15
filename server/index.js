@@ -30,7 +30,24 @@ const app = express();
 const PORT = Number(process.env.PORT || 3030);
 const DASHBOARD_SNAPSHOT_META_KEY = "dashboard_snapshot_v1";
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "blob:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+      },
+    },
+  })
+);
 
 const CORS_ORIGINS = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(",").map((s) => s.trim())
@@ -200,11 +217,13 @@ app.get("/api/cohort", (_request, response) => {
 });
 
 const sseClients = new Set();
+let sseEventId = 0;
 
 function broadcastSSE(snapshot) {
+  sseEventId += 1;
   const data = JSON.stringify(snapshot);
   for (const client of sseClients) {
-    client.write(`data: ${data}\n\n`);
+    client.write(`id: ${sseEventId}\ndata: ${data}\n\n`);
   }
 }
 
@@ -218,11 +237,19 @@ app.get("/api/stream", (request, response) => {
 
   const snapshot = dashboardSnapshotManager.getSnapshot();
   if (snapshot) {
-    response.write(`data: ${JSON.stringify(snapshot)}\n\n`);
+    response.write(`id: ${sseEventId}\ndata: ${JSON.stringify(snapshot)}\n\n`);
   }
 
   sseClients.add(response);
-  request.on("close", () => sseClients.delete(response));
+
+  const heartbeat = setInterval(() => {
+    response.write(": heartbeat\n\n");
+  }, 30_000);
+
+  request.on("close", () => {
+    clearInterval(heartbeat);
+    sseClients.delete(response);
+  });
 });
 
 app.get("/api/dashboard", (_request, response) => {
