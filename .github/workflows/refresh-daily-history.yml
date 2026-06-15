@@ -152,3 +152,10 @@ jobs:
             fi
             sleep $((attempt * 15))
           done
+
+      - name: Ping healthcheck
+        if: always() && success()
+        run: |
+          if [ -n "${{ secrets.HEALTHCHECK_PING_URL }}" ]; then
+            curl -fsS --retry 3 --max-time 10 "${{ secrets.HEALTHCHECK_PING_URL }}" || true
+          fi
