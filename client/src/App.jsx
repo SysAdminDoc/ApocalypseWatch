@@ -7,6 +7,7 @@ import { AboutCard } from './components/AboutCard'
 import { StatusBanner } from './components/StatusBanner'
 import { ThemeControl } from './components/ThemeControl'
 import { LevelHistory } from './components/LevelHistory'
+import { EmbedView } from './components/EmbedView'
 import { DASHBOARD_URL, EMERGENCY_LEVELS } from './lib/constants'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 
@@ -124,6 +125,8 @@ function PanelFallback({ title, variant }) {
   )
 }
 
+const IS_EMBED = new URLSearchParams(window.location.search).has('embed')
+
 export default function App() {
   const { data, error, lastFetchedAt, retryInMs, isFetching } = useDashboard()
   const [themeMode, setThemeMode] = useState(getInitialThemeMode)
@@ -160,6 +163,8 @@ export default function App() {
     media.addEventListener('change', applyTheme)
     return () => media.removeEventListener('change', applyTheme)
   }, [themeMode])
+
+  if (IS_EMBED) return <EmbedView />
 
   if (error && !data) {
     return (
