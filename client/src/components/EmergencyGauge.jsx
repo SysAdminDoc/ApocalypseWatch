@@ -91,13 +91,14 @@ export function EmergencyGauge({
           <path className="gauge-arc-bg" d={describeArc(START_ANGLE, END_ANGLE)} strokeWidth={STROKE} />
 
           {EMERGENCY_LEVELS.map((_, i) => {
+            const level = i + 1
             const a0 = START_ANGLE + segmentSweep * i + 1
             const a1 = START_ANGLE + segmentSweep * (i + 1) - 1
-            const isActive = i + 1 <= emergencyLevel
+            const isActive = level <= emergencyLevel
             return (
               <path
                 key={i}
-                className={`gauge-arc-segment gauge-arc-segment--${i + 1} ${isActive ? '' : 'is-dim'}`}
+                className={`gauge-arc-segment gauge-arc-segment--${level} ${isActive ? '' : 'is-dim'}`}
                 d={describeArc(a0, a1)}
                 strokeWidth={STROKE}
               />

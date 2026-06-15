@@ -219,6 +219,27 @@ export default function App() {
   return (
     <>
       <div className="bg-fx" />
+      <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
+        <defs>
+          <pattern id="severity-pattern-2" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="var(--level-2)" />
+            <line x1="0" y1="3" x2="6" y2="3" stroke="rgba(0,0,0,0.25)" strokeWidth="1.5" />
+          </pattern>
+          <pattern id="severity-pattern-3" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="var(--level-3)" />
+            <circle cx="3" cy="3" r="1.2" fill="rgba(0,0,0,0.3)" />
+          </pattern>
+          <pattern id="severity-pattern-4" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="var(--level-4)" />
+            <line x1="0" y1="0" x2="6" y2="6" stroke="rgba(0,0,0,0.25)" strokeWidth="1.5" />
+          </pattern>
+          <pattern id="severity-pattern-5" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="var(--level-5)" />
+            <line x1="0" y1="0" x2="6" y2="6" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
+            <line x1="6" y1="0" x2="0" y2="6" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
+          </pattern>
+        </defs>
+      </svg>
       <a className="skip-link" href="#dashboard-main">Skip to dashboard</a>
       <div className="sr-only" aria-live={emergencyLevel >= 3 ? 'assertive' : 'polite'} aria-atomic="true">
         {levelAnnouncement}
