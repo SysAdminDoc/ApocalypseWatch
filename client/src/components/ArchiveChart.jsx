@@ -188,7 +188,7 @@ export function ArchiveChart({ archive, signal }) {
             aria-pressed={showTable}
             title="View data as table"
           >
-            {showTable ? '📊 Chart' : '📋 Table'}
+            {showTable ? 'Chart' : 'Table'}
           </button>
         </div>
       </div>

@@ -36,7 +36,7 @@ export function AircraftList({ aircraft = [] }) {
       {sorted.length === 0 ? (
         <div className="empty-state aircraft-empty">
           <strong>No aircraft airborne</strong>
-          <span>The cohort is currently below the live-aircraft threshold.</span>
+          <span>No tracked jets are currently aloft.</span>
         </div>
       ) : (
         <ul className="aircraft-list" role="list">
