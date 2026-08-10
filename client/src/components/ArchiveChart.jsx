@@ -9,80 +9,9 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { DASHBOARD_URL, RANGE_OPTIONS } from '../lib/constants'
+import { decodeArchive } from '../lib/archive'
 
 const DAY_MS = 24 * 60 * 60 * 1000
-
-function toFinite(value) {
-  const n = Number(value)
-  return Number.isFinite(n) ? n : null
-}
-
-function decodeArchive(archive) {
-  if (Array.isArray(archive)) {
-    const samples = archive
-      .map((s) => {
-        const t = Date.parse(s?.sampledAt ?? s?.timestamp ?? '')
-        const count = toFinite(s?.concurrentCount ?? s?.count)
-        const expected = toFinite(s?.predictedConcurrentCount ?? s?.expectedCount)
-        const sd = toFinite(s?.stdDev ?? s?.standardDeviation)
-        const lower = expected !== null && sd !== null ? Math.max(0, expected - sd) : null
-        const bandWidth = expected !== null && sd !== null ? expected + sd - Math.max(0, expected - sd) : null
-        return Number.isFinite(t) && count !== null ? { t, count, expected, lower, bandWidth } : null
-      })
-      .filter(Boolean)
-      .sort((a, b) => a.t - b.t)
-    return { samples, issue: null }
-  }
-
-  if (!archive) return { samples: [], issue: null }
-  if (archive.v !== 1) {
-    return { samples: [], issue: `Unsupported archive format v${archive.v ?? 'unknown'}.` }
-  }
-  if (!Array.isArray(archive.c) || !Array.isArray(archive.tr)) {
-    return { samples: [], issue: 'Archive payload is missing required RLE arrays.' }
-  }
-  if (archive.c.length === 0) return { samples: [], issue: null }
-
-  const startMs = Date.parse(archive.t0)
-  if (!Number.isFinite(startMs)) {
-    return { samples: [], issue: 'Archive start timestamp is invalid.' }
-  }
-
-  const timestamps = [startMs]
-  let cursor = startMs
-  for (const run of archive.tr) {
-    if (!Array.isArray(run)) return { samples: [], issue: 'Archive timestamp run is malformed.' }
-    const delta = toFinite(run[0])
-    const length = Number(run[1])
-    if (delta === null || delta <= 0 || !Number.isInteger(length) || length < 0) {
-      return { samples: [], issue: 'Archive timestamp run contains invalid values.' }
-    }
-    for (let i = 0; i < length; i++) {
-      cursor += delta
-      timestamps.push(cursor)
-    }
-  }
-
-  if (timestamps.length < archive.c.length) {
-    return { samples: [], issue: 'Archive RLE ended before all samples could be decoded.' }
-  }
-
-  const out = []
-  const counts = archive.c
-  const preds = archive.p || []
-  const stdevs = archive.s || []
-  const len = Math.min(timestamps.length, counts.length)
-  for (let i = 0; i < len; i++) {
-    const c = toFinite(counts[i])
-    if (c === null) continue
-    const exp = toFinite(preds[i])
-    const sd = toFinite(stdevs[i])
-    const lower = exp !== null && sd !== null ? Math.max(0, exp - sd) : null
-    const bandWidth = exp !== null && sd !== null ? exp + sd - Math.max(0, exp - sd) : null
-    out.push({ t: timestamps[i], count: c, expected: exp, lower, bandWidth })
-  }
-  return { samples: out, issue: out.length ? null : 'Archive contains no valid samples.' }
-}
 
 function getInitialRange() {
   try {
