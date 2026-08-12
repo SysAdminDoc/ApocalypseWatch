@@ -9,6 +9,7 @@ function toFinite(value) {
 
 export function decodeArchive(archive) {
   if (Array.isArray(archive)) {
+    let invalidSamples = 0
     const samples = archive
       .map((s) => {
         const t = Date.parse(s?.sampledAt ?? s?.timestamp ?? '')
@@ -17,11 +18,19 @@ export function decodeArchive(archive) {
         const sd = toFinite(s?.predictedConcurrentStdDev ?? s?.stdDev ?? s?.standardDeviation)
         const lower = expected !== null && sd !== null ? Math.max(0, expected - sd) : null
         const bandWidth = expected !== null && sd !== null ? expected + sd - Math.max(0, expected - sd) : null
-        return Number.isFinite(t) && count !== null ? { t, count, expected, sd, lower, bandWidth } : null
+        if (!Number.isFinite(t) || count === null) {
+          invalidSamples += 1
+          return null
+        }
+        return { t, count, expected, sd, lower, bandWidth }
       })
       .filter(Boolean)
       .sort((a, b) => a.t - b.t)
-    return { samples, issue: null, format: Array.isArray(archive) ? 'array' : 'unknown' }
+    return {
+      samples,
+      issue: invalidSamples ? `${invalidSamples} archive sample${invalidSamples === 1 ? '' : 's'} could not be decoded.` : null,
+      format: 'array',
+    }
   }
 
   if (!archive) return { samples: [], issue: null, format: 'empty' }
@@ -58,20 +67,27 @@ export function decodeArchive(archive) {
   }
 
   const out = []
+  let invalidSamples = 0
   const counts = archive.c
   const preds = archive.p || []
   const stdevs = archive.s || []
   const len = Math.min(timestamps.length, counts.length)
   for (let i = 0; i < len; i += 1) {
     const c = toFinite(counts[i])
-    if (c === null) continue
+    if (c === null) {
+      invalidSamples += 1
+      continue
+    }
     const exp = toFinite(preds[i])
     const sd = toFinite(stdevs[i])
     const lower = exp !== null && sd !== null ? Math.max(0, exp - sd) : null
     const bandWidth = exp !== null && sd !== null ? exp + sd - Math.max(0, exp - sd) : null
     out.push({ t: timestamps[i], count: c, expected: exp, sd, lower, bandWidth })
   }
-  return { samples: out, issue: out.length ? null : 'Archive contains no valid samples.', format: 'rle-v1' }
+  const issues = []
+  if (invalidSamples) issues.push(`${invalidSamples} archive sample${invalidSamples === 1 ? '' : 's'} has an invalid count.`)
+  if (!out.length) issues.push('Archive contains no valid samples.')
+  return { samples: out, issue: issues.length ? issues.join(' ') : null, format: 'rle-v1' }
 }
 
 function utcDayStart(timestamp) {
@@ -92,13 +108,27 @@ function expectedSlotsForDay(dayStart, windowStart, windowEnd) {
 
 export function buildArchiveHealth({ decodedArchive, liveStatus, now = Date.now(), days = 365 }) {
   const samples = decodedArchive?.samples ?? []
-  const countsByDay = new Map()
+  const uniqueSamples = new Map()
+  let duplicateSampleCount = 0
   for (const sample of samples) {
+    if (uniqueSamples.has(sample.t)) duplicateSampleCount += 1
+    else uniqueSamples.set(sample.t, sample)
+  }
+
+  const orderedSamples = [...uniqueSamples.values()].sort((a, b) => a.t - b.t)
+  const countsByDay = new Map()
+  for (const sample of orderedSamples) {
     countsByDay.set(dayKey(sample.t), (countsByDay.get(dayKey(sample.t)) ?? 0) + 1)
   }
 
-  const latestSampleMs = samples.length ? samples[samples.length - 1].t : null
-  const earliestSampleMs = samples.length ? samples[0].t : null
+  let intervalIssueCount = 0
+  for (let i = 1; i < orderedSamples.length; i += 1) {
+    const delta = orderedSamples[i].t - orderedSamples[i - 1].t
+    if (delta <= 0 || delta % HALF_HOUR_MS !== 0) intervalIssueCount += 1
+  }
+
+  const latestSampleMs = orderedSamples.length ? orderedSamples[orderedSamples.length - 1].t : null
+  const earliestSampleMs = orderedSamples.length ? orderedSamples[0].t : null
   const endMs = latestSampleMs ?? now
   const endDay = utcDayStart(endMs)
   const startDay = endDay - (days - 1) * DAY_MS
@@ -145,6 +175,14 @@ export function buildArchiveHealth({ decodedArchive, liveStatus, now = Date.now(
   const cadenceMinutes = Math.max(1, Number(liveStatus?.cadenceMinutes ?? DEFAULT_CADENCE_MINUTES) || DEFAULT_CADENCE_MINUTES)
   const ageMs = Number.isFinite(sampledMs) ? now - sampledMs : null
   const delayed = ageMs !== null ? ageMs > cadenceMinutes * 2 * 60_000 : true
+  const malformed = Boolean(decodedArchive?.issue) || intervalIssueCount > 0
+  const latestDayKey = latestSampleMs ? dayKey(latestSampleMs) : null
+
+  for (const cell of calendar) {
+    if (cell.expected === 0) continue
+    if (malformed && cell.count > 0) cell.status = 'malformed'
+    if (delayed && cell.key === latestDayKey) cell.status = 'delayed'
+  }
 
   return {
     calendar,
@@ -163,6 +201,9 @@ export function buildArchiveHealth({ decodedArchive, liveStatus, now = Date.now(
     delayed,
     dataAgeMs: ageMs,
     cadenceMinutes,
+    duplicateSampleCount,
+    intervalIssueCount,
+    malformed,
   }
 }
 

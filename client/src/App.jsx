@@ -8,36 +8,14 @@ import { StatusBanner } from './components/StatusBanner'
 import { ThemeControl } from './components/ThemeControl'
 import { LevelHistory } from './components/LevelHistory'
 import { EmbedView } from './components/EmbedView'
+import { DataGapCalendar } from './components/DataGapCalendar'
 import { DASHBOARD_URL, EMERGENCY_LEVELS } from './lib/constants'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
+import { buildArchiveHealth, decodeArchive } from './lib/archive'
 
 const APP_VERSION = '0.1.0'
+const EMPTY_ARCHIVE = []
 
-function exportDashboardState(data, signal, emergencyLevel) {
-  const packet = {
-    exported_at: new Date().toISOString(),
-    source: window.location.href,
-    version: APP_VERSION,
-    emergency_level: emergencyLevel,
-    level_label: EMERGENCY_LEVELS[emergencyLevel - 1]?.label ?? 'Unknown',
-    current: data.current ?? null,
-    signal: signal ?? null,
-    cohort_summary: { trackedCount: data.cohort?.trackedCount },
-    live_aircraft_count: data.liveAircraft?.length ?? 0,
-    live_status: {
-      provider: data.liveStatus?.providerLabel,
-      latest_sample: data.liveStatus?.latestSampledAt,
-    },
-    mode: data.mode,
-  }
-  const blob = new Blob([JSON.stringify(packet, null, 2)], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `apocalypsewatch-${new Date().toISOString().slice(0, 19).replace(/:/g, '')}.json`
-  a.click()
-  URL.revokeObjectURL(url)
-}
 const DEFAULT_CADENCE_MINUTES = 30
 const THEME_STORAGE_KEY = 'apocalypsewatch.theme'
 const GlobalMap = lazy(() => import('./components/GlobalMap').then((module) => ({ default: module.GlobalMap })))
@@ -164,6 +142,14 @@ export default function App() {
     return () => media.removeEventListener('change', applyTheme)
   }, [themeMode])
 
+  const archive = data?.trends?.archive ?? EMPTY_ARCHIVE
+  const liveStatus = data?.liveStatus ?? null
+  const decodedArchive = useMemo(() => decodeArchive(archive), [archive])
+  const archiveHealth = useMemo(
+    () => buildArchiveHealth({ decodedArchive, liveStatus }),
+    [decodedArchive, liveStatus],
+  )
+
   if (IS_EMBED) return <EmbedView />
 
   if (error && !data) {
@@ -208,8 +194,6 @@ export default function App() {
   }
 
   const liveAircraft = data.liveAircraft ?? []
-  const archive = data.trends?.archive ?? []
-  const liveStatus = data.liveStatus ?? null
   const cohort = data.cohort ?? data.watchlist ?? null
   const airborne = signal?.actualConcurrentCount ?? liveAircraft.length
   const maxSeats = estimateMaxSeats(liveAircraft, airborne)
@@ -254,15 +238,6 @@ export default function App() {
             </span>
           </div>
           <div className="topbar-actions">
-            <button
-              type="button"
-              className="export-btn"
-              onClick={() => exportDashboardState(data, signal, emergencyLevel)}
-              title="Export dashboard state as JSON"
-              aria-label="Export dashboard state"
-            >
-              Export
-            </button>
             <ThemeControl value={themeMode} onChange={setThemeMode} />
           </div>
         </header>
@@ -333,6 +308,8 @@ export default function App() {
           </Suspense>
           <AboutCard cohort={cohort} signal={signal} />
         </div>
+
+        <DataGapCalendar health={archiveHealth} />
 
         <LevelHistory />
 
