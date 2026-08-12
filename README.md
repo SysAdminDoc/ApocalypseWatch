@@ -1,7 +1,7 @@
 # ApocalypseWatch
 
 [![Live](https://img.shields.io/badge/live-sysadmindoc.github.io%2FApocalypseWatch-f5c2e7?style=flat-square)](https://sysadmindoc.github.io/ApocalypseWatch/)
-[![Version](https://img.shields.io/badge/version-0.1.0-89b4fa?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch)
+[![Version](https://img.shields.io/badge/version-0.2.0-89b4fa?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch)
 [![License](https://img.shields.io/badge/license-MIT-94e2d5?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-web-f9e2af?style=flat-square)](#)
 

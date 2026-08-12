@@ -4,13 +4,13 @@ All notable changes to ApocalypseWatch will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to semantic versioning.
 
-## Unreleased
+## v0.2.0 — 2026-08-12
 
 ### Fixed
 - OG image meta tags use absolute URLs via `VITE_SITE_URL` env var for correct social preview rendering on GitHub Pages
 - SSE `/api/stream` endpoint adds `X-Accel-Buffering: no` header and `retry: 5000` field for proxy compatibility (Nginx, Cloudflare)
 - SSE connections capped at 200 (configurable via `MAX_SSE_CLIENTS`); excess connections get 503 with `Retry-After` header
-- Unit tests for sigma calculation, emergency level, gauge, RLE encoder, and archive compaction (`npm test` — 26 tests via Node.js built-in test runner)
+- Unit tests for sigma calculation, emergency level, gauge, RLE encoder, archive compaction, archive health, evidence packets, and sensitivity previews (`npm test` — 34 tests via Node.js built-in test runner)
 - Chart `aria-label` auto-generated summary with range, min, max, and latest values for screen readers
 - Discord webhook URL validated against expected `discord.com/api/webhooks/` pattern; malformed URLs log a warning and disable alerts
 - Recharts `responsive` prop replaces `ResponsiveContainer` wrapper for cleaner resize behavior

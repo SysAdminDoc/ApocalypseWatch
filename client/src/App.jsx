@@ -15,7 +15,7 @@ import { EMERGENCY_LEVELS } from './lib/constants'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 import { buildArchiveHealth, buildSensitivityPreview, decodeArchive } from './lib/archive'
 
-const APP_VERSION = '0.1.0'
+const APP_VERSION = '0.2.0'
 const EMPTY_ARCHIVE = []
 
 const DEFAULT_CADENCE_MINUTES = 30

@@ -1,7 +1,7 @@
 {
   "name": "apocalypsewatch",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Apocalypse Watch — premium realtime dashboard for tracked private-jet anomaly signals over a rolling 24-hour window.",
   "type": "commonjs",
   "workspaces": [
