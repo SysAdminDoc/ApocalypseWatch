@@ -9,7 +9,8 @@ import { ThemeControl } from './components/ThemeControl'
 import { LevelHistory } from './components/LevelHistory'
 import { EmbedView } from './components/EmbedView'
 import { DataGapCalendar } from './components/DataGapCalendar'
-import { DASHBOARD_URL, EMERGENCY_LEVELS } from './lib/constants'
+import { EvidencePacket } from './components/EvidencePacket'
+import { EMERGENCY_LEVELS } from './lib/constants'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 import { buildArchiveHealth, decodeArchive } from './lib/archive'
 
@@ -238,6 +239,7 @@ export default function App() {
             </span>
           </div>
           <div className="topbar-actions">
+            <a className="export-btn" href="#evidence-packet">Evidence</a>
             <ThemeControl value={themeMode} onChange={setThemeMode} />
           </div>
         </header>
@@ -310,6 +312,14 @@ export default function App() {
         </div>
 
         <DataGapCalendar health={archiveHealth} />
+
+        <EvidencePacket
+          data={data}
+          signal={signal}
+          emergencyLevel={emergencyLevel}
+          archiveHealth={archiveHealth}
+          lastFetchedAt={lastFetchedAt}
+        />
 
         <LevelHistory />
 

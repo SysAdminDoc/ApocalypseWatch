@@ -23,7 +23,7 @@
     "telegram:alert": "node scripts/send_telegram_alert.js",
     "update:api": "python3 scripts/update_latest_from_api.py",
     "lint": "npm run lint --workspace client",
-    "test": "node --test server/dashboard.test.js client/src/lib/archive.test.js"
+    "test": "node --test server/dashboard.test.js client/src/lib/archive.test.js client/src/lib/evidence.test.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",

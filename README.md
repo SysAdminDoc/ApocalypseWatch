@@ -27,7 +27,8 @@ This is an **independent UI redesign** of [kylemcdonald/ews](https://github.com/
 - Recharts area chart with 24h / 7d / 30d / 1y range tabs, expected-baseline confidence band (±1σ), level transition annotations, and accessible data table toggle
 - Sortable live aircraft list (callsign, model, altitude, speed)
 - Level transition history log with timestamps and sigma values
-- Dashboard state JSON export button for analysts and journalists
+- Public evidence packet with dial value, data age, archive validation, UTC/local timestamps, source links, JSON download, and plain-text copy
+- 365-day archive coverage calendar distinguishing complete, partial, missing, delayed, and malformed feed days
 
 **Realtime & reliability**
 - Server-Sent Events (SSE) with Last-Event-ID recovery, heartbeat keepalives, proxy-compatible headers (`X-Accel-Buffering: no`), and configurable connection limit
@@ -55,7 +56,7 @@ This is an **independent UI redesign** of [kylemcdonald/ews](https://github.com/
 - `npm audit --audit-level=high` gate in CI
 - Dependabot for npm, GitHub Actions, and pip dependencies
 - Structured logging with Pino
-- 26 unit tests for sigma calculation and RLE archive codec
+- 32 unit tests for sigma calculation, RLE archive codec, archive health, and evidence packet generation
 
 ## Quick start
 
@@ -102,7 +103,7 @@ ApocalypseWatch/
 │   └── src/
 │       ├── components/  EmergencyGauge, GlobalMap, ArchiveChart, AircraftList,
 │       │                Hero, AboutCard, StatusBanner, LevelHistory,
-│       │                ThemeControl, EmbedView
+│       │                DataGapCalendar, EvidencePacket, ThemeControl, EmbedView
 │       ├── hooks/       useDashboard (SSE + polling)
 │       ├── lib/         constants, format
 │       └── styles/      theme.css, global.css, components.css

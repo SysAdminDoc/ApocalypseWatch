@@ -1,4 +1,4 @@
-import { DASHBOARD_URL, EMERGENCY_LEVELS } from './constants'
+import { DASHBOARD_URL, EMERGENCY_LEVELS } from './constants.js'
 
 function finiteOrNull(value) {
   const n = Number(value)
@@ -111,8 +111,10 @@ export function buildEvidenceText(packet) {
   const sigma = packet.counts.sigmaShift === null ? 'n/a' : `${packet.counts.sigmaShift} sigma`
 
   return [
-    `ApocalypseWatch evidence packet (${packet.generatedAt})`,
+    `ApocalypseWatch evidence packet generated: ${packet.generatedAt} UTC`,
+    `Browser-local generation time: ${packet.generatedAtLocal}`,
     `Level ${packet.emergency.level}/5: ${packet.emergency.label}`,
+    `Reading as of: ${packet.emergency.asOf ?? 'n/a'} (ISO 8601 UTC)`,
     `Airborne tracked jets: ${packet.counts.airborne ?? 'n/a'} of ${packet.counts.tracked ?? 'n/a'}`,
     `Expected concurrent count: ${expected}; deviation: ${sigma}`,
     `Data age: ${age}; provider: ${packet.freshness.provider}`,

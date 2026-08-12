@@ -15,5 +15,7 @@ export const RANGE_OPTIONS = [
   { id: '365d', label: '1y', days: 365 },
 ]
 
+const clientEnv = import.meta.env ?? {}
+
 export const DASHBOARD_URL =
-  import.meta.env.VITE_DASHBOARD_URL ?? '/api/dashboard'
+  clientEnv.VITE_DASHBOARD_URL ?? '/api/dashboard'
