@@ -29,6 +29,7 @@ This is an **independent UI redesign** of [kylemcdonald/ews](https://github.com/
 - Level transition history log with timestamps and sigma values
 - Public evidence packet with dial value, data age, archive validation, UTC/local timestamps, source links, JSON download, and plain-text copy
 - 365-day archive coverage calendar distinguishing complete, partial, missing, delayed, and malformed feed days
+- Sensitivity sandbox for previewing alternate sigma thresholds against the current reading and historical archive
 
 **Realtime & reliability**
 - Server-Sent Events (SSE) with Last-Event-ID recovery, heartbeat keepalives, proxy-compatible headers (`X-Accel-Buffering: no`), and configurable connection limit
@@ -56,7 +57,7 @@ This is an **independent UI redesign** of [kylemcdonald/ews](https://github.com/
 - `npm audit --audit-level=high` gate in CI
 - Dependabot for npm, GitHub Actions, and pip dependencies
 - Structured logging with Pino
-- 32 unit tests for sigma calculation, RLE archive codec, archive health, and evidence packet generation
+- 34 unit tests for sigma calculation, RLE archive codec, archive health, evidence packet generation, and sensitivity previews
 
 ## Quick start
 

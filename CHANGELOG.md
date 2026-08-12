@@ -18,6 +18,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 - SVG severity pattern definitions (horizontal lines, dots, diagonal, crosshatch) for color-blind-safe level encoding alongside hue (WCAG 2.2 SC 1.4.1)
 
 ### Added
+- Sensitivity sandbox with an isolated sigma-threshold slider, current-vs-live comparison, archive peak, and historical level distribution
 - Public evidence packet card with current dial, data age, archive validation, UTC/local timestamps, source links, JSON download, and plain-text clipboard export
 - 365-day data coverage calendar with daily complete, partial, missing, delayed, and malformed archive states plus slot-level coverage totals
 - GitHub Pages deployment workflow (`.github/workflows/deploy-github-pages.yml`) publishing the static client to `https://sysadmindoc.github.io/ApocalypseWatch/`. The deployed client points `VITE_DASHBOARD_URL` at the upstream public R2 snapshot (`pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json`) and renders live cohort data refreshed by the upstream pipeline.

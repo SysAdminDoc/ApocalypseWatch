@@ -10,9 +10,10 @@ import { LevelHistory } from './components/LevelHistory'
 import { EmbedView } from './components/EmbedView'
 import { DataGapCalendar } from './components/DataGapCalendar'
 import { EvidencePacket } from './components/EvidencePacket'
+import { SensitivitySandbox } from './components/SensitivitySandbox'
 import { EMERGENCY_LEVELS } from './lib/constants'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
-import { buildArchiveHealth, decodeArchive } from './lib/archive'
+import { buildArchiveHealth, buildSensitivityPreview, decodeArchive } from './lib/archive'
 
 const APP_VERSION = '0.1.0'
 const EMPTY_ARCHIVE = []
@@ -111,6 +112,7 @@ export default function App() {
   const [themeMode, setThemeMode] = useState(getInitialThemeMode)
   const signal = useMemo(() => deriveSignal(data), [data])
   const emergencyLevel = useMemo(() => deriveEmergencyLevel(signal), [signal])
+  const [sensitivityThreshold, setSensitivityThreshold] = useState(null)
   const [levelAnnouncement, setLevelAnnouncement] = useState('')
   const prevLevelRef = useRef(emergencyLevel)
 
@@ -149,6 +151,17 @@ export default function App() {
   const archiveHealth = useMemo(
     () => buildArchiveHealth({ decodedArchive, liveStatus }),
     [decodedArchive, liveStatus],
+  )
+  const productionThreshold = Number(signal?.alarmSigmaThreshold)
+  const productionThresholdValue = Number.isFinite(productionThreshold) && productionThreshold > 0 ? productionThreshold : 7
+  const activeSensitivityThreshold = Number.isFinite(sensitivityThreshold) ? sensitivityThreshold : productionThresholdValue
+  const sensitivity = useMemo(
+    () => buildSensitivityPreview({
+      samples: decodedArchive.samples,
+      signal,
+      alarmSigmaThreshold: activeSensitivityThreshold,
+    }),
+    [decodedArchive.samples, signal, activeSensitivityThreshold],
   )
 
   if (IS_EMBED) return <EmbedView />
@@ -318,7 +331,15 @@ export default function App() {
           signal={signal}
           emergencyLevel={emergencyLevel}
           archiveHealth={archiveHealth}
+          sensitivity={sensitivity}
           lastFetchedAt={lastFetchedAt}
+        />
+
+        <SensitivitySandbox
+          preview={sensitivity}
+          productionEmergencyLevel={emergencyLevel}
+          productionThreshold={productionThresholdValue}
+          onThresholdChange={setSensitivityThreshold}
         />
 
         <LevelHistory />
