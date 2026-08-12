@@ -57,7 +57,7 @@ This is an **independent UI redesign** of [kylemcdonald/ews](https://github.com/
 - `npm audit --audit-level=high` gate in CI
 - Dependabot for npm, GitHub Actions, and pip dependencies
 - Structured logging with Pino
-- 34 unit tests for sigma calculation, RLE archive codec, archive health, evidence packet generation, and sensitivity previews
+- 35 unit tests for sigma calculation, RLE archive codec, archive health, evidence packet generation, and sensitivity previews
 
 ## Quick start
 

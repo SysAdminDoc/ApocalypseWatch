@@ -66,6 +66,24 @@ test('buildArchiveHealth flags irregular timestamps as malformed', () => {
   assert.equal(health.calendar[0].status, 'malformed')
 })
 
+test('buildArchiveHealth scopes malformed days to the affected samples', () => {
+  const health = buildArchiveHealth({
+    decodedArchive: decodeArchive([
+      sample('2026-08-10T00:00:00Z'),
+      sample('2026-08-11T00:00:00Z'),
+      { sampledAt: '2026-08-11T00:30:00Z', concurrentCount: 'invalid' },
+    ]),
+    liveStatus: { latestSampledAt: '2026-08-11T00:00:00Z', cadenceMinutes: 30 },
+    now: Date.parse('2026-08-11T01:00:00Z'),
+    days: 2,
+  })
+
+  assert.equal(health.calendar.find((day) => day.key === '2026-08-10').status, 'partial')
+  assert.equal(health.calendar.find((day) => day.key === '2026-08-11').status, 'malformed')
+  assert.equal(health.malformedSampleCount, 1)
+  assert.equal(health.completeDays, 0)
+})
+
 test('buildSensitivityPreview recalculates current and archive levels without mutating samples', () => {
   const samples = [
     { t: Date.parse('2026-08-11T00:00:00Z'), count: 10, expected: 8, sd: 1 },

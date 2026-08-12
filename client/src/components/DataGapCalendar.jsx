@@ -29,8 +29,12 @@ export function DataGapCalendar({ health }) {
     ...health.calendar,
   ]
   const latest = health.latestSampleAt ? formatTimestamp(health.latestSampleAt) : 'No valid samples'
+  const malformedCount = health.malformedSampleCount + health.intervalIssueCount + health.duplicateSampleCount
+  const malformedLabel = malformedCount > 0
+    ? `${malformedCount} archive issue${malformedCount === 1 ? '' : 's'}`
+    : 'an archive validation issue'
   const malformedDetail = health.malformed
-    ? ` Archive validation found ${health.intervalIssueCount + health.duplicateSampleCount} timestamp issue${health.intervalIssueCount + health.duplicateSampleCount === 1 ? '' : 's'}${health.issue ? `: ${health.issue}` : '.'}`
+    ? ` Archive validation found ${malformedLabel}${health.issue ? `: ${health.issue}` : '.'}`
     : ''
 
   return (
