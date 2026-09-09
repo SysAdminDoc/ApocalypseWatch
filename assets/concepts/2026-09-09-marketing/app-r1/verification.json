@@ -1,0 +1,93 @@
+{
+  "version": "0.2.1",
+  "started": "2026-09-09T12:15:23.271Z",
+  "mode": "Actual application and local API, fresh synthetic database",
+  "screenshots": [],
+  "checks": [
+    "Synthetic mode, six tracked and six airborne",
+    "No data collection attempted",
+    "Demo startup explicitly disables collection",
+    "Actual range endpoint returns 49 half-hour points"
+  ],
+  "exceptions": [],
+  "requests": [
+    {
+      "url": "http://isolated.local/",
+      "type": "Document"
+    },
+    {
+      "url": "http://isolated.local/assets/index-DfJZVsCa.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://isolated.local/assets/index-CkDBtF2c.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://isolated.local/registerSW.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://isolated.local/manifest.webmanifest",
+      "type": "Manifest"
+    },
+    {
+      "url": "http://isolated.local/api/dashboard?t=1788956124500",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://isolated.local/favicon.svg",
+      "type": "Other"
+    },
+    {
+      "url": "http://isolated.local/api/stream",
+      "type": "EventSource"
+    },
+    {
+      "url": "http://isolated.local/favicon.svg",
+      "type": "Other"
+    },
+    {
+      "url": "http://isolated.local/assets/GlobalMap-Bb13BoKu.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://isolated.local/assets/range-EplFIxc7.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://isolated.local/assets/ArchiveChart-dPTEGhTU.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://isolated.local/favicon.svg",
+      "type": "Image"
+    },
+    {
+      "url": "http://isolated.local/api/events?limit=50",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://isolated.local/api/events?limit=200",
+      "type": "Fetch"
+    }
+  ],
+  "protectedBefore": [
+    {
+      "name": "ews.sqlite",
+      "sha256": "32e36701ea12c6a91c2366be1abc68bc09664f75ff1c1d098bcf8e5f53f944ad",
+      "bytes": 462848
+    },
+    {
+      "name": "ews.sqlite-wal",
+      "sha256": "86d385a1335c2165abb616338fdd1ec92b3c86e0ff9ebc5e0b71bd3c57b2a189",
+      "bytes": 4120032
+    },
+    {
+      "name": "ews.sqlite-shm",
+      "sha256": "82141e5484125658d4a39591fd0035de92153bd3161275b87397d58f56a95222",
+      "bytes": 32768
+    }
+  ],
+  "finished": "2026-09-09T12:15:39.476Z"
+}

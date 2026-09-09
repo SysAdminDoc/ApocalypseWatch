@@ -1,0 +1,21 @@
+{
+  "family": "Inter Display",
+  "version": "4.1",
+  "source": "https://github.com/rsms/inter/releases/tag/v4.1",
+  "archiveUrl": "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip",
+  "archiveSha256": "9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e",
+  "publisherAssetDigest": null,
+  "integrityNote": "Downloaded from the official release over HTTPS. Published asset size matched; extracted entries and local SHA-256 hashes recorded. The publisher does not provide an asset digest for this release.",
+  "files": [
+    {
+      "name": "InterDisplay-Regular.ttf",
+      "bytes": 408972,
+      "sha256": "99614bda7ff423aaf470990692dd93613a5971ab4446e4a6d5a83b3d74865074"
+    },
+    {
+      "name": "InterDisplay-SemiBold.ttf",
+      "bytes": 418540,
+      "sha256": "0310d7a325896129730c6c8cf9a6e0f81ee258bedf77b1ff059b2a7b75f74e02"
+    }
+  ]
+}

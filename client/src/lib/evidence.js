@@ -1,19 +1,17 @@
 import { DASHBOARD_URL, EMERGENCY_LEVELS } from './constants.js'
+import { finiteNumber } from './signal.js'
 
-function finiteOrNull(value) {
-  const n = Number(value)
-  return Number.isFinite(n) ? n : null
-}
+
 
 function round(value, digits = 2) {
-  const n = finiteOrNull(value)
+  const n = finiteNumber(value)
   if (n === null) return null
   const factor = 10 ** digits
   return Math.round(n * factor) / factor
 }
 
 function ageMinutes(value) {
-  const n = finiteOrNull(value)
+  const n = finiteNumber(value)
   return n === null ? null : round(n / 60_000, 1)
 }
 
@@ -30,8 +28,8 @@ export function buildEvidencePacket({
   const asOf = data?.current?.asOf ?? signal?.asOf ?? data?.liveStatus?.latestSampledAt ?? null
   const asOfMs = asOf ? Date.parse(asOf) : NaN
   const generatedAt = new Date()
-  const trackedCount = finiteOrNull(data?.cohort?.trackedCount ?? data?.watchlist?.trackedCount)
-  const airborne = finiteOrNull(signal?.actualConcurrentCount ?? data?.current?.concurrentCount ?? data?.liveAircraft?.length)
+  const trackedCount = finiteNumber(data?.cohort?.trackedCount ?? data?.watchlist?.trackedCount)
+  const airborne = finiteNumber(signal?.actualConcurrentCount ?? data?.current?.concurrentCount ?? data?.liveAircraft?.length)
   const providerLabel = data?.liveStatus?.providerLabel ?? 'ADS-B Exchange'
 
   return {
@@ -42,6 +40,8 @@ export function buildEvidencePacket({
     sourceUrl,
     dashboardUrl: DASHBOARD_URL,
     mode: data?.mode ?? null,
+    warning: data?.warning ?? null,
+    limitation: 'Experimental activity signal, not an emergency warning or a forecast.',
     emergency: {
       level: emergencyLevel,
       label: levelInfo.label,
@@ -54,7 +54,7 @@ export function buildEvidencePacket({
     counts: {
       tracked: trackedCount,
       airborne,
-      liveAircraft: finiteOrNull(data?.liveAircraft?.length),
+      liveAircraft: finiteNumber(data?.liveAircraft?.length),
       expectedConcurrent: round(signal?.expectedConcurrentCount ?? data?.current?.baselineMean),
       baselineStdDev: round(signal?.expectedConcurrentStdDev ?? data?.current?.baselineStdDev),
       sigmaShift: round(signal?.sigmaShift ?? data?.current?.zScore),
@@ -113,6 +113,9 @@ export function buildEvidenceText(packet) {
   return [
     `ApocalypseWatch evidence packet generated: ${packet.generatedAt} UTC`,
     `Browser-local generation time: ${packet.generatedAtLocal}`,
+    `Data mode: ${packet.mode === 'demo' ? 'Synthetic demo, not measured aircraft activity' : packet.mode ?? 'not supplied'}`,
+    packet.limitation,
+    ...(packet.warning ? [`Data notice: ${packet.warning}`] : []),
     `Level ${packet.emergency.level}/5: ${packet.emergency.label}`,
     `Reading as of: ${packet.emergency.asOf ?? 'n/a'} (ISO 8601 UTC)`,
     `Airborne tracked jets: ${packet.counts.airborne ?? 'n/a'} of ${packet.counts.tracked ?? 'n/a'}`,

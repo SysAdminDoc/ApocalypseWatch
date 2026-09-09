@@ -13,7 +13,7 @@ function PlaneIcon() {
   )
 }
 
-export function AircraftList({ aircraft = [] }) {
+export function AircraftList({ aircraft = [], demo = false }) {
   const sorted = useMemo(() => {
     const source = Array.isArray(aircraft) ? aircraft : []
     return source
@@ -30,13 +30,13 @@ export function AircraftList({ aircraft = [] }) {
   return (
     <section className="card">
       <div className="card-header">
-        <div className="card-title">Live Aircraft</div>
+        <div className="card-title">{demo ? 'Demo aircraft' : 'Aircraft in this snapshot'}</div>
         <div className="card-eyebrow">{Array.isArray(aircraft) ? aircraft.length : 0} airborne</div>
       </div>
       {sorted.length === 0 ? (
         <div className="empty-state aircraft-empty">
-          <strong>No aircraft airborne</strong>
-          <span>No tracked jets are currently aloft.</span>
+          <strong>No aircraft with reported altitude</strong>
+          <span>This snapshot has no usable airborne entries. That alone doesn't establish that the real cohort is grounded.</span>
         </div>
       ) : (
         <ul className="aircraft-list" role="list">

@@ -1,7 +1,7 @@
-import { EMERGENCY_LEVELS } from '../lib/constants'
+import { EMERGENCY_LEVELS, RSS_URL } from '../lib/constants'
 import { formatCount, formatRelative, formatSigma } from '../lib/format'
 
-export function Hero({ emergencyLevel, sourceLabel, signal, cohort, liveStatus }) {
+export function Hero({ emergencyLevel, sourceLabel, signal, cohort, liveStatus, demo = false }) {
   const cfg = EMERGENCY_LEVELS.find((l) => l.level === emergencyLevel) ?? EMERGENCY_LEVELS[0]
   const sampledAt = liveStatus?.latestSampledAt
   const trackedCount = Number(cohort?.trackedCount)
@@ -18,15 +18,15 @@ export function Hero({ emergencyLevel, sourceLabel, signal, cohort, liveStatus }
       <div className="hero-copy">
         <span className="hero-eyebrow">
           <span className="pulse" />
-          Live · {sourceLabel ?? 'ADS-B Exchange'}
+          {demo ? 'Synthetic demo' : 'Latest snapshot'} · {sourceLabel ?? 'Configured provider'}
         </span>
-        <h1 className="hero-title">Apocalypse Watch</h1>
+        <h2 className="hero-title">Read the signal in context.</h2>
         <p className="hero-caption">
-          Tracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at
-          once, the signal moves toward level 5.
+          The dial compares an observed aircraft count with an expected count from historical activity.
+          Open the calculation to see the inputs. A higher reading doesn&apos;t tell you why aircraft are flying.
         </p>
         <p className="hero-caption hero-caption--muted">
-          Current reading: <strong>Level {cfg.level} — {cfg.label}</strong>. {cfg.tone}.
+          Current reading: <strong>Level {cfg.level}: {cfg.label}</strong>. {cfg.tone}.
         </p>
         <div className="hero-metrics" aria-label="Current signal summary">
           {metrics.map((metric) => (
@@ -41,8 +41,7 @@ export function Hero({ emergencyLevel, sourceLabel, signal, cohort, liveStatus }
           <span>Client by SysAdminDoc</span>
           <span className="sep">/</span>
           <a href="https://github.com/SysAdminDoc/ApocalypseWatch" target="_blank" rel="noreferrer">GitHub</a>
-          <span className="sep">/</span>
-          <a href="/rss.xml" target="_blank" rel="noreferrer">RSS</a>
+          {RSS_URL ? <><span className="sep">/</span><a href={RSS_URL} target="_blank" rel="noreferrer">RSS</a></> : null}
           <span className="sep">/</span>
           <span>data: <a href="https://github.com/kylemcdonald/ews" target="_blank" rel="noreferrer">kylemcdonald/ews</a></span>
         </div>

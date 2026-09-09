@@ -10,6 +10,7 @@ import {
 } from 'recharts'
 import { DASHBOARD_URL, RANGE_OPTIONS } from '../lib/constants'
 import { decodeArchive } from '../lib/archive'
+import { isLocalApi } from '../lib/signal.js'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -40,7 +41,7 @@ export function ArchiveChart({ archive, signal }) {
   const range = RANGE_OPTIONS.find((r) => r.id === rangeId) ?? RANGE_OPTIONS[0]
 
   useEffect(() => {
-    if (DASHBOARD_URL) return
+    if (!isLocalApi(DASHBOARD_URL)) return
     const controller = new AbortController()
     fetch('/api/events?limit=200', { signal: controller.signal })
       .then((r) => r.ok ? r.json() : null)
@@ -165,7 +166,7 @@ export function ArchiveChart({ archive, signal }) {
         ) : filtered.length === 0 ? (
           <div className="chart-state">No samples in range yet.</div>
         ) : (
-            <AreaChart data={filtered} responsive margin={{ top: 10, right: 16, left: 0, bottom: 6 }}>
+            <AreaChart data={filtered} responsive style={{ width: '100%', height: '100%' }} margin={{ top: 10, right: 16, left: 0, bottom: 6 }}>
               <defs>
                 <linearGradient id="ac-area" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.55} />

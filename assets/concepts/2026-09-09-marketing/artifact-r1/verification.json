@@ -1,0 +1,59 @@
+{
+  "version": "0.2.1",
+  "checkedAt": "2026-09-09T12:34:37.295Z",
+  "packages": [
+    {
+      "file": "ApocalypseWatch-v0.2.1-demo.zip",
+      "bytes": 680961,
+      "sha256": "5a167193fc693ad739342875720d381b4fbf4f14fa60d3ab8ad9d8d2119856e9",
+      "files": 30
+    },
+    {
+      "file": "ApocalypseWatch-v0.2.1-source.zip",
+      "bytes": 24548015,
+      "sha256": "76d3d30493a38863ff519784c57d7b8770d0550cce477d86b4ada6a9e6c45ad4",
+      "files": 183
+    }
+  ],
+  "checks": [
+    "Every extracted file matches the package manifest",
+    "Installed demo labels its synthetic data",
+    "All runtime browser requests stay on loopback",
+    "No missing external API or transition request",
+    "No browser exceptions in packaged app",
+    "No database or dependency directory created",
+    "Fresh source ci --no-audit --no-fund",
+    "Fresh source test",
+    "Fresh source run lint",
+    "Fresh source run build:local",
+    "All 83 original Git blobs survive the source package"
+  ],
+  "exceptions": [],
+  "requests": [
+    "http://isolated.local/",
+    "http://isolated.local/assets/index-BayOCZTZ.js",
+    "http://isolated.local/assets/index-CkDBtF2c.css",
+    "http://isolated.local/registerSW.js",
+    "http://isolated.local/manifest.webmanifest",
+    "http://isolated.local/dashboard.json?t=1788957278070",
+    "http://isolated.local/favicon.svg",
+    "http://isolated.local/favicon.svg",
+    "http://isolated.local/assets/GlobalMap-C2unAsfQ.js",
+    "http://isolated.local/assets/range-EplFIxc7.js",
+    "http://isolated.local/assets/ArchiveChart-L72TOfUA.js",
+    "http://isolated.local/favicon.svg",
+    "http://isolated.local/",
+    "http://isolated.local/assets/index-BayOCZTZ.js",
+    "http://isolated.local/assets/index-CkDBtF2c.css",
+    "http://isolated.local/registerSW.js",
+    "http://isolated.local/manifest.webmanifest",
+    "http://isolated.local/dashboard.json?t=1788957278861",
+    "http://isolated.local/favicon.svg",
+    "http://isolated.local/favicon.svg",
+    "http://isolated.local/assets/GlobalMap-C2unAsfQ.js",
+    "http://isolated.local/assets/range-EplFIxc7.js",
+    "http://isolated.local/assets/ArchiveChart-L72TOfUA.js",
+    "http://isolated.local/favicon.svg"
+  ],
+  "passed": true
+}

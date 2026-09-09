@@ -39,7 +39,7 @@ export default defineConfig({
       manifest: {
         name: 'ApocalypseWatch',
         short_name: 'AW',
-        description: 'Private-jet anomaly monitor',
+        description: 'Business-jet activity with source timestamps and exportable evidence',
         start_url: process.env.VITE_BASE_PATH ?? '/',
         theme_color: '#06080e',
         background_color: '#06080e',

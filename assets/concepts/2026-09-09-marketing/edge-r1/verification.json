@@ -1,0 +1,31 @@
+{
+  "version": "0.2.1",
+  "purpose": "Explicit fault and level fixtures, not measured aircraft data or marketing screenshots",
+  "checks": [
+    "Calculation opens and explains 1.75 sigma band",
+    "Level 1 needle has expected orientation",
+    "Level 2 needle has expected orientation",
+    "Level 3 needle has expected orientation",
+    "Level 4 needle has expected orientation",
+    "Level 5 needle has expected orientation",
+    "Stale source warning remains visible",
+    "Local level-history card displays fixture transition",
+    "Malformed snapshot produces no dial",
+    "Failed compact view does not show a calm level",
+    "Compact view opens one event stream only",
+    "No uncaught browser exceptions"
+  ],
+  "captures": [
+    "level-1-dark",
+    "level-2-dark",
+    "level-3-dark",
+    "level-4-dark",
+    "level-5-dark",
+    "stale-dark",
+    "transition-dark",
+    "malformed-dark",
+    "embed-unavailable"
+  ],
+  "exceptions": [],
+  "passed": true
+}

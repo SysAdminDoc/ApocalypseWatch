@@ -3,33 +3,7 @@ import { useDashboard } from '../hooks/useDashboard'
 import { EMERGENCY_LEVELS } from '../lib/constants'
 import { formatCount, formatRelative, formatSigma, formatTimestamp } from '../lib/format'
 import { FreshnessRibbon } from './FreshnessRibbon'
-
-function deriveSignal(dashboard) {
-  if (!dashboard) return null
-  return (
-    dashboard.signals?.composite ?? {
-      asOf: dashboard.current?.asOf,
-      actualConcurrentCount: dashboard.current?.concurrentCount,
-      expectedConcurrentCount: dashboard.current?.baselineMean,
-      expectedConcurrentStdDev: dashboard.current?.baselineStdDev,
-      sigmaShift: dashboard.current?.zScore,
-      alertLevel: dashboard.current?.alertLevel,
-      emergencyLevel: dashboard.current?.emergencyLevel,
-    }
-  )
-}
-
-function deriveEmergencyLevel(signal) {
-  const lvl = Number(signal?.emergencyLevel)
-  if (Number.isFinite(lvl) && lvl >= 1 && lvl <= 5) return Math.round(lvl)
-  const sigma = Number(signal?.sigmaShift)
-  if (!Number.isFinite(sigma)) return 1
-  if (sigma >= 7) return 5
-  if (sigma >= 5) return 4
-  if (sigma >= 3.5) return 3
-  if (sigma >= 1.5) return 2
-  return 1
-}
+import { deriveSignal, deriveEmergencyLevel } from '../lib/signal.js'
 
 export function WallboardView() {
   const { data, lastFetchedAt } = useDashboard()

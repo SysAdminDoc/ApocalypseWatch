@@ -7,12 +7,12 @@ export function AboutCard({ cohort, signal }) {
         <div className="card-title">How it works</div>
       </div>
       <p>
-        A curated cohort of business jets is pulled from the FAA registry. Every 30 minutes the backend reads the
-        latest <strong>ADS-B Exchange</strong> heatmap and counts how many cohort aircraft were airborne.
+        The self-hosted pipeline builds a business-jet cohort from the FAA registry and reads half-hour ADS-B heatmaps.
+        A static dashboard instead displays the snapshot supplied by its configured data source.
       </p>
       <p>
-        Each slot is compared to a rolling 24-hour baseline of the same time-of-day windows. Sigma shifts beyond
-        the configured threshold escalate the emergency level (1–5).
+        The local model learns time-of-day and weekday patterns from up to 28 days of history. Its sigma deviation
+        sets an activity level from 1 to 5. External snapshots may use a different model.
       </p>
       <details>
         <summary>Technical detail</summary>
@@ -22,7 +22,7 @@ export function AboutCard({ cohort, signal }) {
           <li>Concurrent expected: <strong>{formatCount(signal?.expectedConcurrentCount)}</strong></li>
           <li>Concurrent actual: <strong>{formatCount(signal?.actualConcurrentCount)}</strong></li>
           <li>Sigma shift: <strong>{formatSigma(signal?.sigmaShift)}</strong></li>
-          <li>Alert level: <strong>{signal?.alertLevel ?? 'normal'}</strong></li>
+          <li>Signal classification: <strong>{signal?.alertLevel ?? 'normal'}</strong></li>
         </ul>
       </details>
       <p className="about-credit">

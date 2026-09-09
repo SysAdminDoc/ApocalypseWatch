@@ -1,3 +1,5 @@
 ApocalypseWatch notices
 
 The data pipeline (Node/Express server, Python ADS-B Exchange ingestion scripts, FAA cohort importer, snapshot/RSS exporters) is derived from the original "Early Warning System" by Kyle McDonald (https://github.com/kylemcdonald/ews). The frontend client in this repository is an independent, ground-up redesign.
+
+Inter Display 4.1 is used to reproduce the marketing artwork. Copyright (c) 2016 The Inter Project Authors. The two unmodified font files are distributed under the SIL Open Font License 1.1; see assets/fonts/LICENSE.txt and assets/fonts/provenance.json. Font licensing is separate from the MIT software license.

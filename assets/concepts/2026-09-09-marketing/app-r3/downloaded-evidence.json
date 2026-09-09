@@ -1,0 +1,89 @@
+{
+  "schema": "apocalypsewatch.evidence.v1",
+  "app": "ApocalypseWatch",
+  "generatedAt": "2026-09-09T12:19:25.453Z",
+  "generatedAtLocal": "Wed Sep 09 2026 08:19:25 GMT-0400 (Eastern Daylight Time)",
+  "sourceUrl": "http://127.0.0.1:59162/",
+  "dashboardUrl": "/api/dashboard",
+  "mode": "demo",
+  "warning": "No cohort has been imported yet. This dashboard is showing synthetic review data.",
+  "limitation": "Experimental activity signal, not an emergency warning or a forecast.",
+  "emergency": {
+    "level": 1,
+    "label": "Baseline",
+    "tone": "Below the first deviation band",
+    "asOf": "2026-09-09T12:00:00.000Z",
+    "asOfEpochMs": 1788955200000,
+    "dataAgeMs": 1165406,
+    "dataAgeMinutes": 19.4
+  },
+  "counts": {
+    "tracked": 6,
+    "airborne": 6,
+    "liveAircraft": 6,
+    "expectedConcurrent": 5.2,
+    "baselineStdDev": 0.9,
+    "sigmaShift": 0.89,
+    "alarmSigmaThreshold": 7
+  },
+  "archive": {
+    "format": "rle-v1",
+    "decodedSamples": 17520,
+    "earliestSampleAt": "2025-09-09T12:30:00.000Z",
+    "latestSampleAt": "2026-09-09T12:00:00.000Z",
+    "completeDays": 365,
+    "partialDays": 0,
+    "missingDays": 0,
+    "expectedSlots": 17497,
+    "observedSlots": 17497,
+    "missingSlots": 0,
+    "coverageRatio": 1,
+    "delayed": false,
+    "issue": null
+  },
+  "sensitivity": {
+    "alarmSigmaThreshold": 7,
+    "currentLevel": 1,
+    "currentSigmaShift": 0.89,
+    "peakLevel": 2,
+    "peakSigmaShift": 2.06,
+    "peakAt": "2025-11-27T22:00:00.000Z",
+    "scoredSamples": 17520,
+    "levelCounts": {
+      "1": 17059,
+      "2": 461,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    }
+  },
+  "freshness": {
+    "provider": "Synthetic demonstration",
+    "latestSampledAt": "2026-09-09T12:00:00.000Z",
+    "lastFetchedAt": "2026-09-09T12:19:25.389Z",
+    "lastError": null,
+    "nextRefreshAt": null
+  },
+  "sources": [
+    {
+      "label": "Dashboard snapshot",
+      "url": "/api/dashboard"
+    },
+    {
+      "label": "Provider",
+      "name": "Synthetic demonstration"
+    },
+    {
+      "label": "ADS-B Exchange data products",
+      "url": "https://www.adsbexchange.com/data-products/"
+    },
+    {
+      "label": "Airplanes.Live API guide",
+      "url": "https://airplanes.live/api-guide/"
+    },
+    {
+      "label": "ADSB.lol open data",
+      "url": "https://www.adsb.lol/docs/open-data/api/"
+    }
+  ]
+}

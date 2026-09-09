@@ -390,13 +390,17 @@ async function start() {
   }
 
   const hadPersistedSnapshot = dashboardSnapshotManager.hasSnapshot();
-  await dashboardSnapshotManager.ensureReady();
+  const initialSnapshot = await dashboardSnapshotManager.ensureReady();
 
-  app.listen(PORT, () => {
-    logger.info(`EWS server listening on http://localhost:${PORT}`);
+  app.listen(PORT, process.env.HOST, () => {
+    logger.info(`ApocalypseWatch server listening on http://localhost:${PORT}`);
   });
 
-  heatmapRefresher.start();
+  if (initialSnapshot.mode === "demo") {
+    logger.info("Synthetic demo mode. Data downloads and notifications are inactive. Import a cohort and restart for measured activity.");
+  } else {
+    heatmapRefresher.start();
+  }
   if (hadPersistedSnapshot) {
     void dashboardSnapshotManager.refresh({ reason: "startup_rebuild" });
   }

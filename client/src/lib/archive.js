@@ -1,10 +1,11 @@
+import { finiteNumber } from './signal.js'
+
 const HALF_HOUR_MS = 30 * 60 * 1000
 const DAY_MS = 24 * 60 * 60 * 1000
 const DEFAULT_CADENCE_MINUTES = 30
 
 function toFinite(value) {
-  const n = Number(value)
-  return Number.isFinite(n) ? n : null
+  return finiteNumber(value)
 }
 
 export function decodeArchive(archive) {
@@ -16,8 +17,8 @@ export function decodeArchive(archive) {
       .map((s) => {
         const t = Date.parse(s?.sampledAt ?? s?.timestamp ?? '')
         const count = toFinite(s?.concurrentCount ?? s?.count)
-        const expected = toFinite(s?.predictedConcurrentCount ?? s?.expectedCount)
-        const sd = toFinite(s?.predictedConcurrentStdDev ?? s?.stdDev ?? s?.standardDeviation)
+        const expected = toFinite(s?.expectedConcurrentCount ?? s?.predictedConcurrentCount ?? s?.expectedCount)
+        const sd = toFinite(s?.expectedConcurrentStdDev ?? s?.predictedConcurrentStdDev ?? s?.stdDev ?? s?.standardDeviation)
         const lower = expected !== null && sd !== null ? Math.max(0, expected - sd) : null
         const bandWidth = expected !== null && sd !== null ? expected + sd - Math.max(0, expected - sd) : null
         if (!Number.isFinite(t) || count === null) {
@@ -57,10 +58,9 @@ export function decodeArchive(archive) {
   const timestamps = [startMs]
   let cursor = startMs
   for (const run of archive.tr) {
-    if (!Array.isArray(run)) return { samples: [], issue: 'Archive timestamp run is malformed.', format: 'rle-v1' }
-    const delta = toFinite(run[0])
-    const length = Number(run[1])
-    if (delta === null || delta <= 0 || !Number.isInteger(length) || length < 0) {
+    const delta = toFinite(Array.isArray(run) ? run[0] : run)
+    const length = Array.isArray(run) ? Number(run[1]) : 1
+    if (delta === null || delta <= 0 || !Number.isInteger(length) || length < 0 || timestamps.length + length > archive.c.length) {
       return { samples: [], issue: 'Archive timestamp run contains invalid values.', format: 'rle-v1' }
     }
     for (let i = 0; i < length; i += 1) {

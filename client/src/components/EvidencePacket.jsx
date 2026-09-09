@@ -58,14 +58,14 @@ export function EvidencePacket({ data, signal, emergencyLevel, archiveHealth, se
     <section className="card evidence-card" id="evidence-packet" aria-labelledby="evidence-title">
       <div className="card-header">
         <div>
-          <div className="card-title" id="evidence-title">Public evidence packet</div>
+          <div className="card-title" id="evidence-title">Evidence packet</div>
           <div className="evidence-subtitle">Current snapshot · JSON + plain text</div>
         </div>
         <div className="card-eyebrow">Generated {formatTimestamp(packet.generatedAt)}</div>
       </div>
 
       <p className="evidence-intro">
-        A citation-ready snapshot of the dial, model inputs, data age, archive validation, and source links. ISO
+        Save the reading with its model inputs, data age, coverage checks and references. ISO
         timestamps in the downloaded JSON are UTC; the packet also includes the browser&apos;s local generation time.
       </p>
 
@@ -90,7 +90,7 @@ export function EvidencePacket({ data, signal, emergencyLevel, archiveHealth, se
       </div>
 
       <div className="evidence-sources">
-        <span>Sources</span>
+        <span>Source and references</span>
         {packet.sources.map((source) => source.url ? (
           <a key={source.label} href={source.url} target="_blank" rel="noreferrer">{source.label}</a>
         ) : (

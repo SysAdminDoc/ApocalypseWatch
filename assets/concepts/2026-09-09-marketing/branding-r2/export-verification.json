@@ -1,0 +1,61 @@
+{
+  "version": "0.2.1",
+  "exports": [
+    {
+      "size": 16,
+      "bytes": 971,
+      "sha256": "d0179143e96a723b135625f8bba69273a6105f61e8474bd55c4816f54c459cf2",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 32,
+      "bytes": 2064,
+      "sha256": "11ef55374db1a703bd071ab08142c6442d3822d11a7348aa953e25ad47c0bf6d",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 48,
+      "bytes": 3099,
+      "sha256": "131ce423cb7bd2d9e14ab512ed14360792c72b30212355234fe37d6d6f6f4794",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 64,
+      "bytes": 3841,
+      "sha256": "95870b8de0c26eb45c6b388c0671d74f10fd342594aac32c6e1796ee824bbc6f",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 128,
+      "bytes": 7220,
+      "sha256": "73905578d771b7745e7bb8a250211aeddf031e9b84d87943f78f0bf5c8f23dae",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 192,
+      "bytes": 10585,
+      "sha256": "852464cd1d59b7b0118e57a44db754139c301ad5148aa5c3a3e3eaeaf4fdb8ec",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 256,
+      "bytes": 14088,
+      "sha256": "a331f2e2043b979f34a499cf1b0c4c0047bb12bebd8f8d0782fd4fd94f441751",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 512,
+      "bytes": 30061,
+      "sha256": "0de48c1c255a5c5bc8d783067d2d498950d3bdfca47a5661a9245b37ee9566fc",
+      "cornerAlpha": 0
+    },
+    {
+      "size": 1024,
+      "bytes": 67889,
+      "sha256": "8a3cb456170acc4daeee8a87237055f553af5354b6002669c1170e35cb798a24",
+      "cornerAlpha": 0
+    }
+  ],
+  "source": "client/public/favicon.svg",
+  "method": "Native SVG render; transparent corner alpha checked, exported bytes match renderer"
+}

@@ -1,8 +1,8 @@
 {
   "name": "apocalypsewatch",
   "private": true,
-  "version": "0.2.0",
-  "description": "Apocalypse Watch — premium realtime dashboard for tracked private-jet anomaly signals over a rolling 24-hour window.",
+  "version": "0.2.1",
+  "description": "Business-jet activity dashboard with source timestamps, historical context and exportable evidence.",
   "type": "commonjs",
   "workspaces": [
     "client"
@@ -23,7 +23,11 @@
     "telegram:alert": "node scripts/send_telegram_alert.js",
     "update:api": "python3 scripts/update_latest_from_api.py",
     "lint": "npm run lint --workspace client",
-    "test": "node --test server/dashboard.test.js client/src/lib/archive.test.js client/src/lib/evidence.test.js"
+    "test": "node --test server/dashboard.test.js client/src/lib/archive.test.js client/src/lib/evidence.test.js client/src/lib/signal.test.js scripts/release.test.js",
+    "build:branding": "node scripts/generate_og_image.js",
+    "build:local": "node scripts/build-client.js local",
+    "build:demo": "node scripts/build-client.js demo",
+    "package": "node scripts/package-release.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
@@ -35,6 +39,11 @@
     "pino-http": "^10.5.0"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "@resvg/resvg-js": "2.6.2",
+    "concurrently": "^9.2.1",
+    "fflate": "0.8.3"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }

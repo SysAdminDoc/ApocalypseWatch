@@ -1,0 +1,3 @@
+# Keep the archived originals byte-for-byte, including their Windows line endings.
+assets/concepts/2026-09-09-marketing/original-logo-prompts.txt -text whitespace=cr-at-eol
+assets/concepts/2026-09-09-marketing/restored-aircraft.svg -text whitespace=cr-at-eol

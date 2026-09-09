@@ -3,6 +3,7 @@ import { geoNaturalEarth1, geoPath, geoGraticule10 } from 'd3-geo'
 import { feature } from 'topojson-client'
 import worldData from 'world-atlas/countries-110m.json'
 import { formatTimestamp } from '../lib/format'
+import { finiteNumber } from '../lib/signal.js'
 
 const WIDTH = 980
 const HEIGHT = 480
@@ -13,14 +14,11 @@ function makeProjection() {
   return projection
 }
 
-function toFiniteNumber(value) {
-  const n = Number(value)
-  return Number.isFinite(n) ? n : null
-}
+
 
 function projectAircraftPoint(aircraft, projection) {
-  const lat = toFiniteNumber(aircraft?.lat)
-  const lon = toFiniteNumber(aircraft?.lon)
+  const lat = finiteNumber(aircraft?.lat)
+  const lon = finiteNumber(aircraft?.lon)
   if (lat === null || lon === null || lat < -90 || lat > 90 || lon < -180 || lon > 180) return null
 
   const xy = projection([lon, lat])
@@ -29,8 +27,8 @@ function projectAircraftPoint(aircraft, projection) {
   const trail = []
   if (Array.isArray(aircraft.path)) {
     for (const pt of aircraft.path) {
-      const pLat = toFiniteNumber(pt?.lat)
-      const pLon = toFiniteNumber(pt?.lon)
+      const pLat = finiteNumber(pt?.lat)
+      const pLon = finiteNumber(pt?.lon)
       if (pLat === null || pLon === null) continue
       const pxy = projection([pLon, pLat])
       if (pxy && Number.isFinite(pxy[0]) && Number.isFinite(pxy[1])) {
@@ -46,12 +44,12 @@ function projectAircraftPoint(aircraft, projection) {
     rotation: Number.isFinite(Number(aircraft?.track)) ? Number(aircraft.track) : 0,
     callsign: aircraft.callsign ?? aircraft.registration ?? aircraft.hex ?? '—',
     model: aircraft.label ?? aircraft.modelLabel ?? aircraft.model ?? '',
-    altitude: toFiniteNumber(aircraft.altitudeFt ?? aircraft.altitude),
+    altitude: finiteNumber(aircraft.altitudeFt ?? aircraft.altitude),
     trail,
   }
 }
 
-export function GlobalMap({ aircraft = [], asOf, onAirborneCount }) {
+export function GlobalMap({ aircraft = [], asOf, onAirborneCount, demo = false }) {
   const [projection] = useState(() => makeProjection())
   const path = useMemo(() => geoPath(projection), [projection])
 
@@ -82,7 +80,7 @@ export function GlobalMap({ aircraft = [], asOf, onAirborneCount }) {
   return (
     <section className="card map-card">
       <div className="card-header">
-        <div className="card-title">Realtime Tracker</div>
+        <div className="card-title">Aircraft positions</div>
         <div className="map-meta">
           {points.length} aircraft visible{droppedCount ? ` · ${droppedCount} hidden` : ''} · {formatTimestamp(asOf)}
         </div>
@@ -144,7 +142,7 @@ export function GlobalMap({ aircraft = [], asOf, onAirborneCount }) {
           </g>
         </svg>
         <div className="map-legend">
-          <span className="map-legend-dot" /> tracked private jet · live position
+          <span className="map-legend-dot" /> {demo ? 'Synthetic aircraft positions' : 'Positions from the latest snapshot'}
         </div>
       </div>
     </section>

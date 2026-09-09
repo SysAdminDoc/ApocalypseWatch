@@ -1,17 +1,6 @@
-function createSeries(length, startValue, noise, trend = 0) {
-  const values = [];
-  let current = startValue;
-
-  for (let index = 0; index < length; index += 1) {
-    current += trend + (Math.sin(index / 3) * noise) / 2 + ((index % 5) - 2) * (noise / 8);
-    values.push(Math.max(1, Math.round(current)));
-  }
-
-  return values;
-}
-
 function getDemoDashboard() {
-  const archiveSeries = createSeries(365 * 48, 8, 1.6, 0.001);
+  const archiveLength = 365 * 48;
+  const nowMs = Math.floor(Date.now() / 1_800_000) * 1_800_000;
   const currentConcurrentCount = 6;
   const expectedConcurrentCount = 5.2;
   const expectedConcurrentStdDev = 0.9;
@@ -21,7 +10,7 @@ function getDemoDashboard() {
   const emergencyLevel = zScore >= alarmSigmaThreshold ? 5 : Math.min(4, Math.max(1, Math.floor((Math.max(0, zScore) / alarmSigmaThreshold) * 4) + 1));
   const cohort = {
     configured: false,
-    trackedCount: 0,
+    trackedCount: 6,
     reason: "Run `npm run import:faa` to switch from demo mode to real tracking.",
   };
 
@@ -31,15 +20,15 @@ function getDemoDashboard() {
     cohort,
     watchlist: cohort,
     liveStatus: {
-      provider: "adsbx_heatmap",
-      providerLabel: "ADS-B Exchange heatmap",
+      provider: "synthetic_demo",
+      providerLabel: "Synthetic demonstration",
       cadenceMinutes: 30,
       refreshing: false,
       nextRefreshAt: null,
       lastAttemptAt: null,
       lastSuccessAt: null,
       lastError: null,
-      latestSampledAt: new Date().toISOString(),
+      latestSampledAt: new Date(nowMs).toISOString(),
       latestSlotKey: "demo",
       latestUrl: null,
       cachePath: null,
@@ -49,7 +38,7 @@ function getDemoDashboard() {
       concurrentCount: 6,
     },
     current: {
-      asOf: new Date().toISOString(),
+      asOf: new Date(nowMs).toISOString(),
       concurrentCount: currentConcurrentCount,
       baselineMean: expectedConcurrentCount,
       baselineStdDev: expectedConcurrentStdDev,
@@ -62,7 +51,7 @@ function getDemoDashboard() {
     },
     signals: {
       composite: {
-        asOf: new Date().toISOString(),
+        asOf: new Date(nowMs).toISOString(),
         actualConcurrentCount: currentConcurrentCount,
         expectedConcurrentCount,
         expectedConcurrentStdDev,
@@ -84,7 +73,7 @@ function getDemoDashboard() {
         hex: "d3m001",
         registration: "N-DEMO1",
         label: "Cohort 01",
-        observed_at: new Date().toISOString(),
+        observed_at: new Date(nowMs).toISOString(),
         lat: 40.7128,
         lon: -74.006,
         altitudeFt: 39000,
@@ -96,7 +85,7 @@ function getDemoDashboard() {
         hex: "d3m002",
         registration: "N-DEMO2",
         label: "Cohort 02",
-        observed_at: new Date().toISOString(),
+        observed_at: new Date(nowMs).toISOString(),
         lat: 51.5072,
         lon: -0.1276,
         altitudeFt: 41000,
@@ -108,7 +97,7 @@ function getDemoDashboard() {
         hex: "d3m003",
         registration: "N-DEMO3",
         label: "Cohort 03",
-        observed_at: new Date().toISOString(),
+        observed_at: new Date(nowMs).toISOString(),
         lat: 25.2048,
         lon: 55.2708,
         altitudeFt: 38200,
@@ -120,7 +109,7 @@ function getDemoDashboard() {
         hex: "d3m004",
         registration: "N-DEMO4",
         label: "Cohort 04",
-        observed_at: new Date().toISOString(),
+        observed_at: new Date(nowMs).toISOString(),
         lat: -23.5505,
         lon: -46.6333,
         altitudeFt: 36700,
@@ -132,7 +121,7 @@ function getDemoDashboard() {
         hex: "d3m005",
         registration: "N-DEMO5",
         label: "Cohort 05",
-        observed_at: new Date().toISOString(),
+        observed_at: new Date(nowMs).toISOString(),
         lat: 35.6764,
         lon: 139.65,
         altitudeFt: 40100,
@@ -144,7 +133,7 @@ function getDemoDashboard() {
         hex: "d3m006",
         registration: "N-DEMO6",
         label: "Cohort 06",
-        observed_at: new Date().toISOString(),
+        observed_at: new Date(nowMs).toISOString(),
         lat: -33.8688,
         lon: 151.2093,
         altitudeFt: 35400,
@@ -154,19 +143,12 @@ function getDemoDashboard() {
       },
     ],
     trends: {
-      archive: archiveSeries.map((value, index) => {
-        const sampledAt = new Date(Date.now() - (archiveSeries.length - 1 - index) * 30 * 60 * 1000).toISOString();
-        const concurrentCount = Math.max(1, Math.round(value * (0.65 + Math.sin(index / 24) * 0.08)));
-        const predictedConcurrentCount = Math.max(
-          1,
-          Math.round(concurrentCount * 0.94 + Math.sin(index / 33) * 2),
-        );
-        return {
-          sampledAt,
-          concurrentCount,
-          predictedConcurrentCount,
-          divergence: concurrentCount - predictedConcurrentCount,
-        };
+      archive: Array.from({ length: archiveLength }, (_, index) => {
+        const sampledAt = new Date(nowMs - (archiveLength - 1 - index) * 1_800_000).toISOString();
+        const isLatest = index === archiveLength - 1;
+        const concurrentCount = isLatest ? currentConcurrentCount : Math.max(1, Math.min(6, Math.round(3 + Math.sin(index / 20) * 1.7 + Math.sin(index / 97))));
+        const expectedConcurrentCount = isLatest ? 5.2 : Math.max(1, Math.min(6, 3 + Math.sin(index / 20) * 1.3));
+        return { sampledAt, concurrentCount, expectedConcurrentCount, expectedConcurrentStdDev: 0.9 };
       }),
     },
   };

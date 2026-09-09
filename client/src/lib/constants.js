@@ -1,11 +1,11 @@
 export const DASHBOARD_POLL_INTERVAL_MS = 60_000
 
 export const EMERGENCY_LEVELS = [
-  { level: 1, label: 'Calm', tone: 'Nominal baseline' },
+  { level: 1, label: 'Baseline', tone: 'Below the first deviation band' },
   { level: 2, label: 'Watch', tone: 'Mild elevation' },
-  { level: 3, label: 'Alert', tone: 'Notable deviation' },
-  { level: 4, label: 'Severe', tone: 'Significant anomaly' },
-  { level: 5, label: 'Critical', tone: 'Apocalypse signal' },
+  { level: 3, label: 'Elevated', tone: 'Notable activity deviation' },
+  { level: 4, label: 'High', tone: 'Large activity deviation' },
+  { level: 5, label: 'Threshold', tone: 'Configured activity threshold reached' },
 ]
 
 export const RANGE_OPTIONS = [
@@ -19,3 +19,6 @@ const clientEnv = import.meta.env ?? {}
 
 export const DASHBOARD_URL =
   clientEnv.VITE_DASHBOARD_URL ?? '/api/dashboard'
+
+export const BRAND_ICON_URL = `${clientEnv.BASE_URL ?? '/'}favicon.svg`
+export const RSS_URL = clientEnv.VITE_RSS_URL || (DASHBOARD_URL === '/api/dashboard' ? '/rss.xml' : null)

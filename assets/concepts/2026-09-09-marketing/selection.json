@@ -1,0 +1,16 @@
+{
+  "project": "ApocalypseWatch",
+  "version": "0.2.1",
+  "reviewDate": "2026-09-09",
+  "selectedIcon": "flight-signal.svg",
+  "selectedShareImage": "branding-r2/og-image.png",
+  "selectedProductCaptureAttempt": "app-r4",
+  "originalsPreserved": true,
+  "imageGenerationUsed": false,
+  "designReview": {
+    "icon": "Clear aircraft silhouette and open observation ring. Checked on dark and light surfaces at 16 through 128 pixels. Uses the dashboard palette without disaster imagery.",
+    "shareImage": "Readable hierarchy, restrained color, correct icon rendering and an explicit experimental limitation. The failed first export remains archived.",
+    "readme": "Leads with purpose and verified downloads, shows actual application captures, explains synthetic mode and separates the current release from the older hosted site.",
+    "limits": "Internal review only. No external design-agency approval, provider validation or legal clearance is implied."
+  }
+}

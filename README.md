@@ -1,180 +1,79 @@
 # ApocalypseWatch
 
-[![Live](https://img.shields.io/badge/live-sysadmindoc.github.io%2FApocalypseWatch-f5c2e7?style=flat-square)](https://sysadmindoc.github.io/ApocalypseWatch/)
-[![Version](https://img.shields.io/badge/version-0.2.0-89b4fa?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch)
-[![License](https://img.shields.io/badge/license-MIT-94e2d5?style=flat-square)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-web-f9e2af?style=flat-square)](#)
+[![Version](https://img.shields.io/badge/version-0.2.1-076b9b?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch/releases/latest) [![License](https://img.shields.io/badge/license-MIT-13776a?style=flat-square)](LICENSE) [![Platform](https://img.shields.io/badge/platform-web-59657b?style=flat-square)](#run-it-locally)
 
-## [View the live dashboard](https://sysadmindoc.github.io/ApocalypseWatch/)
+Business-jet activity, with the evidence in view.
 
-A premium realtime dashboard for monitoring a curated cohort of business jets against a rolling 24-hour baseline. If a meaningful number of those aircraft suddenly take to the skies, the dial moves toward 5.
+ApocalypseWatch puts a cohort's aircraft positions beside an experimental activity signal. Explore the historical baseline, check the age of the data and download the calculation inputs behind a reading.
 
-This is an **independent UI redesign** of [kylemcdonald/ews](https://github.com/kylemcdonald/ews). The data pipeline (Node/Express server, ADS-B Exchange ingestion, FAA cohort importer, snapshot/RSS exporters) is reused unchanged so it stays compatible with Kyle McDonald's original deployment model. The frontend is rewritten from scratch.
+It's a visualization, not an emergency warning system. Aircraft activity doesn't establish who is aboard, where they're going or why they're flying. A high reading is not a prediction of a crisis.
 
-## What's different
+[Download v0.2.1](https://github.com/SysAdminDoc/ApocalypseWatch/releases/tag/v0.2.1) · [Run it locally](#run-it-locally) · [User guide](guide/README.md)
 
-**Design system**
-- Dark, glass-first design with Catppuccin-inspired tokens, glassmorphism cards, and an accent color that shifts with the emergency level (cyan → teal → amber → orange → crimson)
-- Light theme with `prefers-color-scheme` auto-switch
-- High-contrast (`prefers-contrast: more`) and Windows High Contrast (`forced-colors: active`) support
-- `prefers-reduced-motion` and `prefers-reduced-transparency` respected
-- Touch targets sized for mobile (44px minimum on coarse pointers)
-- Color-blind-safe SVG severity patterns alongside hue encoding
+![ApocalypseWatch dashboard showing a synthetic six-aircraft demonstration](assets/screenshots/dashboard-dark.png)
 
-**Dashboard components**
-- 5-segment SVG radial gauge with animated needle, numeric labels, and signal provenance drawer showing all calculation inputs
-- Natural Earth map projection with glowing aircraft markers, heading rotation, and flight trails
-- Recharts area chart with 24h / 7d / 30d / 1y range tabs, expected-baseline confidence band (±1σ), level transition annotations, and accessible data table toggle
-- Sortable live aircraft list (callsign, model, altitude, speed)
-- Level transition history log with timestamps and sigma values
-- Public evidence packet with dial value, data age, archive validation, UTC/local timestamps, source links, JSON download, and plain-text copy
-- 365-day archive coverage calendar distinguishing complete, partial, missing, delayed, and malformed feed days
-- Sensitivity sandbox for previewing alternate sigma thresholds against the current reading and historical archive
+*The screenshots use the application's synthetic demonstration. They don't show real flights or a current event.*
 
-**Realtime & reliability**
-- Server-Sent Events (SSE) with Last-Event-ID recovery, heartbeat keepalives, proxy-compatible headers (`X-Accel-Buffering: no`), and configurable connection limit
-- Polling fallback with exponential backoff when SSE is unavailable (e.g., static GitHub Pages deployment)
-- PWA with offline support, StaleWhileRevalidate caching, raster icons for home screen install
-- Shareable URLs via `?range=` query param synced to the chart time range
-- Embeddable status widget via `?embed` query param
+## Start with the evidence
 
-**Data pipeline**
-- Primary: ADS-B Exchange heatmap binary ingestion (unchanged from upstream)
-- Fallback: Airplanes.Live v2 API adapter (`npm run update:api`) — works with any ADSBx v2-compatible source (ADSB.lol, adsb.fi)
-- Secondary heatmap source: ADSB.lol globe_history daily archives (ODbL licensed, same binary format)
-- Server-side archive date filtering (`GET /api/dashboard?range=24h`) to reduce mobile payload
-- Data coverage audit script for detecting missing half-hour heatmap samples
-- Database schema migration system with numbered SQL files
+- The activity dial shows the observed count and expected baseline together. Open **Signal calculation** for the inputs.
+- A world map and altitude-sorted aircraft list show the positions available in the snapshot.
+- Switch the history chart between 24 hours and a year. A table shows the last 48 samples in the chosen range, and the coverage calendar makes gaps and stale data visible.
+- Export a JSON evidence packet or copy its text. Both include source information and the data mode. The sensitivity slider is a local experiment; it doesn't change the server's threshold.
 
-**Notifications**
-- Telegram, Discord, ntfy multi-channel alerts with configurable `ALERT_MIN_LEVEL` threshold
-- Discord webhook URL validation (pattern-matched, warns on malformed URLs)
-- RSS emergency feed at `/rss.xml`
-- Healthchecks.io dead-man's-switch for CI refresh workflows
+Dark and light themes are included. A compact `?embed` view is available for static hosting; self-hosted embedding depends on your server's frame policy.
 
-**DevOps**
-- GitHub Pages deployment with post-deploy smoke test and bundle verification
-- `npm audit --audit-level=high` gate in CI
-- Dependabot for npm, GitHub Actions, and pip dependencies
-- Structured logging with Pino
-- 35 unit tests for sigma calculation, RLE archive codec, archive health, evidence packet generation, and sensitivity previews
+![History and evidence tools in the synthetic demonstration](assets/screenshots/evidence-dark.png)
 
-## Quick start
+## Run it locally
 
-```bash
-npm install
+To try the interface without installing project dependencies, download [the demonstration ZIP](https://github.com/SysAdminDoc/ApocalypseWatch/releases/download/v0.2.1/ApocalypseWatch-v0.2.1-demo.zip). Extract it, run `node serve.cjs`, then open [127.0.0.1:3030](http://127.0.0.1:3030). It requires Node.js 24 or newer and uses synthetic data only. After downloading Node and the package, it works without internet while the local server is running.
+
+Want the backend and collection tools? The [source ZIP](https://github.com/SysAdminDoc/ApocalypseWatch/releases/download/v0.2.1/ApocalypseWatch-v0.2.1-source.zip) includes the code and visual archive. You can also clone the repository:
+
+Use Node.js 24 or newer. From a fresh checkout:
+
+```sh
+git clone https://github.com/SysAdminDoc/ApocalypseWatch.git
+cd ApocalypseWatch
+npm ci
 npm run dev
 ```
 
-The API runs on `http://localhost:3030` and the Vite client on `http://localhost:5173`. With no cohort imported, the dashboard serves synthetic demo data automatically.
+Open [localhost:5173](http://localhost:5173). The API runs on port 3030. An empty database starts in synthetic demo mode, with data downloads and notifications inactive. You don't need a provider account to try the interface.
 
-## Real cohort setup
+Already have a configured database? Starting its server can refresh provider data and send any notifications you've configured. Use a fresh checkout or the separate demonstration download to keep that state untouched.
 
-```bash
-npm run import:faa     # build the FAA-derived business-jet cohort
-npm run backfill       # 365-day historical backfill
-npm run update:daily   # nightly 1-day refresh
+For build modes, downloadable packages and deployment instructions, see the [maintainer guide](guide/development/README.md).
+
+## Understand the reading
+
+The local backend uses time-of-day and weekday patterns from up to 28 days of historical samples. It compares an observed concurrent count with the expected count and standard deviation. The configured sigma threshold sets the top band; the lower bands divide that threshold into quarters.
+
+A static deployment displays whatever model values its configured snapshot supplies. Check the source and timestamps before comparing readings across deployments. A successful page load doesn't prove that the underlying data is current.
+
+Seat capacity is an estimate, not an occupancy count. Missing ADS-B coverage, delayed feeds or an incomplete cohort can change the result. Don't use this project for emergency decisions, navigation or identifying an aircraft's passengers.
+
+## Use measured data
+
+The self-hosted pipeline includes an FAA cohort importer and ADS-B history tools. Python 3.10 or newer and the packages in `requirements.txt` are needed for that route. Importing data writes to the local SQLite database and can require substantial downloads.
+
+The static site reads an upstream public snapshot. It doesn't run an independent collection service. Provider access, availability and data-use terms remain separate from this repository's MIT software license.
+
+[Configure a data source](guide/development/README.md#data-sources) before running import or refresh commands. Notification integrations are optional and require their own configuration. They aren't part of the offline demonstration.
+
+## Build and check
+
+```sh
+npm test
+npm run lint
+npm run build
 ```
 
-The default backfill reads tracked aircraft directly from SQLite — no separate watchlist file required.
+The root workspace lockfile controls dependency installation. The browser shell supports home-screen installation, but live snapshots require a working data source. No general offline-data guarantee is made.
 
-## Useful commands
+## Credit and license
 
-```bash
-npm run dev              # API + Vite client (concurrently)
-npm run build            # production client bundle
-npm run preview          # serve the built client
-npm run lint             # ESLint over the client workspace
-npm test                 # run unit tests (Node.js built-in test runner)
-npm run import:faa       # import FAA cohort
-npm run seed:demo        # seed synthetic data
-npm run backfill         # 365-day backfill
-npm run update:daily     # 1-day refresh
-npm run update:api       # poll Airplanes.Live v2 API (fallback data source)
-npm run export:snapshot  # static dashboard.json for Pages/R2
-npm run rss:update       # update emergency RSS feed
-npm run telegram:alert   # post Telegram emergency alert
-```
+ApocalypseWatch is an independent interface derived from [Kyle McDonald's Early Warning System](https://github.com/kylemcdonald/ews). The server and ingestion tools also carry local changes; they are not an unchanged upstream copy.
 
-## Project layout
-
-```
-ApocalypseWatch/
-├── client/              Vite + React 19 dashboard (rewritten)
-│   └── src/
-│       ├── components/  EmergencyGauge, GlobalMap, ArchiveChart, AircraftList,
-│       │                Hero, AboutCard, StatusBanner, LevelHistory,
-│       │                DataGapCalendar, EvidencePacket, ThemeControl, EmbedView
-│       ├── hooks/       useDashboard (SSE + polling)
-│       ├── lib/         constants, format
-│       └── styles/      theme.css, global.css, components.css
-├── server/              Node/Express + better-sqlite3
-├── scripts/             Python ADS-B/FAA ingestion, JS snapshot/RSS/Telegram,
-│                        coverage audit, OG image generator, smoke tests
-├── migrations/          Numbered SQL schema migrations
-├── config/              R2 CORS, watchlist example
-├── .github/workflows/   scheduled refresh + Pages deploy + Dependabot
-├── schema.sql
-└── requirements.txt
-```
-
-## API contract
-
-The client consumes a single endpoint:
-
-```
-GET /api/dashboard
-GET /api/dashboard?range=24h   # server-side archive filtering (24h, 7d, 30d, 1y)
-GET /api/stream                # SSE realtime push (with Last-Event-ID recovery)
-GET /api/events?limit=100      # level transition history
-GET /api/health                # server health + data gap detection
-```
-
-Dashboard snapshot shape:
-
-```jsonc
-{
-  "mode": "demo" | "live",
-  "warning": "...",                  // present in demo / unconfigured mode
-  "cohort":   { "trackedCount": ... },
-  "current":  { "asOf": "...", "concurrentCount": ..., "baselineMean": ..., "emergencyLevel": 1-5 },
-  "signals":  { "composite": { "actualConcurrentCount", "expectedConcurrentCount", "sigmaShift", "emergencyLevel" } },
-  "trends":   { "archive": { "v": 1, "t0": "...", "tr": [[1800000, n], ...], "c": [...], "p": [...], "s": [...] } },
-  "liveAircraft": [{ "hex", "registration", "label", "lat", "lon", "altitudeFt", "groundSpeedKt", "track", ... }],
-  "liveStatus":   { "providerLabel", "latestSampledAt", "lastError", "nextRefreshAt" }
-}
-```
-
-## Theming
-
-Emergency level is set on `<html data-emergency="N">`. The `--accent` token re-resolves automatically and ripples through gauge, hero pulse, chart line, map markers, and background fx.
-
-To force a level for design QA:
-
-```js
-document.documentElement.dataset.emergency = '5'
-```
-
-## Public deployment
-
-Two paths are wired up:
-
-- **GitHub Pages mirror** — **[Live at sysadmindoc.github.io/ApocalypseWatch](https://sysadmindoc.github.io/ApocalypseWatch/)**. The static client is published by `.github/workflows/deploy-github-pages.yml` and reads the upstream public R2 snapshot directly, so it tracks the same live cohort and refresh cadence as the upstream site without running a parallel pipeline.
-- **Self-hosted (Cloudflare model)** — Same as the original: Cloudflare Pages (static client) + R2 (`dashboard.json` snapshot + `data/ews.sqlite`) + GitHub Actions for scheduled refresh. See `.github/workflows/refresh-live-data.yml`, `refresh-daily-history.yml`, `deploy-pages.yml` and the original ews README's "Public deployment" section for credentials and secrets.
-
-## Embed widget
-
-Append `?embed` to the dashboard URL for a compact, iframe-friendly status badge:
-
-```
-https://sysadmindoc.github.io/ApocalypseWatch/?embed
-```
-
-## Credits
-
-- Original concept, data pipeline, FAA importer, ADS-B Exchange heatmap parsing, deployment model: **[Kyle McDonald](https://github.com/kylemcdonald/ews)**
-- Frontend redesign: **SysAdminDoc**
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+The software is [MIT licensed](LICENSE). See [NOTICE](NOTICE) for attribution. Original artwork, the prior README and every review attempt are preserved in the [concept archive](assets/concepts/2026-09-09-marketing/README.md).

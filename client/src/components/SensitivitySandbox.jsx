@@ -15,21 +15,21 @@ function formatThreshold(value) {
 export function SensitivitySandbox({ preview, productionEmergencyLevel, productionThreshold, onThresholdChange }) {
   const hasSamples = preview.scoredSamples > 0
   const delta = preview.currentLevel - productionEmergencyLevel
-  const deltaLabel = delta === 0 ? 'same as live' : delta > 0 ? `${delta} level${delta === 1 ? '' : 's'} higher` : `${Math.abs(delta)} level${Math.abs(delta) === 1 ? '' : 's'} lower`
+  const deltaLabel = delta === 0 ? 'same as snapshot' : delta > 0 ? `${delta} level${delta === 1 ? '' : 's'} higher` : `${Math.abs(delta)} level${Math.abs(delta) === 1 ? '' : 's'} lower`
 
   return (
     <section className="card sensitivity-card" aria-labelledby="sensitivity-title">
       <div className="card-header">
         <div>
           <div className="card-title" id="sensitivity-title">Sensitivity sandbox</div>
-          <div className="sensitivity-subtitle">Model preview · production signal unchanged</div>
+          <div className="sensitivity-subtitle">Model preview · snapshot signal unchanged</div>
         </div>
         <div className="card-eyebrow">{preview.scoredSamples.toLocaleString()} scored samples</div>
       </div>
 
       <p className="sensitivity-intro">
-        Move the alarm threshold to see how the current reading and archive would map to emergency levels. This is a
-        what-if view only; it never changes the live dial, alerts, or stored history.
+        Move the threshold to see how the current reading and archive would map to activity levels. This preview
+        doesn't change the main dial or any server settings.
       </p>
 
       <div className="sensitivity-control">
@@ -54,6 +54,9 @@ export function SensitivitySandbox({ preview, productionEmergencyLevel, producti
         <p id="sensitivity-help" className="sensitivity-help">
           Lower thresholds escalate sooner. The production threshold is {formatThreshold(productionThreshold)}.
         </p>
+        <button type="button" className="evidence-action" disabled={preview.alarmSigmaThreshold === productionThreshold} onClick={() => onThresholdChange(null)}>
+          Reset to snapshot threshold
+        </button>
       </div>
 
       <div className="sensitivity-results" aria-live="polite">
@@ -63,9 +66,9 @@ export function SensitivitySandbox({ preview, productionEmergencyLevel, producti
           <small>{formatSigma(preview.currentSigmaShift)} · {deltaLabel}</small>
         </div>
         <div className="sensitivity-result">
-          <span>Live dial</span>
+          <span>Snapshot dial</span>
           <strong style={{ color: levelColor(productionEmergencyLevel) }}>Level {productionEmergencyLevel}</strong>
-          <small>unchanged production reading</small>
+          <small>unchanged snapshot reading</small>
         </div>
         <div className="sensitivity-result">
           <span>Archive peak</span>

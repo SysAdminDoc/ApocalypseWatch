@@ -11,44 +11,18 @@ import { EmbedView } from './components/EmbedView'
 import { DataGapCalendar } from './components/DataGapCalendar'
 import { EvidencePacket } from './components/EvidencePacket'
 import { SensitivitySandbox } from './components/SensitivitySandbox'
-import { EMERGENCY_LEVELS } from './lib/constants'
+import { EMERGENCY_LEVELS, BRAND_ICON_URL } from './lib/constants'
+import { deriveSignal, deriveEmergencyLevel } from './lib/signal.js'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 import { buildArchiveHealth, buildSensitivityPreview, decodeArchive } from './lib/archive'
 
-const APP_VERSION = '0.2.0'
+const APP_VERSION = '0.2.1'
 const EMPTY_ARCHIVE = []
 
 const DEFAULT_CADENCE_MINUTES = 30
 const THEME_STORAGE_KEY = 'apocalypsewatch.theme'
 const GlobalMap = lazy(() => import('./components/GlobalMap').then((module) => ({ default: module.GlobalMap })))
 const ArchiveChart = lazy(() => import('./components/ArchiveChart').then((module) => ({ default: module.ArchiveChart })))
-
-function deriveSignal(dashboard) {
-  if (!dashboard) return null
-  return (
-    dashboard.signals?.composite ?? {
-      asOf: dashboard.current?.asOf,
-      actualConcurrentCount: dashboard.current?.concurrentCount,
-      expectedConcurrentCount: dashboard.current?.baselineMean,
-      expectedConcurrentStdDev: dashboard.current?.baselineStdDev,
-      sigmaShift: dashboard.current?.zScore,
-      alertLevel: dashboard.current?.alertLevel,
-      emergencyLevel: dashboard.current?.emergencyLevel,
-    }
-  )
-}
-
-function deriveEmergencyLevel(signal) {
-  const lvl = Number(signal?.emergencyLevel)
-  if (Number.isFinite(lvl) && lvl >= 1 && lvl <= 5) return Math.round(lvl)
-  const sigma = Number(signal?.sigmaShift)
-  if (!Number.isFinite(sigma)) return 1
-  if (sigma >= 7) return 5
-  if (sigma >= 5) return 4
-  if (sigma >= 3.5) return 3
-  if (sigma >= 1.5) return 2
-  return 1
-}
 
 function estimateMaxSeats(aircraft = [], airborneTotal) {
   if (!aircraft.length) return 0
@@ -120,7 +94,7 @@ export default function App() {
     document.documentElement.dataset.emergency = String(emergencyLevel)
     if (prevLevelRef.current !== emergencyLevel) {
       const cfg = EMERGENCY_LEVELS.find((l) => l.level === emergencyLevel)
-      setLevelAnnouncement(`Emergency level ${emergencyLevel}: ${cfg?.label ?? 'Unknown'}`)
+      setLevelAnnouncement(`Activity level ${emergencyLevel}: ${cfg?.label ?? 'Unknown'}`)
       prevLevelRef.current = emergencyLevel
     }
   }, [emergencyLevel])
@@ -164,7 +138,7 @@ export default function App() {
     [decodedArchive.samples, signal, activeSensitivityThreshold],
   )
 
-  if (IS_EMBED) return <EmbedView />
+  if (IS_EMBED) return <EmbedView data={data} error={error} />
 
   if (error && !data) {
     return (
@@ -173,10 +147,10 @@ export default function App() {
         <main className="shell">
           <header className="app-topbar">
             <div className="brand-lockup" aria-label="ApocalypseWatch">
-              <span className="brand-mark" aria-hidden="true">AW</span>
+              <img className="brand-mark" src={BRAND_ICON_URL} alt="" width="40" height="40" />
               <span>
                 <strong>ApocalypseWatch</strong>
-                <small>Private-jet anomaly monitor</small>
+                <small>Business-jet activity dashboard</small>
               </span>
             </div>
             <ThemeControl value={themeMode} onChange={setThemeMode} />
@@ -185,7 +159,7 @@ export default function App() {
             <h2>Unable to reach dashboard</h2>
             <p className="error-detail">{error}</p>
             <p className="error-hint">
-              Make sure the API server is running on port 3030.
+              Check the configured snapshot source or local API server. No activity reading is available until a valid snapshot arrives.
             </p>
           </section>
         </main>
@@ -211,7 +185,7 @@ export default function App() {
   const cohort = data.cohort ?? data.watchlist ?? null
   const airborne = signal?.actualConcurrentCount ?? liveAircraft.length
   const maxSeats = estimateMaxSeats(liveAircraft, airborne)
-  const sourceLabel = liveStatus?.providerLabel ?? 'ADS-B Exchange'
+  const sourceLabel = liveStatus?.providerLabel ?? 'Source not specified'
   const staleSample = getStaleSample(liveStatus)
 
   return (
@@ -245,10 +219,10 @@ export default function App() {
       <main className="shell" id="dashboard-main">
         <header className="app-topbar">
           <div className="brand-lockup" aria-label="ApocalypseWatch">
-            <span className="brand-mark" aria-hidden="true">AW</span>
+            <img className="brand-mark" src={BRAND_ICON_URL} alt="" width="40" height="40" />
             <span>
               <strong>ApocalypseWatch</strong>
-              <small>Private-jet anomaly monitor</small>
+              <small>Business-jet activity dashboard</small>
             </span>
           </div>
           <div className="topbar-actions">
@@ -256,6 +230,11 @@ export default function App() {
             <ThemeControl value={themeMode} onChange={setThemeMode} />
           </div>
         </header>
+
+        <section className="page-intro">
+          <h1>Business-jet activity, with the evidence in view.</h1>
+          <p>Explore the latest snapshot and its historical baseline. This experimental signal is not an emergency warning or a forecast.</p>
+        </section>
 
         {data.warning ? (
           <StatusBanner kind="info" title={data.mode === 'demo' ? 'Demo mode' : 'Configuration required'}>
@@ -293,11 +272,7 @@ export default function App() {
           </StatusBanner>
         ) : null}
 
-        <Suspense fallback={<PanelFallback title="Realtime Tracker" variant="map" />}>
-          <GlobalMap aircraft={liveAircraft} asOf={data.current?.asOf} />
-        </Suspense>
-
-        <div className="row row-2-1">
+        <div className="row overview-row">
           <EmergencyGauge
             emergencyLevel={emergencyLevel}
             signal={signal}
@@ -306,16 +281,22 @@ export default function App() {
             maxSeats={maxSeats}
             asOf={data.current?.asOf ?? signal?.asOf}
           />
-          <AircraftList aircraft={liveAircraft} />
+          <Suspense fallback={<PanelFallback title="Aircraft positions" variant="map" />}>
+            <GlobalMap aircraft={liveAircraft} asOf={data.current?.asOf} demo={data.mode === 'demo'} />
+          </Suspense>
         </div>
 
-        <Hero
-          emergencyLevel={emergencyLevel}
-          sourceLabel={sourceLabel}
-          signal={signal}
-          cohort={cohort}
-          liveStatus={liveStatus}
-        />
+        <div className="row row-2-1 details-row">
+          <Hero
+            emergencyLevel={emergencyLevel}
+            sourceLabel={sourceLabel}
+            signal={signal}
+            cohort={cohort}
+            liveStatus={liveStatus}
+            demo={data.mode === 'demo'}
+          />
+          <AircraftList aircraft={liveAircraft} demo={data.mode === 'demo'} />
+        </div>
 
         <div className="row row-1-1">
           <Suspense fallback={<PanelFallback title="Concurrent Tracked Jets" variant="chart" />}>

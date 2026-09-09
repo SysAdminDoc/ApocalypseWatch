@@ -7,8 +7,8 @@ const VIEWBOX_HEIGHT = 360
 const CENTER = SIZE / 2
 const RADIUS = 150
 const STROKE = 22
-const START_ANGLE = -210 // degrees
-const END_ANGLE = 30
+const START_ANGLE = -120 // degrees, from lower left through the top
+const END_ANGLE = 120
 const SWEEP = END_ANGLE - START_ANGLE // 240
 
 function polarToCartesian(angleDeg, r = RADIUS) {
@@ -45,11 +45,12 @@ function SignalProvenance({ signal, asOf, emergencyLevel }) {
             <tr><td>Std deviation</td><td>{stddev != null ? Number(stddev).toFixed(1) : '—'}</td></tr>
             <tr><td>Sigma shift</td><td>{sigma != null ? Number(sigma).toFixed(2) : '—'}</td></tr>
             <tr><td>Alarm threshold</td><td>{threshold != null ? Number(threshold).toFixed(1) + 'σ' : '—'}</td></tr>
-            <tr><td>Emergency level</td><td>{emergencyLevel}/5</td></tr>
+            <tr><td>Activity level</td><td>{emergencyLevel}/5</td></tr>
           </tbody>
         </table>
         <p className="provenance-note">
-          Level = f(σ): 1 &lt; 1.5σ, 2 &lt; 3.5σ, 3 &lt; 5σ, 4 &lt; threshold, 5 ≥ threshold
+          The local model divides the alarm threshold into four equal bands. With a 7σ threshold,
+          levels rise at 1.75σ, 3.5σ, 5.25σ and 7σ. A supplied snapshot level remains authoritative.
         </p>
       </div>
     </details>
@@ -77,17 +78,17 @@ export function EmergencyGauge({
   return (
     <section className="card card--accent gauge">
       <div className="card-header">
-        <div className="card-title">Emergency Level</div>
+        <div className="card-title">Activity level</div>
         <div className="card-eyebrow">{formatTimestamp(asOf)}</div>
       </div>
 
       <div className="gauge-svg-wrap">
         <svg className="gauge-svg" viewBox={`0 0 ${SIZE} ${VIEWBOX_HEIGHT}`} role="meter"
-             aria-label={`Emergency level ${emergencyLevel}: ${cfg.label}`}
+             aria-label={`Activity level ${emergencyLevel}: ${cfg.label}`}
              aria-valuenow={emergencyLevel}
              aria-valuemin={1}
              aria-valuemax={5}
-             aria-valuetext={`Emergency level ${emergencyLevel} of 5: ${cfg.label}`}>
+             aria-valuetext={`Activity level ${emergencyLevel} of 5: ${cfg.label}`}>
           <path className="gauge-arc-bg" d={describeArc(START_ANGLE, END_ANGLE)} strokeWidth={STROKE} />
 
           {EMERGENCY_LEVELS.map((_, i) => {
@@ -168,9 +169,9 @@ export function EmergencyGauge({
           <span className="stat-sub">tracked private jets aloft</span>
         </div>
         <div className="stat">
-          <span className="stat-label">Max people aloft</span>
+          <span className="stat-label">Estimated seat capacity</span>
           <span className="stat-value">{formatCount(maxSeats)}</span>
-          <span className="stat-sub">capacity-weighted estimate</span>
+          <span className="stat-sub">Not a passenger count</span>
         </div>
         <div className="stat">
           <span className="stat-label">Deviation</span>

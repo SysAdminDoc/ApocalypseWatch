@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { DASHBOARD_POLL_INTERVAL_MS, DASHBOARD_URL } from '../lib/constants'
+import { validateDashboard, isLocalApi } from '../lib/signal.js'
 
 const REQUEST_TIMEOUT_MS = 15_000
 const BASE_RETRY_DELAY_MS = 15_000
@@ -16,7 +17,7 @@ function getRetryDelayMs(failureCount) {
 }
 
 function getStreamUrl() {
-  if (DASHBOARD_URL === '/api/dashboard') return '/api/stream'
+  if (isLocalApi(DASHBOARD_URL)) return '/api/stream'
   return null
 }
 
@@ -36,6 +37,7 @@ export function useDashboard() {
 
     function schedule(delayMs) {
       if (!active) return
+      window.clearTimeout(timerRef.current)
       timerRef.current = window.setTimeout(load, delayMs)
     }
 
@@ -52,7 +54,7 @@ export function useDashboard() {
           signal: controller.signal,
         })
         if (!response.ok) throw new Error(`Dashboard request failed: ${response.status}`)
-        const json = await response.json()
+        const json = validateDashboard(await response.json())
         if (!active) return
         failureCount = 0
         setData(json)
@@ -61,7 +63,7 @@ export function useDashboard() {
         setLastFetchedAt(new Date())
         if (!sseRef.current) schedule(DASHBOARD_POLL_INTERVAL_MS)
       } catch (err) {
-        if (!active) return
+        if (!active || abortRef.current !== controller) return
         failureCount += 1
         const retryDelay = getRetryDelayMs(failureCount)
         setError(err?.name === 'AbortError' ? 'Dashboard request timed out.' : err?.message ?? 'Dashboard request failed.')
@@ -81,20 +83,27 @@ export function useDashboard() {
         return
       }
 
+      load()
       const es = new EventSource(streamUrl)
       sseRef.current = es
 
       es.onmessage = (event) => {
         if (!active) return
         try {
-          const json = JSON.parse(event.data)
+          const json = validateDashboard(JSON.parse(event.data))
           failureCount = 0
+          window.clearTimeout(timerRef.current)
+          abortRef.current?.abort()
+          abortRef.current = null
+          setIsFetching(false)
           setData(json)
           setError(null)
           setRetryInMs(null)
           setLastFetchedAt(new Date())
         } catch {
-          // Ignore malformed messages
+          es.close()
+          sseRef.current = null
+          load()
         }
       }
 

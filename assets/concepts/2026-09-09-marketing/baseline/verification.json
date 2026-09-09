@@ -1,0 +1,214 @@
+{
+  "baseline": "fbb0ad7",
+  "capturedAt": "2026-09-09T11:42:10.000Z",
+  "description": "Unmodified v0.2.0 production frontend with its existing synthetic demo response supplied at the configured snapshot URL. No real aircraft or user database was used.",
+  "requests": [
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954123768",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954124248",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954124927",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954125378",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954126040",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954126499",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954127017",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954127468",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954127989",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954128472",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954129060",
+      "source": "Existing product synthetic demo response, not live data"
+    },
+    {
+      "url": "https://pub-49bb6a6f314c47be9b481c25e5f6ca9e.r2.dev/dashboard.json?t=1788954129502",
+      "source": "Existing product synthetic demo response, not live data"
+    }
+  ],
+  "failures": [],
+  "screenshots": [
+    {
+      "name": "desktop-dark",
+      "width": 1440,
+      "height": 1080,
+      "theme": "dark",
+      "selector": null,
+      "bytes": 905311,
+      "sha256": "c3d4d4dd05020e20ba18bcb8e76ada1b837df1bda0b9ee6a4189645953870c03",
+      "state": {
+        "title": "Apocalypse Watch",
+        "theme": "dark",
+        "overflow": false,
+        "heading": [
+          "REALTIME TRACKER",
+          "EMERGENCY LEVEL",
+          "LIVE AIRCRAFT",
+          "Apocalypse Watch",
+          "CONCURRENT TRACKED JETS",
+          "HOW IT WORKS",
+          "DATA COVERAGE",
+          "PUBLIC EVIDENCE PACKET",
+          "SENSITIVITY SANDBOX"
+        ],
+        "body": "Skip to dashboard\nAW\nApocalypseWatch\nPrivate-jet anomaly monitor\nEVIDENCE\nDark\nLight\nSystem\nDemo mode\nNo cohort has been imported yet. This dashboard is showing synthetic review data.\nREALTIME TRACKER\n6 aircraft visible · Sep 9, 7:42 AM EDT\n\n6 aircraft have valid map positions.\n\nTRACKED PRIVATE JET · LIVE POSITION\nEMERGENCY LEVEL\nSep 9, 7:42 AM EDT\n1\n2\n3\n4\n5\n1 /5\nCALM\nNominal baseline\nSignal calculation\nAIRBORNE\n6\n/ 0\ntracked private jets aloft\nMAX PEOPLE ALOFT\n—\ncapacity-weighted estimate\nDEVIATION\n+1\n+0.9σ from baseline\nBASELINE\n5\nexpected at this hour\nLIVE AIRCRAFT\n6 airborne\nN-DEMO2\nCohort 02\n41,000 ft\n458 kt\nN-DEMO5\nCohort 05\n40,100 ft\n447 kt\nN-DEMO1\nCohort 01\n39,000 ft\n441 kt\nN-DEMO3\nCohort 03\n38,200 ft\n429 kt\nN-DEMO4\nCohort 04\n36,700 ft\n417 kt\nN-DEMO6\nCohort 06\n35,400 ft\n433 kt\nLIVE · ADS-B EXCHANGE HEATMAP\nApocalypse Watch\n\nTracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at once, the signal moves toward level 5.\n\nCurrent reading: Level 1 — Calm. Nominal baseline.\n\nLEVEL\n1/5\nCalm\nAIRBORNE\n6\ndemo sample\nBASELINE\n5\n+0.9σ\nSAMPLE\njust now\nADS-B Exchange heatmap\nClient by SysAdminDoc\n/\nGitHub\n/\nRSS\n/\ndata: kylemcdonald/ews\nSIGNAL\nLevel 1\n+0.9σ from baseline\nCONCURRENT TRACKED JETS\n24h\n7d\n30d\n1y\nTable\nLATEST 22\nBASELINE 5\nHOW IT WORKS\n\nA curated cohort of business jets is pulled from the FAA registry. Every 30 minutes the backend reads the latest ADS-B Exchange heatmap and counts how many cohort aircraft were airborne.\n\nEach slot is compared to a rolling 24-hour baseline of the same time-of-day windows. Sigma shifts beyond the configured threshold escalate the emergency level (1–5).\n\nTechnical detail\n\nOriginal concept and data pipeline by Kyle McDonald (kylemcdonald/ews). This frontend is an independent redesign by SysAdminDoc.\n\nDATA COVERAGE\n365-DAY HALF-HOUR ARCHIVE HEALTH\n100%\nCOVERED\n\nEach cell is one UTC day. A partial or missing cell means the archive has fewer samples than its expected cadence; delayed and malformed cells are called out separately so a quiet reading is not mistaken for a healthy feed. Archive validation found 10 archive issues.\n\n17,496\nobserved slots\n0\nmissing slots\n354\ncomplete days\n0\ngap days\nNo\nlatest delayed\nSun\nTue\nThu\nSat\nCOMPLETE\nPARTIAL\nMISSING\nDELAYED\nMALFORMED\nLatest valid sample: Sep 9, 7:42 AM EDT\nPUBLIC EVIDENCE PACKET\nCURRENT SNAPSHOT · JSON + PLAIN TEXT\nGenerated Sep 9, 7:42 AM EDT\n\nA citation-ready snapshot of the dial, model inputs, data age, archive validation, and source links. ISO timestamps in the downloaded JSON are UTC; the packet also includes the browser's local generation time.\n\nLEVEL\n1/5 · Calm\nas of Sep 9, 7:42 AM EDT\nAIRBORNE\n6 / 0\ntracked cohort\nDEVIATION\n0.89σ\nexpected 5.2\nDATA AGE\n0 min\nlatest provider sample\nARCHIVE\n100%\n17,496 / 17,496 slots\nPREVIEW SHAREABLE TEXT\nDOWNLOAD JSON\nCOPY TEXT\nSOURCES\nDashboard snapshot\nProvider: ADS-B Exchange heatmap\nADS-B Exchange data products\nAirplanes.Live API guide\nADSB.lol open data\nSENSITIVITY SANDBOX\nMODEL PREVIEW · PRODUCTION SIGNAL UNCHANGED\n0 scored samples\n\nMove the alarm threshold to see how the current reading and archive would map to emergency levels. This is a what-if view only; it never changes the live dial, alerts, or stored history.\n\nALARM THRESHOLD\n7.0Σ\n1.5σ · more sensitive\n12.0σ · less sensitive\n\nLower thresholds escalate sooner. The production threshold is 7.0σ.\n\nPREVIEW NOW\nLevel 1\n+0.9σ · same as live\nLIVE DIAL\nLevel 1\nunchanged production reading\nARCHIVE PEAK\nLevel 1\n+0.0σ\nHISTORICAL PREVIEW DISTRIBUTION\nNo archive samples have model metadata\nL1 0\nL2 0\nL3 0\nL4 0\nL5 0\nApocalypseWatch v0.2.0\nSep 9, 7:42 AM EDT"
+      }
+    },
+    {
+      "name": "desktop-light",
+      "width": 1440,
+      "height": 1080,
+      "theme": "light",
+      "selector": null,
+      "bytes": 829455,
+      "sha256": "5dc1ea592b986910ab119b77459ec8992ae6c93118aaa15dc5b5a462b5ed2fa9",
+      "state": {
+        "title": "Apocalypse Watch",
+        "theme": "light",
+        "overflow": false,
+        "heading": [
+          "REALTIME TRACKER",
+          "EMERGENCY LEVEL",
+          "LIVE AIRCRAFT",
+          "Apocalypse Watch",
+          "CONCURRENT TRACKED JETS",
+          "HOW IT WORKS",
+          "DATA COVERAGE",
+          "PUBLIC EVIDENCE PACKET",
+          "SENSITIVITY SANDBOX"
+        ],
+        "body": "Skip to dashboard\nAW\nApocalypseWatch\nPrivate-jet anomaly monitor\nEVIDENCE\nDark\nLight\nSystem\nDemo mode\nNo cohort has been imported yet. This dashboard is showing synthetic review data.\nREALTIME TRACKER\n6 aircraft visible · Sep 9, 7:42 AM EDT\n\n6 aircraft have valid map positions.\n\nTRACKED PRIVATE JET · LIVE POSITION\nEMERGENCY LEVEL\nSep 9, 7:42 AM EDT\n1\n2\n3\n4\n5\n1 /5\nCALM\nNominal baseline\nSignal calculation\nAIRBORNE\n6\n/ 0\ntracked private jets aloft\nMAX PEOPLE ALOFT\n—\ncapacity-weighted estimate\nDEVIATION\n+1\n+0.9σ from baseline\nBASELINE\n5\nexpected at this hour\nLIVE AIRCRAFT\n6 airborne\nN-DEMO2\nCohort 02\n41,000 ft\n458 kt\nN-DEMO5\nCohort 05\n40,100 ft\n447 kt\nN-DEMO1\nCohort 01\n39,000 ft\n441 kt\nN-DEMO3\nCohort 03\n38,200 ft\n429 kt\nN-DEMO4\nCohort 04\n36,700 ft\n417 kt\nN-DEMO6\nCohort 06\n35,400 ft\n433 kt\nLIVE · ADS-B EXCHANGE HEATMAP\nApocalypse Watch\n\nTracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at once, the signal moves toward level 5.\n\nCurrent reading: Level 1 — Calm. Nominal baseline.\n\nLEVEL\n1/5\nCalm\nAIRBORNE\n6\ndemo sample\nBASELINE\n5\n+0.9σ\nSAMPLE\njust now\nADS-B Exchange heatmap\nClient by SysAdminDoc\n/\nGitHub\n/\nRSS\n/\ndata: kylemcdonald/ews\nSIGNAL\nLevel 1\n+0.9σ from baseline\nCONCURRENT TRACKED JETS\n24h\n7d\n30d\n1y\nTable\nLATEST 22\nBASELINE 5\nHOW IT WORKS\n\nA curated cohort of business jets is pulled from the FAA registry. Every 30 minutes the backend reads the latest ADS-B Exchange heatmap and counts how many cohort aircraft were airborne.\n\nEach slot is compared to a rolling 24-hour baseline of the same time-of-day windows. Sigma shifts beyond the configured threshold escalate the emergency level (1–5).\n\nTechnical detail\n\nOriginal concept and data pipeline by Kyle McDonald (kylemcdonald/ews). This frontend is an independent redesign by SysAdminDoc.\n\nDATA COVERAGE\n365-DAY HALF-HOUR ARCHIVE HEALTH\n100%\nCOVERED\n\nEach cell is one UTC day. A partial or missing cell means the archive has fewer samples than its expected cadence; delayed and malformed cells are called out separately so a quiet reading is not mistaken for a healthy feed. Archive validation found 10 archive issues.\n\n17,496\nobserved slots\n0\nmissing slots\n354\ncomplete days\n0\ngap days\nNo\nlatest delayed\nSun\nTue\nThu\nSat\nCOMPLETE\nPARTIAL\nMISSING\nDELAYED\nMALFORMED\nLatest valid sample: Sep 9, 7:42 AM EDT\nPUBLIC EVIDENCE PACKET\nCURRENT SNAPSHOT · JSON + PLAIN TEXT\nGenerated Sep 9, 7:42 AM EDT\n\nA citation-ready snapshot of the dial, model inputs, data age, archive validation, and source links. ISO timestamps in the downloaded JSON are UTC; the packet also includes the browser's local generation time.\n\nLEVEL\n1/5 · Calm\nas of Sep 9, 7:42 AM EDT\nAIRBORNE\n6 / 0\ntracked cohort\nDEVIATION\n0.89σ\nexpected 5.2\nDATA AGE\n0 min\nlatest provider sample\nARCHIVE\n100%\n17,496 / 17,496 slots\nPREVIEW SHAREABLE TEXT\nDOWNLOAD JSON\nCOPY TEXT\nSOURCES\nDashboard snapshot\nProvider: ADS-B Exchange heatmap\nADS-B Exchange data products\nAirplanes.Live API guide\nADSB.lol open data\nSENSITIVITY SANDBOX\nMODEL PREVIEW · PRODUCTION SIGNAL UNCHANGED\n0 scored samples\n\nMove the alarm threshold to see how the current reading and archive would map to emergency levels. This is a what-if view only; it never changes the live dial, alerts, or stored history.\n\nALARM THRESHOLD\n7.0Σ\n1.5σ · more sensitive\n12.0σ · less sensitive\n\nLower thresholds escalate sooner. The production threshold is 7.0σ.\n\nPREVIEW NOW\nLevel 1\n+0.9σ · same as live\nLIVE DIAL\nLevel 1\nunchanged production reading\nARCHIVE PEAK\nLevel 1\n+0.0σ\nHISTORICAL PREVIEW DISTRIBUTION\nNo archive samples have model metadata\nL1 0\nL2 0\nL3 0\nL4 0\nL5 0\nApocalypseWatch v0.2.0\nSep 9, 7:42 AM EDT"
+      }
+    },
+    {
+      "name": "mobile-dark",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "selector": null,
+      "bytes": 212393,
+      "sha256": "a95e1a19090f1edc9c58c7ef07e954ad0b12be987da642539f56d10621b1fca3",
+      "state": {
+        "title": "Apocalypse Watch",
+        "theme": "dark",
+        "overflow": false,
+        "heading": [
+          "REALTIME TRACKER",
+          "EMERGENCY LEVEL",
+          "LIVE AIRCRAFT",
+          "Apocalypse Watch",
+          "CONCURRENT TRACKED JETS",
+          "HOW IT WORKS",
+          "DATA COVERAGE",
+          "PUBLIC EVIDENCE PACKET",
+          "SENSITIVITY SANDBOX"
+        ],
+        "body": "Skip to dashboard\nAW\nApocalypseWatch\nPrivate-jet anomaly monitor\nEVIDENCE\nDark\nLight\nSystem\nDemo mode\nNo cohort has been imported yet. This dashboard is showing synthetic review data.\nREALTIME TRACKER\n6 aircraft visible · Sep 9, 7:42 AM EDT\n\n6 aircraft have valid map positions.\n\nTRACKED PRIVATE JET · LIVE POSITION\nEMERGENCY LEVEL\nSep 9, 7:42 AM EDT\n1\n2\n3\n4\n5\n1 /5\nCALM\nNominal baseline\nSignal calculation\nAIRBORNE\n6\n/ 0\ntracked private jets aloft\nMAX PEOPLE ALOFT\n—\ncapacity-weighted estimate\nDEVIATION\n+1\n+0.9σ from baseline\nBASELINE\n5\nexpected at this hour\nLIVE AIRCRAFT\n6 airborne\nN-DEMO2\nCohort 02\n41,000 ft\n458 kt\nN-DEMO5\nCohort 05\n40,100 ft\n447 kt\nN-DEMO1\nCohort 01\n39,000 ft\n441 kt\nN-DEMO3\nCohort 03\n38,200 ft\n429 kt\nN-DEMO4\nCohort 04\n36,700 ft\n417 kt\nN-DEMO6\nCohort 06\n35,400 ft\n433 kt\nLIVE · ADS-B EXCHANGE HEATMAP\nApocalypse Watch\n\nTracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at once, the signal moves toward level 5.\n\nCurrent reading: Level 1 — Calm. Nominal baseline.\n\nLEVEL\n1/5\nCalm\nAIRBORNE\n6\ndemo sample\nBASELINE\n5\n+0.9σ\nSAMPLE\njust now\nADS-B Exchange heatmap\nClient by SysAdminDoc\n/\nGitHub\n/\nRSS\n/\ndata: kylemcdonald/ews\nSIGNAL\nLevel 1\n+0.9σ from baseline\nCONCURRENT TRACKED JETS\n24h\n7d\n30d\n1y\nTable\nLATEST 22\nBASELINE 5\nHOW IT WORKS\n\nA curated cohort of business jets is pulled from the FAA registry. Every 30 minutes the backend reads the latest ADS-B Exchange heatmap and counts how many cohort aircraft were airborne.\n\nEach slot is compared to a rolling 24-hour baseline of the same time-of-day windows. Sigma shifts beyond the configured threshold escalate the emergency level (1–5).\n\nTechnical detail\n\nOriginal concept and data pipeline by Kyle McDonald (kylemcdonald/ews). This frontend is an independent redesign by SysAdminDoc.\n\nDATA COVERAGE\n365-DAY HALF-HOUR ARCHIVE HEALTH\n100%\nCOVERED\n\nEach cell is one UTC day. A partial or missing cell means the archive has fewer samples than its expected cadence; delayed and malformed cells are called out separately so a quiet reading is not mistaken for a healthy feed. Archive validation found 10 archive issues.\n\n17,496\nobserved slots\n0\nmissing slots\n354\ncomplete days\n0\ngap days\nNo\nlatest delayed\nSun\nTue\nThu\nSat\nCOMPLETE\nPARTIAL\nMISSING\nDELAYED\nMALFORMED\nLatest valid sample: Sep 9, 7:42 AM EDT\nPUBLIC EVIDENCE PACKET\nCURRENT SNAPSHOT · JSON + PLAIN TEXT\nGenerated Sep 9, 7:42 AM EDT\n\nA citation-ready snapshot of the dial, model inputs, data age, archive validation, and source links. ISO timestamps in the downloaded JSON are UTC; the packet also includes the browser's local generation time.\n\nLEVEL\n1/5 · Calm\nas of Sep 9, 7:42 AM EDT\nAIRBORNE\n6 / 0\ntracked cohort\nDEVIATION\n0.89σ\nexpected 5.2\nDATA AGE\n0.1 min\nlatest provider sample\nARCHIVE\n100%\n17,496 / 17,496 slots\nPREVIEW SHAREABLE TEXT\nDOWNLOAD JSON\nCOPY TEXT\nSOURCES\nDashboard snapshot\nProvider: ADS-B Exchange heatmap\nADS-B Exchange data products\nAirplanes.Live API guide\nADSB.lol open data\nSENSITIVITY SANDBOX\nMODEL PREVIEW · PRODUCTION SIGNAL UNCHANGED\n0 scored samples\n\nMove the alarm threshold to see how the current reading and archive would map to emergency levels. This is a what-if view only; it never changes the live dial, alerts, or stored history.\n\nALARM THRESHOLD\n7.0Σ\n1.5σ · more sensitive\n12.0σ · less sensitive\n\nLower thresholds escalate sooner. The production threshold is 7.0σ.\n\nPREVIEW NOW\nLevel 1\n+0.9σ · same as live\nLIVE DIAL\nLevel 1\nunchanged production reading\nARCHIVE PEAK\nLevel 1\n+0.0σ\nHISTORICAL PREVIEW DISTRIBUTION\nNo archive samples have model metadata\nL1 0\nL2 0\nL3 0\nL4 0\nL5 0\nApocalypseWatch v0.2.0\nSep 9, 7:42 AM EDT"
+      }
+    },
+    {
+      "name": "mobile-light",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "selector": null,
+      "bytes": 179485,
+      "sha256": "d45299b38fedc168fa0f350efc2584c1b9ae9b5f1fa92e886cf3908c52726b02",
+      "state": {
+        "title": "Apocalypse Watch",
+        "theme": "light",
+        "overflow": false,
+        "heading": [
+          "REALTIME TRACKER",
+          "EMERGENCY LEVEL",
+          "LIVE AIRCRAFT",
+          "Apocalypse Watch",
+          "CONCURRENT TRACKED JETS",
+          "HOW IT WORKS",
+          "DATA COVERAGE",
+          "PUBLIC EVIDENCE PACKET",
+          "SENSITIVITY SANDBOX"
+        ],
+        "body": "Skip to dashboard\nAW\nApocalypseWatch\nPrivate-jet anomaly monitor\nEVIDENCE\nDark\nLight\nSystem\nDemo mode\nNo cohort has been imported yet. This dashboard is showing synthetic review data.\nREALTIME TRACKER\n6 aircraft visible · Sep 9, 7:42 AM EDT\n\n6 aircraft have valid map positions.\n\nTRACKED PRIVATE JET · LIVE POSITION\nEMERGENCY LEVEL\nSep 9, 7:42 AM EDT\n1\n2\n3\n4\n5\n1 /5\nCALM\nNominal baseline\nSignal calculation\nAIRBORNE\n6\n/ 0\ntracked private jets aloft\nMAX PEOPLE ALOFT\n—\ncapacity-weighted estimate\nDEVIATION\n+1\n+0.9σ from baseline\nBASELINE\n5\nexpected at this hour\nLIVE AIRCRAFT\n6 airborne\nN-DEMO2\nCohort 02\n41,000 ft\n458 kt\nN-DEMO5\nCohort 05\n40,100 ft\n447 kt\nN-DEMO1\nCohort 01\n39,000 ft\n441 kt\nN-DEMO3\nCohort 03\n38,200 ft\n429 kt\nN-DEMO4\nCohort 04\n36,700 ft\n417 kt\nN-DEMO6\nCohort 06\n35,400 ft\n433 kt\nLIVE · ADS-B EXCHANGE HEATMAP\nApocalypse Watch\n\nTracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at once, the signal moves toward level 5.\n\nCurrent reading: Level 1 — Calm. Nominal baseline.\n\nLEVEL\n1/5\nCalm\nAIRBORNE\n6\ndemo sample\nBASELINE\n5\n+0.9σ\nSAMPLE\njust now\nADS-B Exchange heatmap\nClient by SysAdminDoc\n/\nGitHub\n/\nRSS\n/\ndata: kylemcdonald/ews\nSIGNAL\nLevel 1\n+0.9σ from baseline\nCONCURRENT TRACKED JETS\n24h\n7d\n30d\n1y\nTable\nLATEST 22\nBASELINE 5\nHOW IT WORKS\n\nA curated cohort of business jets is pulled from the FAA registry. Every 30 minutes the backend reads the latest ADS-B Exchange heatmap and counts how many cohort aircraft were airborne.\n\nEach slot is compared to a rolling 24-hour baseline of the same time-of-day windows. Sigma shifts beyond the configured threshold escalate the emergency level (1–5).\n\nTechnical detail\n\nOriginal concept and data pipeline by Kyle McDonald (kylemcdonald/ews). This frontend is an independent redesign by SysAdminDoc.\n\nDATA COVERAGE\n365-DAY HALF-HOUR ARCHIVE HEALTH\n100%\nCOVERED\n\nEach cell is one UTC day. A partial or missing cell means the archive has fewer samples than its expected cadence; delayed and malformed cells are called out separately so a quiet reading is not mistaken for a healthy feed. Archive validation found 10 archive issues.\n\n17,496\nobserved slots\n0\nmissing slots\n354\ncomplete days\n0\ngap days\nNo\nlatest delayed\nSun\nTue\nThu\nSat\nCOMPLETE\nPARTIAL\nMISSING\nDELAYED\nMALFORMED\nLatest valid sample: Sep 9, 7:42 AM EDT\nPUBLIC EVIDENCE PACKET\nCURRENT SNAPSHOT · JSON + PLAIN TEXT\nGenerated Sep 9, 7:42 AM EDT\n\nA citation-ready snapshot of the dial, model inputs, data age, archive validation, and source links. ISO timestamps in the downloaded JSON are UTC; the packet also includes the browser's local generation time.\n\nLEVEL\n1/5 · Calm\nas of Sep 9, 7:42 AM EDT\nAIRBORNE\n6 / 0\ntracked cohort\nDEVIATION\n0.89σ\nexpected 5.2\nDATA AGE\n0.1 min\nlatest provider sample\nARCHIVE\n100%\n17,496 / 17,496 slots\nPREVIEW SHAREABLE TEXT\nDOWNLOAD JSON\nCOPY TEXT\nSOURCES\nDashboard snapshot\nProvider: ADS-B Exchange heatmap\nADS-B Exchange data products\nAirplanes.Live API guide\nADSB.lol open data\nSENSITIVITY SANDBOX\nMODEL PREVIEW · PRODUCTION SIGNAL UNCHANGED\n0 scored samples\n\nMove the alarm threshold to see how the current reading and archive would map to emergency levels. This is a what-if view only; it never changes the live dial, alerts, or stored history.\n\nALARM THRESHOLD\n7.0Σ\n1.5σ · more sensitive\n12.0σ · less sensitive\n\nLower thresholds escalate sooner. The production threshold is 7.0σ.\n\nPREVIEW NOW\nLevel 1\n+0.9σ · same as live\nLIVE DIAL\nLevel 1\nunchanged production reading\nARCHIVE PEAK\nLevel 1\n+0.0σ\nHISTORICAL PREVIEW DISTRIBUTION\nNo archive samples have model metadata\nL1 0\nL2 0\nL3 0\nL4 0\nL5 0\nApocalypseWatch v0.2.0\nSep 9, 7:42 AM EDT"
+      }
+    },
+    {
+      "name": "evidence-dark",
+      "width": 1440,
+      "height": 1080,
+      "theme": "dark",
+      "selector": ".evidence-card",
+      "bytes": 359062,
+      "sha256": "116e12a06c34441bf59146a511446736bde51d26bd671bb36deb889468598a74",
+      "state": {
+        "title": "Apocalypse Watch",
+        "theme": "dark",
+        "overflow": false,
+        "heading": [
+          "REALTIME TRACKER",
+          "EMERGENCY LEVEL",
+          "LIVE AIRCRAFT",
+          "Apocalypse Watch",
+          "CONCURRENT TRACKED JETS",
+          "HOW IT WORKS",
+          "DATA COVERAGE",
+          "PUBLIC EVIDENCE PACKET",
+          "SENSITIVITY SANDBOX"
+        ],
+        "body": "Skip to dashboard\nAW\nApocalypseWatch\nPrivate-jet anomaly monitor\nEVIDENCE\nDark\nLight\nSystem\nDemo mode\nNo cohort has been imported yet. This dashboard is showing synthetic review data.\nREALTIME TRACKER\n6 aircraft visible · Sep 9, 7:42 AM EDT\n\n6 aircraft have valid map positions.\n\nTRACKED PRIVATE JET · LIVE POSITION\nEMERGENCY LEVEL\nSep 9, 7:42 AM EDT\n1\n2\n3\n4\n5\n1 /5\nCALM\nNominal baseline\nSignal calculation\nAIRBORNE\n6\n/ 0\ntracked private jets aloft\nMAX PEOPLE ALOFT\n—\ncapacity-weighted estimate\nDEVIATION\n+1\n+0.9σ from baseline\nBASELINE\n5\nexpected at this hour\nLIVE AIRCRAFT\n6 airborne\nN-DEMO2\nCohort 02\n41,000 ft\n458 kt\nN-DEMO5\nCohort 05\n40,100 ft\n447 kt\nN-DEMO1\nCohort 01\n39,000 ft\n441 kt\nN-DEMO3\nCohort 03\n38,200 ft\n429 kt\nN-DEMO4\nCohort 04\n36,700 ft\n417 kt\nN-DEMO6\nCohort 06\n35,400 ft\n433 kt\nLIVE · ADS-B EXCHANGE HEATMAP\nApocalypse Watch\n\nTracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at once, the signal moves toward level 5.\n\nCurrent reading: Level 1 — Calm. Nominal baseline.\n\nLEVEL\n1/5\nCalm\nAIRBORNE\n6\ndemo sample\nBASELINE\n5\n+0.9σ\nSAMPLE\njust now\nADS-B Exchange heatmap\nClient by SysAdminDoc\n/\nGitHub\n/\nRSS\n/\ndata: kylemcdonald/ews\nSIGNAL\nLevel 1\n+0.9σ from baseline\nCONCURRENT TRACKED JETS\n24h\n7d\n30d\n1y\nTable\nLATEST 22\nBASELINE 5\nHOW IT WORKS\n\nA curated cohort of business jets is pulled from the FAA registry. Every 30 minutes the backend reads the latest ADS-B Exchange heatmap and counts how many cohort aircraft were airborne.\n\nEach slot is compared to a rolling 24-hour baseline of the same time-of-day windows. Sigma shifts beyond the configured threshold escalate the emergency level (1–5).\n\nTechnical detail\n\nOriginal concept and data pipeline by Kyle McDonald (kylemcdonald/ews). This frontend is an independent redesign by SysAdminDoc.\n\nDATA COVERAGE\n365-DAY HALF-HOUR ARCHIVE HEALTH\n100%\nCOVERED\n\nEach cell is one UTC day. A partial or missing cell means the archive has fewer samples than its expected cadence; delayed and malformed cells are called out separately so a quiet reading is not mistaken for a healthy feed. Archive validation found 10 archive issues.\n\n17,496\nobserved slots\n0\nmissing slots\n354\ncomplete days\n0\ngap days\nNo\nlatest delayed\nSun\nTue\nThu\nSat\nCOMPLETE\nPARTIAL\nMISSING\nDELAYED\nMALFORMED\nLatest valid sample: Sep 9, 7:42 AM EDT\nPUBLIC EVIDENCE PACKET\nCURRENT SNAPSHOT · JSON + PLAIN TEXT\nGenerated Sep 9, 7:42 AM EDT\n\nA citation-ready snapshot of the dial, model inputs, data age, archive validation, and source links. ISO timestamps in the downloaded JSON are UTC; the packet also includes the browser's local generation time.\n\nLEVEL\n1/5 · Calm\nas of Sep 9, 7:42 AM EDT\nAIRBORNE\n6 / 0\ntracked cohort\nDEVIATION\n0.89σ\nexpected 5.2\nDATA AGE\n0.1 min\nlatest provider sample\nARCHIVE\n100%\n17,496 / 17,496 slots\nPREVIEW SHAREABLE TEXT\nDOWNLOAD JSON\nCOPY TEXT\nSOURCES\nDashboard snapshot\nProvider: ADS-B Exchange heatmap\nADS-B Exchange data products\nAirplanes.Live API guide\nADSB.lol open data\nSENSITIVITY SANDBOX\nMODEL PREVIEW · PRODUCTION SIGNAL UNCHANGED\n0 scored samples\n\nMove the alarm threshold to see how the current reading and archive would map to emergency levels. This is a what-if view only; it never changes the live dial, alerts, or stored history.\n\nALARM THRESHOLD\n7.0Σ\n1.5σ · more sensitive\n12.0σ · less sensitive\n\nLower thresholds escalate sooner. The production threshold is 7.0σ.\n\nPREVIEW NOW\nLevel 1\n+0.9σ · same as live\nLIVE DIAL\nLevel 1\nunchanged production reading\nARCHIVE PEAK\nLevel 1\n+0.0σ\nHISTORICAL PREVIEW DISTRIBUTION\nNo archive samples have model metadata\nL1 0\nL2 0\nL3 0\nL4 0\nL5 0\nApocalypseWatch v0.2.0\nSep 9, 7:42 AM EDT"
+      }
+    },
+    {
+      "name": "coverage-dark",
+      "width": 1440,
+      "height": 1080,
+      "theme": "dark",
+      "selector": ".coverage-card",
+      "bytes": 333452,
+      "sha256": "4a59b0d6d20f7f2747c86ac30a01c69313066bd343c472a272f67a90bc8f0488",
+      "state": {
+        "title": "Apocalypse Watch",
+        "theme": "dark",
+        "overflow": false,
+        "heading": [
+          "REALTIME TRACKER",
+          "EMERGENCY LEVEL",
+          "LIVE AIRCRAFT",
+          "Apocalypse Watch",
+          "CONCURRENT TRACKED JETS",
+          "HOW IT WORKS",
+          "DATA COVERAGE",
+          "PUBLIC EVIDENCE PACKET",
+          "SENSITIVITY SANDBOX"
+        ],
+        "body": "Skip to dashboard\nAW\nApocalypseWatch\nPrivate-jet anomaly monitor\nEVIDENCE\nDark\nLight\nSystem\nDemo mode\nNo cohort has been imported yet. This dashboard is showing synthetic review data.\nREALTIME TRACKER\n6 aircraft visible · Sep 9, 7:42 AM EDT\n\n6 aircraft have valid map positions.\n\nTRACKED PRIVATE JET · LIVE POSITION\nEMERGENCY LEVEL\nSep 9, 7:42 AM EDT\n1\n2\n3\n4\n5\n1 /5\nCALM\nNominal baseline\nSignal calculation\nAIRBORNE\n6\n/ 0\ntracked private jets aloft\nMAX PEOPLE ALOFT\n—\ncapacity-weighted estimate\nDEVIATION\n+1\n+0.9σ from baseline\nBASELINE\n5\nexpected at this hour\nLIVE AIRCRAFT\n6 airborne\nN-DEMO2\nCohort 02\n41,000 ft\n458 kt\nN-DEMO5\nCohort 05\n40,100 ft\n447 kt\nN-DEMO1\nCohort 01\n39,000 ft\n441 kt\nN-DEMO3\nCohort 03\n38,200 ft\n429 kt\nN-DEMO4\nCohort 04\n36,700 ft\n417 kt\nN-DEMO6\nCohort 06\n35,400 ft\n433 kt\nLIVE · ADS-B EXCHANGE HEATMAP\nApocalypse Watch\n\nTracks a curated business-jet cohort against its rolling baseline. When enough aircraft lift off at once, the signal moves toward level 5.\n\nCurrent reading: Level 1 — Calm. Nominal baseline.\n\nLEVEL\n1/5\nCalm\nAIRBORNE\n6\ndemo sample\nBASELINE\n5\n+0.9σ\nSAMPLE\njust now\nADS-B Exchange heatmap\nClient by SysAdminDoc\n/\nGitHub\n/\nRSS\n/\ndata: kylemcdonald/ews\nSIGNAL\nLevel 1\n+0.9σ from baseline\nCONCURRENT TRACKED JETS\n24h\n7d\n30d\n1y\nTable\nLATEST 22\nBASELINE 5\nHOW IT WORKS\n\nA curated cohort of business jets is pulled from the FAA registry. Every 30 minutes the backend reads the latest ADS-B Exchange heatmap and counts how many cohort aircraft were airborne.\n\nEach slot is compared to a rolling 24-hour baseline of the same time-of-day windows. Sigma shifts beyond the configured threshold escalate the emergency level (1–5).\n\nTechnical detail\n\nOriginal concept and data pipeline by Kyle McDonald (kylemcdonald/ews). This frontend is an independent redesign by SysAdminDoc.\n\nDATA COVERAGE\n365-DAY HALF-HOUR ARCHIVE HEALTH\n100%\nCOVERED\n\nEach cell is one UTC day. A partial or missing cell means the archive has fewer samples than its expected cadence; delayed and malformed cells are called out separately so a quiet reading is not mistaken for a healthy feed. Archive validation found 10 archive issues.\n\n17,496\nobserved slots\n0\nmissing slots\n354\ncomplete days\n0\ngap days\nNo\nlatest delayed\nSun\nTue\nThu\nSat\nCOMPLETE\nPARTIAL\nMISSING\nDELAYED\nMALFORMED\nLatest valid sample: Sep 9, 7:42 AM EDT\nPUBLIC EVIDENCE PACKET\nCURRENT SNAPSHOT · JSON + PLAIN TEXT\nGenerated Sep 9, 7:42 AM EDT\n\nA citation-ready snapshot of the dial, model inputs, data age, archive validation, and source links. ISO timestamps in the downloaded JSON are UTC; the packet also includes the browser's local generation time.\n\nLEVEL\n1/5 · Calm\nas of Sep 9, 7:42 AM EDT\nAIRBORNE\n6 / 0\ntracked cohort\nDEVIATION\n0.89σ\nexpected 5.2\nDATA AGE\n0.1 min\nlatest provider sample\nARCHIVE\n100%\n17,496 / 17,496 slots\nPREVIEW SHAREABLE TEXT\nDOWNLOAD JSON\nCOPY TEXT\nSOURCES\nDashboard snapshot\nProvider: ADS-B Exchange heatmap\nADS-B Exchange data products\nAirplanes.Live API guide\nADSB.lol open data\nSENSITIVITY SANDBOX\nMODEL PREVIEW · PRODUCTION SIGNAL UNCHANGED\n0 scored samples\n\nMove the alarm threshold to see how the current reading and archive would map to emergency levels. This is a what-if view only; it never changes the live dial, alerts, or stored history.\n\nALARM THRESHOLD\n7.0Σ\n1.5σ · more sensitive\n12.0σ · less sensitive\n\nLower thresholds escalate sooner. The production threshold is 7.0σ.\n\nPREVIEW NOW\nLevel 1\n+0.9σ · same as live\nLIVE DIAL\nLevel 1\nunchanged production reading\nARCHIVE PEAK\nLevel 1\n+0.0σ\nHISTORICAL PREVIEW DISTRIBUTION\nNo archive samples have model metadata\nL1 0\nL2 0\nL3 0\nL4 0\nL5 0\nApocalypseWatch v0.2.0\nSep 9, 7:42 AM EDT"
+      }
+    }
+  ]
+}

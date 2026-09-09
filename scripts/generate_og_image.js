@@ -1,107 +1,63 @@
 #!/usr/bin/env node
+const fs = require('node:fs');
+const path = require('node:path');
+const { Resvg } = require('@resvg/resvg-js');
 
-const fs = require("node:fs");
-const path = require("node:path");
+const root = path.resolve(__dirname, '..');
+const publicDir = path.join(root, 'client/public');
+const fontDir = path.join(root, 'assets/fonts');
+const font = {
+  loadSystemFonts: false,
+  fontFiles: ['InterDisplay-Regular.ttf', 'InterDisplay-SemiBold.ttf'].map(name => path.join(fontDir, name)),
+  defaultFontFamily: 'Inter Display',
+};
+const { version } = require('../package.json');
 
-const WIDTH = 1200;
-const HEIGHT = 630;
-
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
-  <defs>
-    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
-      <stop offset="0%" stop-color="#121722"/>
-      <stop offset="100%" stop-color="#06080e"/>
-    </radialGradient>
-    <radialGradient id="glow" cx="50%" cy="55%" r="35%">
-      <stop offset="0%" stop-color="rgba(116,199,236,0.12)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <radialGradient id="icon-g" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#ff5b6e"/>
-      <stop offset="55%" stop-color="#ff8a3d"/>
-      <stop offset="100%" stop-color="#0b0d14"/>
-    </radialGradient>
-  </defs>
-
-  <!-- Background -->
-  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
-  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#glow)"/>
-
-  <!-- Border -->
-  <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${HEIGHT - 1}" rx="0" fill="none"
-        stroke="rgba(214,225,255,0.08)" stroke-width="1"/>
-
-  <!-- Gauge arc (decorative) -->
-  <g transform="translate(600, 260)">
-    <path d="M -140 0 A 140 140 0 0 1 140 0" fill="none" stroke="rgba(116,199,236,0.15)" stroke-width="4" stroke-linecap="round"/>
-    <path d="M -130 0 A 130 130 0 0 1 -65 -112.6" fill="none" stroke="#74c7ec" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
-    <path d="M -60 -109.5 A 130 130 0 0 1 0 -130" fill="none" stroke="#94e2d5" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
-    <path d="M 5 -129.9 A 130 130 0 0 1 65 -112.6" fill="none" stroke="#f9e2af" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
-    <path d="M 70 -109.5 A 130 130 0 0 1 112.6 -65" fill="none" stroke="#fab387" stroke-width="6" stroke-linecap="round" opacity="0.35"/>
-    <path d="M 115 -60 A 130 130 0 0 1 130 0" fill="none" stroke="#f38ba8" stroke-width="6" stroke-linecap="round" opacity="0.3"/>
-  </g>
-
-  <!-- Icon -->
-  <g transform="translate(600, 230) scale(1.8)">
-    <circle cx="0" cy="0" r="30" fill="url(#icon-g)"/>
-    <circle cx="0" cy="0" r="30" fill="none" stroke="#ffd479" stroke-width="1.5"/>
-    <path d="M0 -18 L2.4 -5 L14 -2 L14 1 L2 -1 L2 9 L6.5 12 L6.5 14 L0 12 L-6.5 14 L-6.5 12 L-2 9 L-2 -1 L-14 1 L-14 -2 L-2.4 -5 Z" fill="#fff" opacity="0.9"/>
-  </g>
-
-  <!-- Title -->
-  <text x="600" y="370" text-anchor="middle"
-        font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif"
-        font-size="52" font-weight="700" fill="#e9eaf3"
-        letter-spacing="-1">Apocalypse Watch</text>
-
-  <!-- Subtitle -->
-  <text x="600" y="415" text-anchor="middle"
-        font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif"
-        font-size="22" fill="#8c93aa"
-        letter-spacing="0.5">Private-jet anomaly monitor</text>
-
-  <!-- Level indicators -->
-  <g transform="translate(420, 460)">
-    <rect x="0" y="0" width="36" height="8" rx="4" fill="#74c7ec" opacity="0.8"/>
-    <rect x="48" y="0" width="36" height="8" rx="4" fill="#94e2d5" opacity="0.7"/>
-    <rect x="96" y="0" width="36" height="8" rx="4" fill="#f9e2af" opacity="0.6"/>
-    <rect x="144" y="0" width="36" height="8" rx="4" fill="#fab387" opacity="0.5"/>
-    <rect x="192" y="0" width="36" height="8" rx="4" fill="#f38ba8" opacity="0.4"/>
-    <text x="240" y="8" font-family="Inter, Segoe UI, system-ui, sans-serif" font-size="12" fill="#70778c">Calm → Critical</text>
-  </g>
-
-  <!-- Footer -->
-  <text x="600" y="560" text-anchor="middle"
-        font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif"
-        font-size="16" fill="#70778c">Tracking curated business-jet cohort against rolling 24-hour baseline</text>
-
-  <!-- URL -->
-  <text x="600" y="590" text-anchor="middle"
-        font-family="JetBrains Mono, Consolas, monospace"
-        font-size="14" fill="#74c7ec" opacity="0.6">sysadmindoc.github.io/ApocalypseWatch</text>
-</svg>`;
-
-async function main() {
-  const outDir = path.join(__dirname, "..", "client", "public");
-  const svgPath = path.join(outDir, "og-image.svg");
-  const pngPath = path.join(outDir, "og-image.png");
-
-  fs.writeFileSync(svgPath, svg);
-  console.log(`wrote ${svgPath}`);
-
-  try {
-    const { Resvg } = require("@resvg/resvg-js");
-    const resvg = new Resvg(svg, {
-      fitTo: { mode: "width", value: WIDTH },
-    });
-    const pngData = resvg.render();
-    const pngBuffer = pngData.asPng();
-    fs.writeFileSync(pngPath, pngBuffer);
-    console.log(`wrote ${pngPath} (${pngBuffer.length} bytes)`);
-  } catch (err) {
-    console.error("PNG generation failed (install @resvg/resvg-js):", err.message);
-    console.log("SVG written; convert manually: npx @resvg/resvg-js og-image.svg og-image.png");
-  }
+function render(svg, width) {
+  const renderer = new Resvg(svg, { font, fitTo: { mode: 'width', value: width } });
+  const rendered = renderer.render();
+  if (rendered.width !== width || !rendered.pixels.some(value => value !== 0)) throw new Error('Empty artwork render');
+  return { png: rendered.asPng(), svg: renderer.toString(), width: rendered.width, height: rendered.height };
 }
 
-main();
+function buildBranding(outputDir = publicDir) {
+  const icon = fs.readFileSync(path.join(publicDir, 'favicon.svg'), 'utf8');
+  const mark = icon.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>[\s\S]*$/, '').replace(/<title>[\s\S]*?<\/title>/, '');
+  const card = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+    <defs><radialGradient id="wash" cx="85%" cy="45%" r="70%"><stop stop-color="#14344b"/><stop offset="1" stop-color="#0a1320"/></radialGradient></defs>
+    <rect width="1200" height="630" fill="url(#wash)"/>
+    <path d="M72 64h1056" stroke="#274055"/>
+    <g transform="translate(75 96) scale(.72)">${mark}</g>
+    <text x="141" y="131" fill="#f4f8fb" font-family="Inter Display" font-size="34" font-weight="600">ApocalypseWatch</text>
+    <text x="74" y="239" fill="#f4f8fb" font-family="Inter Display" font-size="66" font-weight="600" letter-spacing="-2">Flight activity.</text>
+    <text x="74" y="319" fill="#73d0ed" font-family="Inter Display" font-size="66" font-weight="600" letter-spacing="-2">Evidence in view.</text>
+    <text x="77" y="374" fill="#c0cddb" font-family="Inter Display" font-size="23">Explore the snapshot. Inspect the baseline.</text>
+    <text x="77" y="408" fill="#c0cddb" font-family="Inter Display" font-size="23">Keep the data source and its limits visible.</text>
+    <g transform="translate(852 176) scale(4)">${mark}</g>
+    <path d="M76 478h1048" stroke="#274055"/>
+    <text x="77" y="526" fill="#9ab1c2" font-family="Inter Display" font-size="18">Experimental activity signal. Not an emergency forecast.</text>
+    <text x="77" y="573" fill="#73d0ed" font-family="Inter Display" font-size="18">github.com/SysAdminDoc/ApocalypseWatch</text>
+    <text x="1124" y="573" text-anchor="end" fill="#9ab1c2" font-family="Inter Display" font-size="18">v${version}</text>
+  </svg>`;
+  for (const file of font.fontFiles) if (!fs.existsSync(file)) throw new Error('Missing bundled font: ' + path.basename(file));
+  fs.mkdirSync(outputDir, { recursive: true });
+  const results = [];
+  for (const size of [16, 32, 48, 64, 128, 192, 256, 512, 1024]) {
+    const image = render(icon, size);
+    fs.writeFileSync(path.join(outputDir, `icon-${size}.png`), image.png);
+    results.push({ name: `icon-${size}.png`, width: size, height: image.height, bytes: image.png.length });
+  }
+  fs.writeFileSync(path.join(outputDir, 'apple-touch-icon.png'), render(icon, 180).png);
+  const preview = render(card, 1200);
+  if (preview.height !== 630 || preview.png.length < 15000 || /<text\b/.test(preview.svg)) throw new Error('Share-card text did not render completely');
+  fs.writeFileSync(path.join(outputDir, 'og-image.svg'), preview.svg);
+  fs.writeFileSync(path.join(outputDir, 'og-image.png'), preview.png);
+  results.push({ name: 'og-image.png', width: 1200, height: 630, bytes: preview.png.length });
+  return results;
+}
+
+if (require.main === module) {
+  try { console.log(JSON.stringify(buildBranding(), null, 2)); }
+  catch (error) { console.error('Branding build failed:', error.message); process.exitCode = 1; }
+}
+module.exports = { buildBranding, render };
