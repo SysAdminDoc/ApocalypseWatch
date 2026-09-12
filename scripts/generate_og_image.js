@@ -11,7 +11,6 @@ const font = {
   fontFiles: ['InterDisplay-Regular.ttf', 'InterDisplay-SemiBold.ttf'].map(name => path.join(fontDir, name)),
   defaultFontFamily: 'Inter Display',
 };
-const { version } = require('../package.json');
 
 function render(svg, width) {
   const renderer = new Resvg(svg, { font, fitTo: { mode: 'width', value: width } });
@@ -37,7 +36,6 @@ function buildBranding(outputDir = publicDir) {
     <path d="M76 478h1048" stroke="#274055"/>
     <text x="77" y="526" fill="#9ab1c2" font-family="Inter Display" font-size="18">Experimental activity signal. Not an emergency forecast.</text>
     <text x="77" y="573" fill="#73d0ed" font-family="Inter Display" font-size="18">github.com/SysAdminDoc/ApocalypseWatch</text>
-    <text x="1124" y="573" text-anchor="end" fill="#9ab1c2" font-family="Inter Display" font-size="18">v${version}</text>
   </svg>`;
   for (const file of font.fontFiles) if (!fs.existsSync(file)) throw new Error('Missing bundled font: ' + path.basename(file));
   fs.mkdirSync(outputDir, { recursive: true });

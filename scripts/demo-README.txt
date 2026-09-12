@@ -1,4 +1,4 @@
-ApocalypseWatch v0.2.2
+ApocalypseWatch v0.2.3
 Synthetic demonstration
 
 1. Install Node.js 24 or newer from https://nodejs.org/ if it isn't installed.

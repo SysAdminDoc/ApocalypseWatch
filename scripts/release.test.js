@@ -9,7 +9,9 @@ const { buildBranding } = require('./generate_og_image');
 
 test('README opens with the generated marketing hero', () => {
   const readme = fs.readFileSync(path.join(__dirname, '../README.md'), 'utf8');
+  const brandingSource = fs.readFileSync(path.join(__dirname, 'generate_og_image.js'), 'utf8');
   assert.match(readme, /^!\[ApocalypseWatch flight activity dashboard marketing hero\]\(client\/public\/og-image\.png\)/);
+  assert.doesNotMatch(brandingSource, /v\$\{version\}/);
   const hero = fs.readFileSync(path.join(__dirname, '../client/public/og-image.png'));
   assert.deepEqual([...hero.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.equal(hero.readUInt32BE(16), 1200);

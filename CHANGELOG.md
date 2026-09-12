@@ -4,6 +4,13 @@ All notable changes to ApocalypseWatch will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to semantic versioning.
 
+## v0.2.3 (2026-09-12)
+
+### Changed
+
+- Removed the release number from the marketing hero so the artwork stays current across releases.
+- Added a regression check that keeps version text out of future hero builds.
+
 ## v0.2.2 (2026-09-12)
 
 ### Changed

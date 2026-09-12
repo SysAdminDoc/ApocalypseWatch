@@ -1,7 +1,7 @@
 {
   "name": "apocalypsewatch",
   "private": true,
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Business-jet activity dashboard with source timestamps, historical context and exportable evidence.",
   "type": "commonjs",
   "workspaces": [

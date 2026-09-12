@@ -16,7 +16,7 @@ import { deriveSignal, deriveEmergencyLevel } from './lib/signal.js'
 import { formatDuration, formatRelative, formatTimestamp } from './lib/format'
 import { buildArchiveHealth, buildSensitivityPreview, decodeArchive } from './lib/archive'
 
-const APP_VERSION = '0.2.2'
+const APP_VERSION = '0.2.3'
 const EMPTY_ARCHIVE = []
 
 const DEFAULT_CADENCE_MINUTES = 30
