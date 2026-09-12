@@ -1,4 +1,4 @@
-# Using ApocalypseWatch v0.2.1
+# Using ApocalypseWatch v0.2.2
 
 [Project overview](../README.md) · [Setup and deployment](development/README.md)
 

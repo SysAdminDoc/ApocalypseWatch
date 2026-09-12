@@ -4,6 +4,13 @@ All notable changes to ApocalypseWatch will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to semantic versioning.
 
+## v0.2.2 (2026-09-12)
+
+### Changed
+
+- Put the generated flight activity hero at the top of the README so GitHub visitors see the product story immediately.
+- Added a release check that keeps the hero linked and verifies its exact social-card dimensions.
+
 ## v0.2.1 (2026-09-09)
 
 ### Changed

@@ -1,4 +1,4 @@
-# Build and operate ApocalypseWatch v0.2.1
+# Build and operate ApocalypseWatch v0.2.2
 
 [Overview](../../README.md) · [User guide](../README.md)
 
@@ -42,7 +42,7 @@ These values become public browser code. Never put credentials in a `VITE_` valu
 
 The project has no build, test or deployment workflows. Build locally. A prebuilt Pages site can be served from a branch publishing folder with `.nojekyll`; a static site needs a reachable JSON source and cannot run the Node API itself.
 
-The existing Pages deployment has not been refreshed for v0.2.1. The release downloads and current repository are the verified delivery paths.
+The existing Pages deployment has not been refreshed for v0.2.2. The release downloads and current repository are the verified delivery paths.
 
 ## Release packages
 

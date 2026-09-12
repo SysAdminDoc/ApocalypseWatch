@@ -1,6 +1,8 @@
+![ApocalypseWatch flight activity dashboard marketing hero](client/public/og-image.png)
+
 # ApocalypseWatch
 
-[![Version](https://img.shields.io/badge/version-0.2.1-076b9b?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch/releases/latest) [![License](https://img.shields.io/badge/license-MIT-13776a?style=flat-square)](LICENSE) [![Platform](https://img.shields.io/badge/platform-web-59657b?style=flat-square)](#run-it-locally)
+[![Version](https://img.shields.io/badge/version-0.2.2-076b9b?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch/releases/latest) [![License](https://img.shields.io/badge/license-MIT-13776a?style=flat-square)](LICENSE) [![Platform](https://img.shields.io/badge/platform-web-59657b?style=flat-square)](#run-it-locally)
 
 Business-jet activity, with the evidence in view.
 
@@ -8,7 +10,7 @@ ApocalypseWatch puts a cohort's aircraft positions beside an experimental activi
 
 It's a visualization, not an emergency warning system. Aircraft activity doesn't establish who is aboard, where they're going or why they're flying. A high reading is not a prediction of a crisis.
 
-[Download v0.2.1](https://github.com/SysAdminDoc/ApocalypseWatch/releases/tag/v0.2.1) · [Run it locally](#run-it-locally) · [User guide](guide/README.md)
+[Download v0.2.2](https://github.com/SysAdminDoc/ApocalypseWatch/releases/tag/v0.2.2) · [Run it locally](#run-it-locally) · [User guide](guide/README.md)
 
 ![ApocalypseWatch dashboard showing a synthetic six-aircraft demonstration](assets/screenshots/dashboard-dark.png)
 
@@ -27,9 +29,9 @@ Dark and light themes are included. A compact `?embed` view is available for sta
 
 ## Run it locally
 
-To try the interface without installing project dependencies, download [the demonstration ZIP](https://github.com/SysAdminDoc/ApocalypseWatch/releases/download/v0.2.1/ApocalypseWatch-v0.2.1-demo.zip). Extract it, run `node serve.cjs`, then open [127.0.0.1:3030](http://127.0.0.1:3030). It requires Node.js 24 or newer and uses synthetic data only. After downloading Node and the package, it works without internet while the local server is running.
+To try the interface without installing project dependencies, download [the demonstration ZIP](https://github.com/SysAdminDoc/ApocalypseWatch/releases/download/v0.2.2/ApocalypseWatch-v0.2.2-demo.zip). Extract it, run `node serve.cjs`, then open [127.0.0.1:3030](http://127.0.0.1:3030). It requires Node.js 24 or newer and uses synthetic data only. After downloading Node and the package, it works without internet while the local server is running.
 
-Want the backend and collection tools? The [source ZIP](https://github.com/SysAdminDoc/ApocalypseWatch/releases/download/v0.2.1/ApocalypseWatch-v0.2.1-source.zip) includes the code and visual archive. You can also clone the repository:
+Want the backend and collection tools? The [source ZIP](https://github.com/SysAdminDoc/ApocalypseWatch/releases/download/v0.2.2/ApocalypseWatch-v0.2.2-source.zip) includes the code and visual archive. You can also clone the repository:
 
 Use Node.js 24 or newer. From a fresh checkout:
 

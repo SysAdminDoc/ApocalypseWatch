@@ -1,4 +1,4 @@
-# ApocalypseWatch v0.2.1 screenshots
+# ApocalypseWatch v0.2.2 screenshots
 
 These are unretouched browser captures of the built application and its actual local API, using an empty, isolated database. All displayed aircraft and history are synthetic. No real-flight information or user database was used.
 
