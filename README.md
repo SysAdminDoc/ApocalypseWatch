@@ -4,6 +4,16 @@
 
 [![Version](https://img.shields.io/badge/version-0.2.3-076b9b?style=flat-square)](https://github.com/SysAdminDoc/ApocalypseWatch/releases/latest) [![License](https://img.shields.io/badge/license-MIT-13776a?style=flat-square)](LICENSE) [![Platform](https://img.shields.io/badge/platform-web-59657b?style=flat-square)](#run-it-locally)
 
+<p align="center">
+  <a href="https://ko-fi.com/X8K126YVER">
+    <img height="42" src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" alt="Buy me a coffee on Ko-fi" />
+  </a>
+</p>
+
+<p align="center">
+  <sub><em>If this project helps you, a coffee helps me keep working on it.</em></sub>
+</p>
+
 Business-jet activity, with the evidence in view.
 
 ApocalypseWatch puts a cohort's aircraft positions beside an experimental activity signal. Explore the historical baseline, check the age of the data and download the calculation inputs behind a reading.
